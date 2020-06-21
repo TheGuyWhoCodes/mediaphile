@@ -18,11 +18,10 @@ import javax.servlet.http.HttpServletResponse;
  * date: 6/19/2020
  */
 @WebServlet("/movies/search")
-public class SearchMovieDatabase extends HttpServlet {
+public class MovieSearchServlet extends HttpServlet {
 
     private TmdbSearch movieSearchEngine = new TmdbSearch(new TmdbApi(KeyConfig.MOVIE_KEY));
     private Gson gson = new Gson();
-    private JSONObject json = new JSONObject();
 
     /**
      * doGet() handles search queries to tmdb database.
@@ -32,19 +31,46 @@ public class SearchMovieDatabase extends HttpServlet {
      */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json;");
+        response.setContentType("application/json; charset=utf-8");
 
-        Integer pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-        String query = request.getParameter("query");
+        JSONObject json = new JSONObject();
+        Integer pageNumber = null;
+        String query = null;
 
-        // using 0 for the search year returns all years
+        if(null != request.getParameter("pageNumber")) {
+            pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+        }
+
+        if(null != request.getParameter("query")) {
+            query = request.getParameter("query");
+        }
+
+        if(null == request.getParameter("pageNumber") || null == query) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // using 0 for the search year returns all years, can later filter to specific years.
         MovieResultsPage searchResults = movieSearchEngine.searchMovie(query, 0, null, false, pageNumber);
+
+        json = convertResultsToJson(searchResults);
+
+        response.getWriter().println(json);
+    }
+
+    /**
+     * convertResultsToJson converts a MovieResultsPage object to json to return to an API request
+     * @param searchResults movie results from a given query
+     * @return json payload ready to send to user
+     */
+    private JSONObject convertResultsToJson(MovieResultsPage searchResults) {
+        JSONObject json = new JSONObject();
 
         json.put("results", gson.toJsonTree(searchResults.getResults()));
         json.put("totalResults", searchResults.getTotalResults());
         json.put("totalPages", searchResults.getTotalPages());
         json.put("page", searchResults.getPage());
 
-        response.getWriter().println(json);
+        return json;
     }
 }
