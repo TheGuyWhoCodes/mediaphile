@@ -1,5 +1,6 @@
 package com.google.sps.servlets.movie;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
 import info.movito.themoviedbapi.TmdbApi;
@@ -22,6 +23,7 @@ public class MovieSearchServlet extends HttpServlet {
 
     private TmdbSearch movieSearchEngine = new TmdbSearch(new TmdbApi(KeyConfig.MOVIE_KEY));
     private Gson gson = new Gson();
+    private ObjectMapper mapper = new ObjectMapper();
 
     /**
      * doGet() handles search queries to tmdb database.
@@ -53,24 +55,6 @@ public class MovieSearchServlet extends HttpServlet {
         // using 0 for the search year returns all years, can later filter to specific years.
         MovieResultsPage searchResults = movieSearchEngine.searchMovie(query, 0, null, false, pageNumber);
 
-        json = convertResultsToJson(searchResults);
-
-        response.getWriter().println(json);
-    }
-
-    /**
-     * convertResultsToJson converts a MovieResultsPage object to json to return to an API request
-     * @param searchResults movie results from a given query
-     * @return json payload ready to send to user
-     */
-    private JSONObject convertResultsToJson(MovieResultsPage searchResults) {
-        JSONObject json = new JSONObject();
-
-        json.put("results", gson.toJsonTree(searchResults.getResults()));
-        json.put("totalResults", searchResults.getTotalResults());
-        json.put("totalPages", searchResults.getTotalPages());
-        json.put("page", searchResults.getPage());
-
-        return json;
+        mapper.writeValue(response.getWriter(), searchResults);
     }
 }
