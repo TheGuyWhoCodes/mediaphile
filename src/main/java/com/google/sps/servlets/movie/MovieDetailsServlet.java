@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
-import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.json.simple.JSONObject;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,10 +37,12 @@ public class MovieDetailsServlet extends HttpServlet {
         Integer id = null;
 
         if(null != request.getParameter("id")) {
-            id = Integer.parseInt(request.getParameter("id"));
-        }
-
-        if(null == id) {
+            id = parseInt(request.getParameter("id"));
+            if(null == id) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+        } else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -52,5 +51,18 @@ public class MovieDetailsServlet extends HttpServlet {
         MovieDb queryResponse = moviesQuery.getMovie(id, null);
 
         response.getWriter().println(gson.toJsonTree(queryResponse));
+    }
+
+    /**
+     * parseInt method is used to parse an integer from a string (from a url param)
+     * @param urlParam: the url param to convert from string -> integer
+     * @return either an integer if the string is a valid integer, or null if it can't be parsed
+     */
+    private Integer parseInt(String urlParam) {
+        try {
+            return Integer.parseInt(urlParam);
+        } catch(NumberFormatException e) {
+            return null;
+        }
     }
 }
