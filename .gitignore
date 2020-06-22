@@ -90,4 +90,4 @@ npm-debug.log
 scripts/docs.angularjs.org-firebase/functions/content
 /firebase.json
 
-config.properties
+*.properties
