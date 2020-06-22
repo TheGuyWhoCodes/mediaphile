@@ -25,6 +25,14 @@ public class MovieDetailsServlet extends HttpServlet {
     private TmdbMovies moviesQuery = new TmdbMovies(new TmdbApi(KeyConfig.MOVIE_KEY));
     private Gson gson = new Gson();
 
+    /**
+     * the doGet() for this servlet will return the user movie details provided a movie id and get
+     * movie meta data, if no id is present in the request, the servlet will return a 400. if the query
+     * can't find the movie, it'll return a 500.
+     * @param request: needs a movie id query parameter
+     * @param response: returns a MovieDb object, including movie metadata.
+     * @throws IOException
+     */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
@@ -39,6 +47,7 @@ public class MovieDetailsServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
         // Uses null to default language to en-US
         MovieDb queryResponse = moviesQuery.getMovie(id, null);
 
