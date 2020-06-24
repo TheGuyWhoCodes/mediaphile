@@ -6,6 +6,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
+import com.google.sps.KeyConfig;
 import org.json.simple.JSONObject;
 
 import javax.servlet.annotation.WebServlet;
@@ -24,7 +25,6 @@ import com.google.api.services.books.Books;
 @WebServlet("/books/search")
 public class BookSearchServlet extends HttpServlet {
 
-    private static final String APPLICATION_NAME = "mediaphile";
     private static JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
     private Gson gson = new Gson();
