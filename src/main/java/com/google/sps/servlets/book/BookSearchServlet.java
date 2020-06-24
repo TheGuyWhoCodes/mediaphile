@@ -18,10 +18,6 @@ import java.security.GeneralSecurityException;
 
 import com.google.api.services.books.Books;
 
-/**
- * @author henry
- * date: 6/19/2020
- */
 @WebServlet("/books/search")
 public class BookSearchServlet extends HttpServlet {
 
