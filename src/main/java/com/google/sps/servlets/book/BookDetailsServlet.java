@@ -46,7 +46,7 @@ public class BookDetailsServlet extends HttpServlet {
             // Can throw an exception if trusted certificate cannot be established
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         }
-        catch (GeneralSecurityException e) {
+        catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
