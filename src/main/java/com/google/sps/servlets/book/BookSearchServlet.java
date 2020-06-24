@@ -40,19 +40,6 @@ public class BookSearchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
 
-        final NetHttpTransport HTTP_TRANSPORT;
-        try {
-            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        }
-        catch (GeneralSecurityException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        Books books = new Books.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
         int pageNumber;
         try {
             String numStr = request.getParameter("pageNumber");
@@ -69,9 +56,23 @@ public class BookSearchServlet extends HttpServlet {
             return;
         }
 
-       Volumes volumes = books.volumes().list(query)
-               .setMaxResults(10L)
-               .setStartIndex(pageNumber*10L)
+        final NetHttpTransport HTTP_TRANSPORT;
+        try {
+            // Can throw an exception if trusted certificate cannot be established
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        }
+        catch (GeneralSecurityException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        Books books = new Books.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+                .setApplicationName(KeyConfig.APPLICATION_NAME)
+                .build();
+
+        Volumes volumes = books.volumes().list(query)
+               .setMaxResults(20L)
+               .setStartIndex(pageNumber*20L)
                .set("country", "US")
                .execute();
 
@@ -91,8 +92,7 @@ public class BookSearchServlet extends HttpServlet {
         // json.put("totalResults", searchResults.getTotalResults());
         // TODO: This doesn't work with the Books API b/c there are practically infinite pages. Maybe limit max pages.
         // json.put("totalPages", searchResults.getTotalPages());
-        // TODO: Client should know this; should it be part of a response?
-        // json.put("page", pageNumber);
+        json.put("page", pageNumber);
 
         return json;
     }
