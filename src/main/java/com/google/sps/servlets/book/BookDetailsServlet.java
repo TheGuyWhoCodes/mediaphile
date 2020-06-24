@@ -19,7 +19,7 @@ import java.security.GeneralSecurityException;
 @WebServlet("/books/details")
 public class BookDetailsServlet extends HttpServlet {
 
-    private static JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+    private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     private Gson gson = new Gson();
 
@@ -41,17 +41,17 @@ public class BookDetailsServlet extends HttpServlet {
             return;
         }
 
-        final NetHttpTransport HTTP_TRANSPORT;
+        final NetHttpTransport httpTransport;
         try {
             // Can throw an exception if trusted certificate cannot be established
-            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         }
         catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        Books books = new Books.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+        Books books = new Books.Builder(httpTransport, jsonFactory, null)
                 .setApplicationName(KeyConfig.APPLICATION_NAME)
                 .build();
 
