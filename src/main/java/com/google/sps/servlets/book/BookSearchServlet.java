@@ -76,7 +76,7 @@ public class BookSearchServlet extends HttpServlet {
                .set("country", "US")
                .execute();
 
-        response.getWriter().println(convertResultsToJson(volumes));
+        response.getWriter().println(convertResultsToJson(volumes, pageNumber));
     }
 
     /**
@@ -84,7 +84,7 @@ public class BookSearchServlet extends HttpServlet {
      * @param searchResults volumes results from a given query
      * @return json payload ready to send to user
      */
-    private JSONObject convertResultsToJson(Volumes searchResults) {
+    private JSONObject convertResultsToJson(Volumes searchResults, int pageNumber) {
         JSONObject json = new JSONObject();
 
         json.put("results", gson.toJsonTree(searchResults.getItems()));
