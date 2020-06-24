@@ -17,11 +17,6 @@ import java.io.StringWriter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author chris
- * date: 6/22/2020
- */
-
 public class MovieDetailsServletTest extends Mockito {
 
     private ObjectMapper mapper = new ObjectMapper();

@@ -20,10 +20,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author chris
- * date: 6/22/2020
- */
 public class MovieSearchServletTest extends Mockito {
 
     private ObjectMapper mapper = new ObjectMapper();
