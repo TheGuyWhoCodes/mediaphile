@@ -61,7 +61,7 @@ public class MovieDetailsServlet extends HttpServlet {
     private Integer parseInt(String urlParam) {
         try {
             return Integer.parseInt(urlParam);
-        } catch(NumberFormatException e) {
+        } catch(Exception e) {
             return null;
         }
     }
