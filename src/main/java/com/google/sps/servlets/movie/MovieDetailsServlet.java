@@ -34,33 +34,27 @@ public class MovieDetailsServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
 
-        Integer id = null;
+        Integer movieId = parseInt(request.getParameter("id"));
 
-        if(null != request.getParameter("id")) {
-            id = parseInt(request.getParameter("id"));
-            if(null == id) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-        } else {
+        if (movieId == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         // Uses null to default language to en-US
-        MovieDb queryResponse = moviesQuery.getMovie(id, null);
+        MovieDb queryResponse = moviesQuery.getMovie(movieId, null);
 
         response.getWriter().println(gson.toJsonTree(queryResponse));
     }
 
     /**
      * parseInt method is used to parse an integer from a string (from a url param)
-     * @param urlParam: the url param to convert from string -> integer
+     * @param s: the url param to convert from string -> integer
      * @return either an integer if the string is a valid integer, or null if it can't be parsed
      */
-    private Integer parseInt(String urlParam) {
+    private Integer parseInt(String s) {
         try {
-            return Integer.parseInt(urlParam);
+            return Integer.parseInt(s);
         } catch(Exception e) {
             return null;
         }
