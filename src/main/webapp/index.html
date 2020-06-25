@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mediaphile</title>
+    <link rel="stylesheet" href="home.css">
+    <script src="home.js"></script>
+  </head>
+
+  <body>
+      <div class="topnav">
+          <h1>Mediaphile</h1>
+          <div class="search-container">
+              <form>
+                  <input type="text" placeholder="Search.." id="search">
+                  <label>in</label>
+                  <button type="submit" class="button" onclick="loadMovies()">Submit</button>
+                  <select name="selection" class="button">
+                      <option value="bk">Books</option>
+                      <option value="mv">Movies</option>
+                  </select>
+              </form>
+          </div>
+      </div>
+      <br/>
+
+      <div id="movies">
+          <div class="bar">
+              <a>Movies</a> 
+          </div>
+          
+          <div class="info">
+              <ul id="movie-list"></ul>
+          </div>
+      </div>
+  </body>
+</html>
