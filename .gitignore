@@ -89,5 +89,3 @@ npm-debug.log
 *.stackdump
 scripts/docs.angularjs.org-firebase/functions/content
 /firebase.json
-
-*.properties
