@@ -62,11 +62,21 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>1.9.59</version>
     </dependency>
-
+<!--    This is a wrapper for The Movie DB API. Here is the github: https://github.com/holgerbrandl/themoviedbapi-->
+<!--    Here is the API Docs: https://developers.themoviedb.org/-->
     <dependency>
       <groupId>info.movito</groupId>
       <artifactId>themoviedbapi</artifactId>
       <version>1.10</version>
+    </dependency>
+
+<!--    Mockito is a testing library, allows for easy mocking and stubbing of Java methods-->
+<!--    here is a good article talking about it: https://www.vogella.com/tutorials/Mockito/article.html-->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

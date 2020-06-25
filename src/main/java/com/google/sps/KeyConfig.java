@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-/**
- * @author chris
- * date: 6/19/2020
- */
 public class KeyConfig {
     private static final Properties properties = new Properties();
 
