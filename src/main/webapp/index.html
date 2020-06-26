@@ -11,15 +11,8 @@
       <div class="topnav">
           <h1>Mediaphile</h1>
           <div class="search-container">
-              <form>
                   <input type="text" placeholder="Search.." id="search">
-                  <label>in</label>
-                  <button type="submit" class="button" onclick="loadMovies()">Submit</button>
-                  <select name="selection" class="button">
-                      <option value="bk">Books</option>
-                      <option value="mv">Movies</option>
-                  </select>
-              </form>
+                  <button class="button" onclick="loadMovies()">Submit</button>
           </div>
       </div>
       <br/>
@@ -29,8 +22,7 @@
               <a>Movies</a> 
           </div>
           
-          <div class="info">
-              <ul id="movie-list"></ul>
+          <div id="movie-list">
           </div>
       </div>
   </body>

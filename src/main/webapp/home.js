@@ -1,26 +1,17 @@
-/*document.getElementsByName('search')
-.addEventListener('keyup', function(event) {
-    if (event.code == 'Enter') {
-        event.preventDefault();
-        document.querySelector('form').submit();
-    }
-}); */
-
 function loadMovies() {
     const search = document.getElementById("search").value;
 
-    fetch('/movies/search?query=' + search +'&pageNumber=' + 1).then(response => response.json())
-    .then((content) => {
+    fetch('/movies/search?query=' + search + "&pageNumber=1").then(response => response.json()).then((data) => {
         const contentList = document.getElementById("movie-list");
-        content.forEach((info) => {
+        data.results.forEach((info) => {
             contentList.appendChild(createContentElement(info));
         })
     });
 }
 
+//Creates an li to display the title of the movies
 function createContentElement(info) {
     const contentElement = document.createElement('li');
-    contentElement.className = 'content';
-    contentElement.innerText = info;
+    contentElement.innerText = info.title;
+    return contentElement;
 }
-
