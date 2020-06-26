@@ -15,6 +15,10 @@ html, body {
     float:left;
 }
 
+.topnav label {
+    padding: 6px;
+}
+
 .topnav .search-container {
     float: right;
 }
@@ -52,7 +56,12 @@ html, body {
     font-size: 20px;
     float: left;
     padding: 6px 8px;
-    margin: 8px 16px 0px;
+    margin: 8px 0px 0px;
+    border-right: thin solid rgb(17, 164, 209);
+}
+
+.bar a:hover {
+    background: #ccc;
 }
 
 .content {
