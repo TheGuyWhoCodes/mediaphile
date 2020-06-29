@@ -1,16 +1,12 @@
 package com.google.sps.servlets.user;
 
-import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -23,9 +19,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 
 import static org.junit.Assert.assertEquals;
