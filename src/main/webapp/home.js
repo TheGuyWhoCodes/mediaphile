@@ -31,7 +31,7 @@ function loadMovies() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("movie-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createMovieElement(info));
+            contentList.appendChild(createContentElement(info));
         })
     });
 }
@@ -43,21 +43,26 @@ function loadBooks() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("book-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createBookElement(info));
+            contentList.appendChild(createContentElement(info.volumeInfo));
         })
     });
 }
 
-//Creates a box to display the title of the movies
-function createMovieElement(info) {
+//Creates a box to display the title and description of movies or book.
+function createContentElement(info) {
     const contentElement = document.createElement('div');
-    contentElement.innerText = info.title;
-    return contentElement;
-}
+    contentElement.className = 'content-box';
 
-function createBookElement(info) {
-    const contentElement = document.createElement('div');
-    contentElement.innerText = info.volumeInfo.title;
+    const title = document.createElement('div');
+    title.className = 'title-box';
+    title.innerText = info.title;
+    
+    const description = document.createElement('div');
+    description.className = 'description-box';
+    description.innerText = info.description ? info.description : info.overview;
+
+    contentElement.appendChild(title);
+    contentElement.appendChild(description);
     return contentElement;
 }
 
