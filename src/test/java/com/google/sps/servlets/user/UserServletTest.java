@@ -42,9 +42,74 @@ public class UserServletTest extends Mockito {
     }
 
     /**
+     * Retrieve a non-existing user from the Datastore
+     * @throws IOException
+     */
+    @Test
+    public void testNonStoredUser() throws IOException {
+        helper.setEnvIsLoggedIn(false)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("id")).thenReturn("123");
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    /**
+     * Retrieve an existing user from the Datastore
+     * Query from an unauthenticated user
+     * Should omit the user's email address
+     * @throws IOException
+     */
+    @Test
+    public void testStoredUser() throws IOException {
+        helper.setEnvIsLoggedIn(false)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("id")).thenReturn("123");
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+        Entity entity = new Entity("User");
+        entity.setProperty("id", "123");
+        entity.setProperty("username", "test");
+        entity.setProperty("email", "test@example.com");
+        entity.setProperty("profilePicUrl", "");
+        ds.put(entity);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
+        writer.flush();
+
+        String expected = gson.toJson(new UserServlet.UserEntity("123", "test", "", ""));
+        assertEquals(stringWriter.toString().trim(), expected.trim());
+    }
+
+    /**
      * Retrieve an existing user from the Datastore
      * Accessed by an authenticated user different from the search target
-     * Should hide the user's email address
+     * Should omit the user's email address
      * @throws IOException
      */
     @Test
