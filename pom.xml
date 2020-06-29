@@ -64,6 +64,7 @@
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-testing -->
+    <!-- Provides helper classes to simulate UserService and Datastore states -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
@@ -72,6 +73,7 @@
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-stubs -->
+    <!-- appengine-testing depends on this -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
