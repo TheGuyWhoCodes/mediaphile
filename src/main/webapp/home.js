@@ -1,6 +1,6 @@
 function loadContent() {
-    document.getElementById("movie-tab").style.display = "none";
-    document.getElementById("book-tab").style.display = "none";
+    document.getElementById("movie-tab").style.display = "none"
+    document.getElementById("book-tab").style.display = "none"
     document.getElementById("movie-list").innerHTML = "";
     document.getElementById("book-list").innerHTML = "";
     const option = document.getElementById('selection').value;
@@ -8,14 +8,14 @@ function loadContent() {
     //display's which tabs appear according to the selection of the user
     if(option === "movie") {
         document.getElementById("movie-tab").style.display = "block";
-        document.getElementById("book-list").style.display = "none";
+        displayContent("movie-list");
         loadMovies();
     } else if(option === "book"){
         document.getElementById("book-tab").style.display = "block"
-        document.getElementById("movie-list").style.display = "none";
+        displayContent("book-list");
         loadBooks();
     } else {
-        document.getElementById("book-list").style.display = "none";
+        displayContent("movie-list")
         document.getElementById("movie-tab").style.display = "block"
         loadMovies();
 
