@@ -35,6 +35,56 @@ public class UserServletTest extends Mockito {
     }
 
     /**
+     * Ensure error is thrown when no id is provided
+     * @throws IOException
+     */
+    @Test
+    public void testMissingId() throws IOException {
+        helper.setEnvIsLoggedIn(false)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    /**
+     * Ensure error is thrown when the id field is equal to ""
+     * @throws IOException
+     */
+    @Test
+    public void testEmptyId() throws IOException {
+        helper.setEnvIsLoggedIn(false)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("id")).thenReturn("");
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    /**
      * Retrieve a non-existing user from the Datastore
      * @throws IOException
      */
