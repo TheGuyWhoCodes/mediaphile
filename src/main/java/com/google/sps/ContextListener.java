@@ -10,6 +10,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * ContextLister class is a listener used to track when a Java Servlet
+ * thread starts and ends. We need this class because we need to register
+ * our database objects before we do anything else with database entries.
+ */
 @WebListener
 public class ContextListener implements ServletContextListener {
 
