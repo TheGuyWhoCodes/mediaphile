@@ -21,6 +21,8 @@ import com.google.api.services.books.Books;
 @WebServlet("/books/search")
 public class BookSearchServlet extends HttpServlet {
 
+    private static final long RESULTS_PER_PAGE = 20L;
+
     private static JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     private Gson gson = new Gson();
@@ -67,8 +69,8 @@ public class BookSearchServlet extends HttpServlet {
                 .build();
 
         Volumes volumes = books.volumes().list(query)
-               .setMaxResults(20L)
-               .setStartIndex(pageNumber*20L)
+               .setMaxResults(RESULTS_PER_PAGE)
+               .setStartIndex(pageNumber*RESULTS_PER_PAGE)
                .set("country", "US")
                .execute();
 
