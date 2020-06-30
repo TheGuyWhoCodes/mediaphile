@@ -1,0 +1,38 @@
+runtime: nodejs10
+
+handlers:
+- url: /(.+\.js)
+  static_files: mediaphile/\1
+  upload: mediaphile/(.+\.js)
+
+- url: /(.+\.css)
+  static_files: mediaphile/\1
+  upload: mediaphile/(.+\.css)
+
+- url: /(.+\.png)
+  static_files: mediaphile/\1
+  upload: app/(.+\.png)
+
+- url: /(.+\.jpg)
+  static_files: mediaphile/\1
+  upload: mediaphile/(.+\.jpg)
+
+- url: /(.+\.svg)
+  static_files: mediaphile/\1
+  upload: mediaphile/(.+\.svg)
+
+- url: /favicon.ico
+  static_files: mediaphile/favicon.ico
+  upload: mediaphile/favicon.ico
+
+- url: /(.+\.json)
+  static_files: mediaphile/\1
+  upload: mediaphile/(.+\.json)
+
+- url: /(.+)
+  static_files: mediaphile/index.html
+  upload: mediaphile/index.html
+
+- url: /
+  static_files: mediaphile/index.html
+  upload: mediaphile/index.html
