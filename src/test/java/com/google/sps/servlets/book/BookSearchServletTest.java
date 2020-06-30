@@ -77,9 +77,28 @@ public class BookSearchServletTest extends Mockito {
     }
 
     @Test
-    public void testBadBookQuery() throws Exception {
+    public void testNullBookQuery() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("query")).thenReturn(null);
+        when(request.getParameter("pageNumber")).thenReturn("0");
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        new BookSearchServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("query");
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testEmptyBookQuery() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("query")).thenReturn("");
         when(request.getParameter("pageNumber")).thenReturn("0");
 
         HttpServletResponse response = mock(HttpServletResponse.class);
