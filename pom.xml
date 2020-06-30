@@ -59,26 +59,28 @@
 
     <dependency>
       <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.59</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-testing -->
-    <!-- Provides helper classes to simulate UserService and Datastore states -->
-    <dependency>
-      <groupId>com.google.appengine</groupId>
       <artifactId>appengine-testing</artifactId>
-      <version>1.9.80</version>
+      <version>1.9.59</version>
       <scope>test</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-api-stubs -->
-    <!-- appengine-testing depends on this -->
     <dependency>
       <groupId>com.google.appengine</groupId>
       <artifactId>appengine-api-stubs</artifactId>
-      <version>1.9.80</version>
+      <version>1.9.59</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-labs</artifactId>
+      <version>1.9.59</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-tools-sdk</artifactId>
+      <version>1.9.59</version>
     </dependency>
 
     <!--    This is a wrapper for The Movie DB API. Here is the github: https://github.com/holgerbrandl/themoviedbapi-->
