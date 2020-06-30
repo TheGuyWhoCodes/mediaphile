@@ -68,7 +68,7 @@ public class UserServlet extends HttpServlet {
     /**
      * doGet() returns details of the particular user with the given id
      * Returns error 400 if no id is provided
-     * Returns error 500 if the user cannot be found
+     * Returns error 404 if the user cannot be found
      * @param request: expects id parameter
      * @param response: returns a Volume object
      * @throws IOException
@@ -88,7 +88,7 @@ public class UserServlet extends HttpServlet {
 
         UserEntity userEntity = getStoredUser(id);
         if (userEntity == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 

@@ -109,7 +109,7 @@ public class UserServletTest extends Mockito {
         verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+        verify(response, times(1)).sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 
     /**
