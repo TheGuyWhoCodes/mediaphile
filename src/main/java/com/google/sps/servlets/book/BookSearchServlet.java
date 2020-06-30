@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+
+import com.google.sps.util.Utils;
 
 import com.google.api.services.books.Books;
 
@@ -37,17 +38,13 @@ public class BookSearchServlet extends HttpServlet {
         response.setContentType("application/json; charset=UTF-8");
 
         String query = request.getParameter("query");
-        String numStr = request.getParameter("pageNumber");
-        if ((query == null || query.equals("")) || (numStr == null || numStr.equals(""))) {
+        if (query == null || query.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        int pageNumber;
-        try {
-            pageNumber = Integer.parseInt(numStr);
-        }
-        catch (Exception e) {
+        Integer pageNumber = Utils.parseInt(request.getParameter("pageNumber"));
+        if (pageNumber == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
