@@ -36,21 +36,22 @@ public class BookSearchServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
 
-        int pageNumber;
-        try {
-            String numStr = request.getParameter("pageNumber");
-            if (numStr == null) numStr = "0";
-            pageNumber = Integer.parseInt(numStr);
-        }
-        catch (NumberFormatException e) {
-            pageNumber = 0;
-        }
-
         String query = request.getParameter("query");
-        if (query == null || query.equals("")) {
+        String numStr = request.getParameter("pageNumber");
+        if ((query == null || query.equals("")) || (numStr == null || numStr.equals(""))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+
+        int pageNumber;
+        try {
+            pageNumber = Integer.parseInt(numStr);
+        }
+        catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
 
         final NetHttpTransport httpTransport;
         try {
