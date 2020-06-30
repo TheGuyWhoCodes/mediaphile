@@ -19,5 +19,6 @@ public class KeyConfig {
     }
 
     public static String MOVIE_KEY = properties.getProperty("movie_apikey");
+    public static String APPLICATION_NAME = properties.getProperty("application_name");
 
 }
