@@ -24,9 +24,7 @@ public class BookSearchServlet extends HttpServlet {
     private static final long RESULTS_PER_PAGE = 20L;
 
     private static JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
     private Gson gson = new Gson();
-    private JSONObject json = new JSONObject();
 
     /**
      * doGet() handles search queries to Books database.
