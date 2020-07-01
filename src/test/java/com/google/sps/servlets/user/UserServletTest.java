@@ -1,12 +1,14 @@
 package com.google.sps.servlets.user;
 
+import com.google.sps.ContextListener;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 import org.mockito.Mockito;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -21,7 +23,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-import static org.junit.Assert.assertEquals;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class UserServletTest extends Mockito {
 
@@ -29,9 +31,15 @@ public class UserServletTest extends Mockito {
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     Gson gson = new Gson();
 
+    @BeforeClass
+    public static void initialize() {
+        new ContextListener().initDbObjects();
+    }
+
     @After
     public void tearDown() {
         helper.tearDown();
+        ofy().clear();
     }
 
     /**
@@ -128,13 +136,8 @@ public class UserServletTest extends Mockito {
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Entity entity = new Entity("User");
-        entity.setProperty("id", "123");
-        entity.setProperty("username", "test");
-        entity.setProperty("email", "test@example.com");
-        entity.setProperty("profilePicUrl", "");
-        ds.put(entity);
+        UserObject user = new UserObject("123", "test", "test@example.com", "");
+        ofy().save().entity(user).now();
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -145,7 +148,7 @@ public class UserServletTest extends Mockito {
         verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        String expected = gson.toJson(new UserServlet.UserEntity("123", "test", "", ""));
+        String expected = gson.toJson(user);
         assertEquals(stringWriter.toString().trim(), expected.trim());
     }
 
@@ -170,13 +173,10 @@ public class UserServletTest extends Mockito {
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Entity entity = new Entity("User");
-        entity.setProperty("id", "123");
-        entity.setProperty("username", "test");
-        entity.setProperty("email", "test@example.com");
-        entity.setProperty("profilePicUrl", "");
-        ds.put(entity);
+        UserObject user = new UserObject("123", "test", "test@example.com", "");
+        ofy().save().entity(user).now();
+
+        UserObject expectedUser = new UserObject("123", "test", "", "");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -187,7 +187,7 @@ public class UserServletTest extends Mockito {
         verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        String expected = gson.toJson(new UserServlet.UserEntity("123", "test", "", ""));
+        String expected = gson.toJson(expectedUser);
         assertEquals(stringWriter.toString().trim(), expected.trim());
     }
 
@@ -212,13 +212,8 @@ public class UserServletTest extends Mockito {
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        Entity entity = new Entity("User");
-        entity.setProperty("id", "123");
-        entity.setProperty("username", "test");
-        entity.setProperty("email", "test@example.com");
-        entity.setProperty("profilePicUrl", "");
-        ds.put(entity);
+        UserObject user = new UserObject("123", "test", "test@example.com", "");
+        ofy().save().entity(user).now();
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -229,7 +224,7 @@ public class UserServletTest extends Mockito {
         verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        String expected = gson.toJson(new UserServlet.UserEntity("123", "test", "test@example.com", ""));
+        String expected = gson.toJson(user);
         assertEquals(stringWriter.toString().trim(), expected.trim());
     }
 }

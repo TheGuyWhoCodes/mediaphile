@@ -1,11 +1,5 @@
 package com.google.sps.servlets.user;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +11,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 /** Servlet that returns user information.
  *  Returns additional information if the query is for the current user
  */
@@ -24,46 +20,6 @@ import com.google.gson.Gson;
 public class UserServlet extends HttpServlet {
 
     Gson gson = new Gson();
-
-    public static class UserEntity {
-        String id;
-        String username;
-        String email;
-        String profilePicUrl;
-
-        public UserEntity(String id, String username, String email, String profilePicUrl) {
-            this.id = id;
-            this.username = username;
-            this.email = email;
-            this.profilePicUrl = profilePicUrl;
-        }
-    }
-
-    // Search Datastore for an entry for the user
-    public static Entity checkDatastore(String id) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("User")
-                .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
-        PreparedQuery results = datastore.prepare(query);
-        try {
-            return results.asSingleEntity();
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    private UserEntity getStoredUser(String id) {
-        Entity entity = checkDatastore(id);
-        if (entity == null) return null;
-
-        return new UserEntity(
-            (String) entity.getProperty("id"),
-            (String) entity.getProperty("username"),
-            (String) entity.getProperty("email"),
-            (String) entity.getProperty("profilePicUrl")
-        );
-    }
 
     /**
      * doGet() returns details of the particular user with the given id
@@ -86,16 +42,16 @@ public class UserServlet extends HttpServlet {
             return;
         }
 
-        UserEntity userEntity = getStoredUser(id);
-        if (userEntity == null) {
+        UserObject userObject = ofy().load().type(UserObject.class).id(id).now();
+        if (userObject == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
         if (user == null || !user.getUserId().equals(id)) {
-            userEntity.email = "";
+            userObject.setEmail("");
         }
 
-        response.getWriter().println(gson.toJson(userEntity));
+        response.getWriter().println(gson.toJson(userObject));
     }
 }
