@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
+    Gson gson = new Gson();
+
     private class LoginStatus {
         private boolean logged_in;
         private String url;
@@ -25,12 +27,6 @@ public class LoginServlet extends HttpServlet {
             this.url = url;
             this.id = id;
         }
-    }
-
-    String makeJSONStatus(boolean logged_in, String url, String id) {
-        Gson gson = new Gson();
-        String json = gson.toJson(new LoginStatus(logged_in, url, id));
-        return json;
     }
 
     /**
@@ -54,6 +50,6 @@ public class LoginServlet extends HttpServlet {
         User user = userService.getCurrentUser();
         String id = (user != null) ? user.getUserId() : "";
 
-        response.getWriter().println(makeJSONStatus(logged_in, url, id));
+        response.getWriter().println(gson.toJson(new LoginStatus(logged_in, url, id)));
     }
 }
