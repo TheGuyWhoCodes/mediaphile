@@ -77,9 +77,13 @@ public class EntityListServlet extends HttpServlet {
                 sendInvalidPostResponse(response, newResponse);
                 return;
             }
-
-            ofy().save().entity(entityDb).now();
-
+            try {
+                // Entry being saved to the datastore instance
+                ofy().save().entity(entityDb).now();
+            } catch(Exception e) {
+                sendInvalidPostResponse(response, newResponse);
+                return;
+            }
             newResponse.setSuccess(true);
             newResponse.setEntity(entityDb);
             response.getWriter().println(gson.toJsonTree(newResponse));
