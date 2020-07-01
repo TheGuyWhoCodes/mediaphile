@@ -1,3 +1,11 @@
+function handle(event) {
+    if(event.keyCode === 13) {
+        console.log(event.keyCode);
+        event.preventDefault();
+        loadContent();
+    }
+}
+
 function loadContent() {
     document.getElementById("movie-tab").style.display = "none"
     document.getElementById("book-tab").style.display = "none"
