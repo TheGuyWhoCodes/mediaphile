@@ -39,12 +39,12 @@ public class EntityListServlet extends HttpServlet {
         String queueType = request.getParameter("entityType");
 
         if(queueType == null) {
-            sendInvalidGetResponse(response);
+            setInvalidGetResponse(response);
             return;
         }
 
         if(!isCorrectListType(queueType)) {
-            sendInvalidGetResponse(response);
+            setInvalidGetResponse(response);
             return;
         }
 
@@ -161,7 +161,7 @@ public class EntityListServlet extends HttpServlet {
      * Sets status to 400 if we can't parse input
      * @param response: response to add status to
      */
-    private void sendInvalidGetResponse(HttpServletResponse response) {
+    private void setInvalidGetResponse(HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
 
