@@ -39,7 +39,7 @@ function loadMovies() {
 function loadBooks() {
     const search = document.getElementById("search").value;
 
-    fetch('/books/search?query=' + search + "&pageNumber=1")
+    fetch('/books/search?query=' + search + "&pageNumber=0")
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("book-list");
         data.results.forEach((info) => {
@@ -66,7 +66,7 @@ function createContentElement(info) {
     return contentElement;
 }
 
-//Display's wether the movies or books list appears
+//Display's whether the movies or books list appears
 function displayContent(content) {
     document.getElementById("movie-list").style.display = "none";
     document.getElementById("book-list").style.display = "none";
