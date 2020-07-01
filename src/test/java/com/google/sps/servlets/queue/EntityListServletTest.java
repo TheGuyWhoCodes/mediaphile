@@ -2,14 +2,13 @@ package com.google.sps.servlets.queue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.appengine.api.users.UserService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.ContextListener;
 import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.queue.WatchedQueueObject;
-import com.google.sps.servlets.DelegatingServletInputStream;
+import com.google.sps.servlets.TestDelegatingServletInputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -125,7 +124,7 @@ public class EntityListServletTest extends Mockito {
                 "    \"userID\": \"0987\"\n" +
                 "}";
         when(request.getInputStream()).thenReturn(
-                new DelegatingServletInputStream(
+                new TestDelegatingServletInputStream(
                         new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
         when(request.getReader()).thenReturn(
                 new BufferedReader(new StringReader(json)));
@@ -152,7 +151,7 @@ public class EntityListServletTest extends Mockito {
                 "    \"artUrl\": \"hey.com/coolimage.png\",\n" +
                 "}";
         when(request.getInputStream()).thenReturn(
-                new DelegatingServletInputStream(
+                new TestDelegatingServletInputStream(
                         new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
         when(request.getReader()).thenReturn(
                 new BufferedReader(new StringReader(json)));

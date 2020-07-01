@@ -1,6 +1,7 @@
 package com.google.sps.servlets;
 
 import junit.framework.Assert;
+import org.apache.commons.lang3.NotImplementedException;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -10,7 +11,7 @@ import java.io.InputStream;
 /**
  * Helper function to help test null data
  */
-public class DelegatingServletInputStream extends ServletInputStream {
+public class TestDelegatingServletInputStream extends ServletInputStream {
 
     private final InputStream sourceStream;
 
@@ -18,7 +19,7 @@ public class DelegatingServletInputStream extends ServletInputStream {
      * Create a DelegatingServletInputStream for the given source stream.
      * @param sourceStream the source stream (never <code>null</code>)
      */
-    public DelegatingServletInputStream(InputStream sourceStream) {
+    public TestDelegatingServletInputStream(InputStream sourceStream) {
         Assert.assertNotNull("Source InputStream must not be null", sourceStream);
         this.sourceStream = sourceStream;
     }
@@ -52,6 +53,6 @@ public class DelegatingServletInputStream extends ServletInputStream {
 
     @Override
     public void setReadListener(ReadListener readListener) {
-
+        throw new NotImplementedException("Not needed");
     }
 } 
