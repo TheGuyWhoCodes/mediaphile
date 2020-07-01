@@ -29,8 +29,8 @@ public class EntityListServlet extends HttpServlet {
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final String TYPE_QUEUE = "queue";
-    private final String TYPE_VIEWED = "viewed";
+    private final String typeQueue = "queue";
+    private final String typeViewed = "viewed";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -106,7 +106,7 @@ public class EntityListServlet extends HttpServlet {
      * @return: a list of abstracted type EntityDbQueue
      */
     private List<? extends EntityDbQueue> getQueueWithType(String type, String userID) {
-        if(type.equals(TYPE_QUEUE)) {
+        if(type.equals(typeQueue)) {
             return ofy().load().type(WantToWatchQueueObject.class).filter("userID", userID).list();
         } else {
             return ofy().load().type(WatchedQueueObject.class).filter("userID", userID).list();
@@ -119,7 +119,7 @@ public class EntityListServlet extends HttpServlet {
      * @return: true / false if the type is valid
      */
     private boolean isCorrectListType(String queueType) {
-        return queueType.equals(TYPE_QUEUE) || queueType.equals(TYPE_VIEWED);
+        return queueType.equals(typeQueue) || queueType.equals(typeViewed);
     }
 
     /**
@@ -130,9 +130,9 @@ public class EntityListServlet extends HttpServlet {
      */
     private EntityDbQueue decideDbType(String body) throws JsonProcessingException {
         EntityDbQueue entity = mapper.readValue(body, EntityDbQueue.class);
-        if(entity.getEntityType().equals(TYPE_VIEWED)) {
+        if(entity.getEntityType().equals(typeViewed)) {
             return mapper.readValue(body, WatchedQueueObject.class);
-        } else if(entity.getEntityType().equals(TYPE_QUEUE)) {
+        } else if(entity.getEntityType().equals(typeQueue)) {
             return mapper.readValue(body, WantToWatchQueueObject.class);
         } else {
             return null;
