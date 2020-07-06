@@ -72,11 +72,6 @@ public class EntityListServlet extends HttpServlet {
                 return;
             }
 
-            // couldn't parse type correctly, will return a failed attempt
-            if(entityDb == null) {
-                sendInvalidPostResponse(response, newResponse);
-                return;
-            }
             try {
                 // Entry being saved to the datastore instance
                 ofy().save().entity(entityDb).now();
@@ -132,14 +127,14 @@ public class EntityListServlet extends HttpServlet {
      * @return: null if invalid entity type, an EntityDbQueue type object if it can
      * @throws JsonProcessingException: if it can't parse out data.
      */
-    private EntityDbQueue decideDbType(String body) throws JsonProcessingException {
+    private EntityDbQueue decideDbType(String body) throws JsonProcessingException, NoSuchFieldException {
         EntityDbQueue entity = mapper.readValue(body, EntityDbQueue.class);
         if(entity.getEntityType().equals(typeViewed)) {
             return mapper.readValue(body, WatchedQueueObject.class);
         } else if(entity.getEntityType().equals(typeQueue)) {
             return mapper.readValue(body, WantToWatchQueueObject.class);
         } else {
-            return null;
+            throw new NoSuchFieldException();
         }
     }
 
