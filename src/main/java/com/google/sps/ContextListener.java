@@ -4,6 +4,7 @@ package com.google.sps;
 import com.google.sps.model.queue.EntityDbQueue;
 import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.queue.WatchedQueueObject;
+import com.google.sps.servlets.user.UserObject;
 import com.googlecode.objectify.ObjectifyService;
 
 import javax.servlet.ServletContextEvent;
@@ -32,5 +33,6 @@ public class ContextListener implements ServletContextListener {
         ObjectifyService.register(EntityDbQueue.class);
         ObjectifyService.register(WantToWatchQueueObject.class);
         ObjectifyService.register(WatchedQueueObject.class);
+        ObjectifyService.register(UserObject.class);
     }
 }
