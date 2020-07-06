@@ -29,13 +29,13 @@ public class LoginServlet extends HttpServlet {
 
         UserService userService = UserServiceFactory.getUserService();
 
-        boolean logged_in = userService.isUserLoggedIn();
-        String url = (logged_in)
+        boolean loggedIn = userService.isUserLoggedIn();
+        String url = (loggedIn)
                 ? userService.createLogoutURL("/")
                 : userService.createLoginURL("/login/callback");
         User user = userService.getCurrentUser();
         String id = (user != null) ? user.getUserId() : "";
 
-        response.getWriter().println(gson.toJson(new LoginStatus(logged_in, url, id)));
+        response.getWriter().println(gson.toJson(new LoginStatus(loggedIn, url, id)));
     }
 }
