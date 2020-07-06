@@ -1,16 +1,10 @@
 package com.google.sps.servlets.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.sps.ContextListener;
-import info.movito.themoviedbapi.model.MovieDb;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Mockito;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -23,15 +17,12 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
-
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class LoginServletTest extends Mockito {
 
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-    private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @After
