@@ -17,7 +17,7 @@ public class LoginServlet extends HttpServlet {
 
     Gson gson = new Gson();
 
-    private class LoginStatus {
+    public static class LoginStatus {
         private boolean logged_in;
         private String url;
         private String id;
