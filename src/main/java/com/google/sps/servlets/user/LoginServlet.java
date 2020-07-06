@@ -30,9 +30,7 @@ public class LoginServlet extends HttpServlet {
     }
 
     /**
-     * doGet() returns details of the particular volume with the given id
-     * Returns error 400 if no id is provided
-     * Returns error 500 if no movie is returned by the API
+     * doGet() returns login details and url
      * @param request: expects id parameter
      * @param response: returns a Volume object
      * @throws IOException

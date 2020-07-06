@@ -12,7 +12,7 @@ import com.google.appengine.api.users.User;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
-/** Servlet that handles user logins. */
+/** Servlet that registers new users after login. */
 @WebServlet("/login/callback")
 public class LoginCallbackServlet extends HttpServlet {
 
