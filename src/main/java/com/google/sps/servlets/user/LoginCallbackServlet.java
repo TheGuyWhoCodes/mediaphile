@@ -26,8 +26,8 @@ public class LoginCallbackServlet extends HttpServlet {
      * Returns error 400 if the user is not logged in
      * Otherwise redirects to the homepage
      * If the logged in user is not registered in the Datastore, they are added
-     * @param request: expects id parameter
-     * @param response: returns a Volume object
+     * @param request: no parameters
+     * @param response: redirects to homepage
      * @throws IOException
      */
     @Override

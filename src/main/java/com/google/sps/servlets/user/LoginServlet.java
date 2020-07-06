@@ -19,8 +19,8 @@ public class LoginServlet extends HttpServlet {
 
     /**
      * doGet() returns login details and url
-     * @param request: expects id parameter
-     * @param response: returns a Volume object
+     * @param request: no parameters
+     * @param response: returns a LoginStatus object
      * @throws IOException
      */
     @Override
