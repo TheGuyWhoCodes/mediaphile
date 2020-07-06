@@ -12,7 +12,7 @@ import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 
 /** Servlet that handles user logins. */
-@WebServlet("/login")
+@WebServlet("/login/status")
 public class LoginServlet extends HttpServlet {
 
     Gson gson = new Gson();
