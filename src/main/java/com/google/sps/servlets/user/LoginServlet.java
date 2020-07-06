@@ -17,18 +17,6 @@ public class LoginServlet extends HttpServlet {
 
     Gson gson = new Gson();
 
-    public static class LoginStatus {
-        private boolean logged_in;
-        private String url;
-        private String id;
-
-        public LoginStatus(boolean logged_in, String url, String id) {
-            this.logged_in = logged_in;
-            this.url = url;
-            this.id = id;
-        }
-    }
-
     /**
      * doGet() returns login details and url
      * @param request: expects id parameter
