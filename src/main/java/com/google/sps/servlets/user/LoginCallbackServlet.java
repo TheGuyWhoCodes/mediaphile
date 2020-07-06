@@ -22,9 +22,10 @@ public class LoginCallbackServlet extends HttpServlet {
     }
 
     /**
-     * doGet() returns details of the particular volume with the given id
-     * Returns error 400 if no id is provided
-     * Returns error 500 if no movie is returned by the API
+     * doGet() attempts to register a newly logged in user to the Datastore
+     * Returns error 400 if the user is not logged in
+     * Otherwise redirects to the homepage
+     * If the logged in user is not registered in the Datastore, they are added
      * @param request: expects id parameter
      * @param response: returns a Volume object
      * @throws IOException
