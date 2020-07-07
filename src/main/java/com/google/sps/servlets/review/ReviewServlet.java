@@ -28,34 +28,6 @@ public class ReviewServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
 
-    // Returns reviews by user with ID == userId
-    // Returns null if there is no such user or if strings are invalid
-    public List<ReviewObject> getUserReviews(String userId) {
-        if (userId == null || userId.equals("")) return null;
-        if (ofy().load().type(UserObject.class).id(userId).now() == null) return null;
-
-        // TODO: Unify capitalization of userId with EntityListServlet
-        // UserService uses `userId` as per Google Style Guide definition of CamelCase
-        return ofy().load().type(ReviewObject.class)
-                .filter("userId", userId)
-                .list();
-    }
-
-    // Returns reviews for the item of type contentType with ID == contentId
-    // Returns null if there is no such item or if strings are invalid
-    public List<ReviewObject> getContentReviews(String contentType, String contentId) {
-        // TODO: Consider making enum with types then using `|| !enum.contains(contentType)`
-        if (contentType == null
-            || !(contentType.equals("book") || contentId.equals("movie"))) return null;
-        if (contentId == null || contentId.equals("")) return null;
-
-        // TODO: Returning null if item doesn't exist will require DB entries for media items
-        return ofy().load().type(ReviewObject.class)
-                .filter("contentType", contentType)
-                .filter("contentId", contentId)
-                .list();
-    }
-
     /**
      * doGet() returns details of the reviews by a given user or of a given media item
      * Expects either ?contentType={book | movie}&contentId={id}  OR ?userId={id}
@@ -76,10 +48,33 @@ public class ReviewServlet extends HttpServlet {
 
         List<ReviewObject> reviews;
         if (userId != null && contentType == null && contentId == null) {
-            reviews = getUserReviews(userId);
+            if (userId.equals("")) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+            if (ofy().load().type(UserObject.class).id(userId).now() == null) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            // TODO: Unify capitalization of userId with EntityListServlet
+            // UserService uses `userId` as per Google Style Guide definition of CamelCase
+            reviews = ofy().load().type(ReviewObject.class)
+                    .filter("userId", userId)
+                    .list();
         }
         else if (userId == null && contentType != null && contentId != null) {
-            reviews = getContentReviews(contentType, contentId);
+            // TODO: Consider making enum with types then using `|| !enum.contains(contentType)`
+            if (!(contentType.equals("book") || contentType.equals("movie")) || contentId.equals("")) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            // TODO: Checking if item doesn't exist will require DB entries for media items
+            reviews = ofy().load().type(ReviewObject.class)
+                    .filter("contentType", contentType)
+                    .filter("contentId", contentId)
+                    .list();
         }
         else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
