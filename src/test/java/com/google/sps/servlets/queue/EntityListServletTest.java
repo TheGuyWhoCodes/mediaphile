@@ -180,7 +180,7 @@ public class EntityListServletTest extends Mockito {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new DeleteEntityFromListServlet().doDelete(request, response);
+        new EntityListServlet().doDelete(request, response);
         writer.flush();
 
         System.out.println(stringWriter);
@@ -200,7 +200,7 @@ public class EntityListServletTest extends Mockito {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new DeleteEntityFromListServlet().doDelete(request, response);
+        new EntityListServlet().doDelete(request, response);
         writer.flush();
         assertEquals(0, ofy().load().type(WantToWatchQueueObject.class).list().size());
     }
@@ -215,7 +215,7 @@ public class EntityListServletTest extends Mockito {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new DeleteEntityFromListServlet().doDelete(request, response);
+        new EntityListServlet().doDelete(request, response);
         writer.flush();
 
         verify(response, times(1)).setStatus(400);

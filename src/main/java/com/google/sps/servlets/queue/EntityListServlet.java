@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.sps.model.queue.EntityDbQueue;
 import com.google.sps.model.queue.QueueResponse;
 import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.queue.WatchedQueueObject;
+import com.google.sps.util.Utils;
+import com.googlecode.objectify.cmd.QueryKeys;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import static com.google.sps.util.HttpUtils.*;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @WebServlet("/list/entity")
@@ -28,9 +32,6 @@ public class EntityListServlet extends HttpServlet {
     private final UserService userService = UserServiceFactory.getUserService();
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final ObjectMapper mapper = new ObjectMapper();
-
-    private final String typeQueue = "queue";
-    private final String typeViewed = "viewed";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,7 +44,7 @@ public class EntityListServlet extends HttpServlet {
             return;
         }
 
-        if(!isCorrectListType(queueType)) {
+        if(!Utils.isCorrectListType(queueType)) {
             setInvalidGetResponse(response);
             return;
         }
@@ -56,7 +57,7 @@ public class EntityListServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
         QueueResponse newResponse = new QueueResponse();
-        String body = parseBody(request);
+        String body = Utils.parseBody(request);
         EntityDbQueue entityDb = null;
         User user = userService.getCurrentUser();
         if(userService.isUserLoggedIn()) {
@@ -88,14 +89,50 @@ public class EntityListServlet extends HttpServlet {
     }
 
     /**
-     * Helper function to parse out body data from requests
-     * @param request: the request to parse out from
-     * @return: Stringified JSON request
-     * @throws IOException: if the body can't be parsed
+     *  the delete endpoint is used to delete an entity from either a "watched" or "queued" list
+     *  needs an "id" representing the entity id, and a "list type" being either queued or watched
      */
-    private String parseBody(HttpServletRequest request) throws IOException {
-        return request.getReader().lines()
-                .reduce("", (accumulator, actual) -> accumulator + actual);
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        String listType = request.getParameter("listType");
+
+        // check to make sure all needed fields are there.
+        if(id == null || listType == null) {
+            setInvalidGetResponse(response);
+            return;
+        }
+
+        User user = userService.getCurrentUser();
+        if(!userService.isUserLoggedIn()) {
+            sendNotLoggedIn(response);
+            return;
+        }
+
+        QueryKeys<?> allKeys;
+        if(listType.equals("queue")) {
+            allKeys = ofy().load().type(WantToWatchQueueObject.class)
+                    .filter("userID", user.getUserId())
+                    .filter("entityId", id).keys();
+        } else if(listType.equals("viewed")) {
+            allKeys = ofy().load().type(WatchedQueueObject.class)
+                    .filter("userID", user.getUserId())
+                    .filter("entityId", id).keys();
+
+        } else {
+            // not a valid list type
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        // if no entities are found, we should throw a 404 to notate
+        // nothing was found to delete
+        if(Iterables.size(allKeys) == 0) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        // delete from db, will delete ANY instance of that id from the user
+        // ie. if somehow multiple of the same movie / book get saved in the list
+        ofy().delete().keys(allKeys).now();
     }
 
     /**
@@ -105,20 +142,11 @@ public class EntityListServlet extends HttpServlet {
      * @return: a list of abstracted type EntityDbQueue
      */
     private List<? extends EntityDbQueue> getQueueWithType(String type, String userID) {
-        if(type.equals(typeQueue)) {
+        if(type.equals(Utils.typeQueue)) {
             return ofy().load().type(WantToWatchQueueObject.class).filter("userID", userID).list();
         } else {
             return ofy().load().type(WatchedQueueObject.class).filter("userID", userID).list();
         }
-    }
-
-    /**
-     * helper function to check if the type is valid
-     * @param queueType: type to check
-     * @return: true / false if the type is valid
-     */
-    private boolean isCorrectListType(String queueType) {
-        return queueType.equals(typeQueue) || queueType.equals(typeViewed);
     }
 
     /**
@@ -129,42 +157,12 @@ public class EntityListServlet extends HttpServlet {
      */
     private EntityDbQueue decideDbType(String body) throws JsonProcessingException, NoSuchFieldException {
         EntityDbQueue entity = mapper.readValue(body, EntityDbQueue.class);
-        if(entity.getEntityType().equals(typeViewed)) {
+        if(entity.getEntityType().equals(Utils.typeViewed)) {
             return mapper.readValue(body, WatchedQueueObject.class);
-        } else if(entity.getEntityType().equals(typeQueue)) {
+        } else if(entity.getEntityType().equals(Utils.typeQueue)) {
             return mapper.readValue(body, WantToWatchQueueObject.class);
         } else {
             throw new NoSuchFieldException();
         }
-    }
-
-    /**
-     * Sets up return body and response status when an invalid input comes in on POST
-     * requests
-     * @param httpResponse: response to add status to
-     * @param newResponse: response body
-     * @throws IOException: if writer can't write (worse case scenario)
-     */
-    private void sendInvalidPostResponse(HttpServletResponse httpResponse, QueueResponse newResponse) throws IOException {
-        httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        newResponse.setSuccess(false);
-        newResponse.setEntity(null);
-        httpResponse.getWriter().println(gson.toJsonTree(newResponse));
-    }
-
-    /**
-     * Sets status to 400 if we can't parse input
-     * @param response: response to add status to
-     */
-    private void setInvalidGetResponse(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    }
-
-    /**
-     * Sets status to 401 if not logged in
-     * @param response: response to add status to
-     */
-    private void sendNotLoggedIn(HttpServletResponse response) {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
