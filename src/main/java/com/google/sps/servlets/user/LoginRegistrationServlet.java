@@ -13,8 +13,8 @@ import com.google.appengine.api.users.User;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /** Servlet that registers new users after login. */
-@WebServlet("/login/callback")
-public class LoginCallbackServlet extends HttpServlet {
+@WebServlet("/login/register")
+public class LoginRegistrationServlet extends HttpServlet {
 
     void storeUserIfNotFound(String id, String username, String email, String profilePicUrl) {
         if (ofy().load().type(UserObject.class).id(id).now() != null) return;

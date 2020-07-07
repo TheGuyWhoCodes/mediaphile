@@ -1,6 +1,5 @@
 package com.google.sps.servlets.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.sps.ContextListener;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -23,7 +22,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginCallbackServletTest extends Mockito {
+public class LoginRegistrationServletTest extends Mockito {
 
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -56,7 +55,7 @@ public class LoginCallbackServletTest extends Mockito {
         writer.flush();
         when(response.getWriter()).thenReturn(writer);
 
-        new LoginCallbackServlet().doGet(request, response);
+        new LoginRegistrationServlet().doGet(request, response);
         writer.flush();
 
         verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -89,7 +88,7 @@ public class LoginCallbackServletTest extends Mockito {
 
         assertNull(ofy().load().type(UserObject.class).id(id).now());
 
-        new LoginCallbackServlet().doGet(request, response);
+        new LoginRegistrationServlet().doGet(request, response);
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());
@@ -130,14 +129,14 @@ public class LoginCallbackServletTest extends Mockito {
 
         assertNull(ofy().load().type(UserObject.class).id(id).now());
 
-        new LoginCallbackServlet().doGet(request, response);
+        new LoginRegistrationServlet().doGet(request, response);
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());
         assertEquals("/", captor.getValue());
 
         // Duplicate request shouldn't change the result
-        new LoginCallbackServlet().doGet(request, response);
+        new LoginRegistrationServlet().doGet(request, response);
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());

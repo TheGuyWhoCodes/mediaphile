@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 /** Servlet that handles user logins. */
 @WebServlet("/login/status")
-public class LoginServlet extends HttpServlet {
+public class LoginStatusServlet extends HttpServlet {
 
     Gson gson = new Gson();
 
@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
         boolean loggedIn = userService.isUserLoggedIn();
         String url = (loggedIn)
                 ? userService.createLogoutURL("/")
-                : userService.createLoginURL("/login/callback");
+                : userService.createLoginURL("/login/register");
         User user = userService.getCurrentUser();
         String id = (user != null) ? user.getUserId() : "";
 

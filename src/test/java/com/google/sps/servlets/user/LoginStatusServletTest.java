@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
-public class LoginServletTest extends Mockito {
+public class LoginStatusServletTest extends Mockito {
 
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -48,7 +48,7 @@ public class LoginServletTest extends Mockito {
         writer.flush();
         when(response.getWriter()).thenReturn(writer);
 
-        new LoginServlet().doGet(request, response);
+        new LoginStatusServlet().doGet(request, response);
         writer.flush();
         LoginStatus result = mapper.readValue(stringWriter.toString(), LoginStatus.class);
 
@@ -79,7 +79,7 @@ public class LoginServletTest extends Mockito {
         writer.flush();
         when(response.getWriter()).thenReturn(writer);
 
-        new LoginServlet().doGet(request, response);
+        new LoginStatusServlet().doGet(request, response);
         writer.flush();
         LoginStatus result = mapper.readValue(stringWriter.toString(), LoginStatus.class);
 
