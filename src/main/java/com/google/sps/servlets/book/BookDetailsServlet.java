@@ -26,7 +26,7 @@ public class BookDetailsServlet extends HttpServlet {
     /**
      * doGet() returns details of the particular volume with the given id
      * Returns error 400 if no id is provided
-     * Returns error 500 if no movie is returned by the API
+     * Returns error 500 if no book is returned by the API
      * @param request: expects id parameter
      * @param response: returns a Volume object
      * @throws IOException
