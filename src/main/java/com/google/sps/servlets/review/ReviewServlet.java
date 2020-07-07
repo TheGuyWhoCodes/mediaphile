@@ -1,17 +1,9 @@
 package com.google.sps.servlets.review;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.books.Books;
-import com.google.api.services.books.model.Review;
-import com.google.api.services.books.model.Volume;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
-import com.google.sps.KeyConfig;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -91,19 +83,12 @@ public class ReviewServlet extends HttpServlet {
      * doPost() attempts to post a review for a given item from a user
      * Returns error 400 if any parameters are invalid
      * Returns error 401 if user is not authenticated
-     * @param request: expects TODO
-     * @param response: returns TODO
+     * @param request: expects contentType, contentId, reviewTitle, reviewBody, and rating
+     * @param response: returns a JSON string of the review if successful
      * @throws IOException
      */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // TODO: For authorName and authorId, I'll pull UserObject from Datastore based on UserService
-        // TODO: rating, reviewTitle and reviewBody should be required POST fields
-        // TODO: Anything wrong with long strings for reviewBody??
-        // TODO: artUrl should probably be pulled from database using servlet (How?)
-        // TODO: Same for contentTitle
-        // TODO: contentType and contentId should be required POST fields
-
         response.setContentType("application/json; charset=utf-8");
 
         UserService userService = UserServiceFactory.getUserService();
@@ -152,10 +137,11 @@ public class ReviewServlet extends HttpServlet {
         }
 
         try {
-            ofy().save().entity(
-                new ReviewObject(userObject,
+            ReviewObject reviewObject = new ReviewObject(userObject,
                     contentType, contentId,
-                    reviewTitle, reviewBody, rating)).now();
+                    reviewTitle, reviewBody, rating);
+            ofy().save().entity(reviewObject).now();
+            response.getWriter().println(gson.toJsonTree(reviewObject));
         }
         catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
