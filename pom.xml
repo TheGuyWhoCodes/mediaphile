@@ -139,17 +139,6 @@
       <artifactId>objectify</artifactId>
       <version>4.1.3</version>
     </dependency>
-
-    <!-- TODO: This should be done by removing the test scope from above -->
-    <!-- TODO: Is it appropriate to be using Mockito for this -->
-    <!--  i.e. is there a better way to do the requests in Utils.mediaItemExists() -->
-    <!-- Allows Mockito to be used outside of testing -->
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
   <build>
