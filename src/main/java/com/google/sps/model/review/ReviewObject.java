@@ -1,11 +1,13 @@
 package com.google.sps.model.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 import java.sql.Timestamp;
 
+@Entity
 public class ReviewObject {
 
     public ReviewObject() {
@@ -16,7 +18,7 @@ public class ReviewObject {
     @Id
     @JsonProperty
     @Index
-    private long id;
+    private Long id;
 
     @JsonProperty
     @Index
@@ -49,4 +51,6 @@ public class ReviewObject {
     @JsonProperty
     @Index
     private int rating;
+
+    // TODO: What about artUrl like EntityDbQueue?
 }
