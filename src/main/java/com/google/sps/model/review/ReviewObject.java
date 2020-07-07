@@ -26,6 +26,10 @@ public class ReviewObject {
 
     @JsonProperty
     @Index
+    private int rating;
+
+    @JsonProperty
+    @Index
     private String authorName;
 
     @JsonProperty
@@ -50,7 +54,9 @@ public class ReviewObject {
 
     @JsonProperty
     @Index
-    private int rating;
+    private String contentTitle;
 
-    // TODO: What about artUrl like EntityDbQueue?
+    @JsonProperty
+    @Index
+    private String artUrl;
 }
