@@ -17,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.servlets.user.UserObject;
 
+import static com.google.sps.util.Utils.mediaItemExists;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @WebServlet("/reviews")
@@ -64,13 +64,16 @@ public class ReviewServlet extends HttpServlet {
                     .list();
         }
         else if (userId == null && contentType != null && contentId != null) {
-            // TODO: Consider making enum with types then using `|| !enum.contains(contentType)`
-            if (!(contentType.equals("book") || contentType.equals("movie")) || contentId.equals("")) {
+            Boolean itemExists = mediaItemExists(contentType, contentId);
+            if (itemExists == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
+            else if (!itemExists) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
 
-            // TODO: Checking if item doesn't exist will require DB entries for media items
             reviews = ofy().load().type(ReviewObject.class)
                     .filter("contentType", contentType)
                     .filter("contentId", contentId)
