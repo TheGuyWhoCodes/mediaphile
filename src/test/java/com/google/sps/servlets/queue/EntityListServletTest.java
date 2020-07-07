@@ -206,8 +206,19 @@ public class EntityListServletTest extends Mockito {
     }
 
     @Test
-    public void invalidDeleteRequest() {
+    public void invalidDeleteRequest() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(writer);
+
+        new DeleteEntityFromListServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).setStatus(400);
     }
 
     private void populateDb() {
