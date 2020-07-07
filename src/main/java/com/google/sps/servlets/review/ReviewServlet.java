@@ -7,6 +7,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.Books;
 import com.google.api.services.books.model.Review;
 import com.google.api.services.books.model.Volume;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
 
@@ -21,6 +24,7 @@ import com.google.sps.model.review.ReviewObject;
 import com.google.sps.servlets.user.UserObject;
 
 import static com.google.sps.util.Utils.mediaItemExists;
+import static com.google.sps.util.Utils.parseInt;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @WebServlet("/reviews")
@@ -64,13 +68,9 @@ public class ReviewServlet extends HttpServlet {
                     .list();
         }
         else if (userId == null && contentType != null && contentId != null) {
-            Boolean itemExists = mediaItemExists(contentType, contentId);
-            if (itemExists == null) {
+            if (contentId.equals("")
+                    || !(contentType.equals("book") || contentType.equals("movie"))) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-            else if (!itemExists) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
@@ -90,11 +90,76 @@ public class ReviewServlet extends HttpServlet {
     /**
      * doPost() attempts to post a review for a given item from a user
      * Returns error 400 if any parameters are invalid
+     * Returns error 401 if user is not authenticated
      * @param request: expects TODO
      * @param response: returns TODO
      * @throws IOException
      */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // TODO: For authorName and authorId, I'll pull UserObject from Datastore based on UserService
+        // TODO: rating, reviewTitle and reviewBody should be required POST fields
+        // TODO: Anything wrong with long strings for reviewBody??
+        // TODO: artUrl should probably be pulled from database using servlet (How?)
+        // TODO: Same for contentTitle
+        // TODO: contentType and contentId should be required POST fields
+
+        response.setContentType("application/json; charset=utf-8");
+
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        if (user == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        UserObject userObject = ofy().load().type(UserObject.class).id(user.getUserId()).now();
+        if (userObject == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        Integer rating = parseInt(request.getParameter("rating"));
+        if (rating == null || !(1 <= rating && rating <= 5)) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        String contentType = request.getParameter("contentType");
+        String contentId = request.getParameter("contentId");
+        if (contentType == null || contentId == null
+                || contentId.equals("")
+                || !(contentType.equals("book") || contentType.equals("movie"))) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        String reviewTitle = request.getParameter("reviewTitle");
+        String reviewBody = request.getParameter("reviewBody");
+        if (reviewTitle == null || reviewBody == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        Boolean itemExists = mediaItemExists(contentType, contentId);
+        if (itemExists == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        else if (!itemExists) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        try {
+            ofy().save().entity(
+                new ReviewObject(userObject,
+                    contentType, contentId,
+                    reviewTitle, reviewBody, rating)).now();
+        }
+        catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
     }
 }
