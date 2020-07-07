@@ -11,19 +11,25 @@
       <div class="topnav">
           <h1>Mediaphile</h1>
           <div class="search-container">
-                  <input type="text" placeholder="Search.." id="search">
-                  <button class="button" onclick="loadMovies()">Submit</button>
+                  <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
+                  <button class="button" onclick="loadContent()">Submit</button>
+                  <label>in</label>
+                  <select id="selection" class="button">
+                      <option value="Mv/Bk">Movies and Books</option>
+                      <option value="movie">Movies only</option>
+                      <option value="book">Books only</option>
+                  </select>
           </div>
       </div>
       <br/>
 
-      <div id="movies">
-          <div class="bar">
-              <a>Movies</a> 
-          </div>
-          
-          <div id="movie-list">
-          </div>
+      <div class="bar">
+          <a class="tab" id="movie-tab" onclick="displayContent('movie-list')">Movies</a>
+          <a class="tab" id="book-tab" onclick="displayContent('book-list')">Books</a>
       </div>
+
+      <div id="movie-list"></div>
+
+      <div id="book-list"></div>
   </body>
 </html>
