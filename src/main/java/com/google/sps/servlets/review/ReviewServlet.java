@@ -1,5 +1,6 @@
 package com.google.sps.servlets.review;
 
+import com.google.api.services.books.model.Volume;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -14,6 +15,10 @@ import java.util.List;
 
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
+import com.google.sps.servlets.book.BookDetailsServlet;
+import com.google.sps.servlets.movie.MovieDetailsServlet;
+import info.movito.themoviedbapi.model.MovieDb;
+import javafx.util.Pair;
 
 import static com.google.sps.util.Utils.mediaItemExists;
 import static com.google.sps.util.Utils.parseInt;
@@ -45,45 +50,21 @@ public class ReviewServlet extends HttpServlet {
 
         List<ReviewObject> reviews;
         if (userId != null && contentType == null && contentId == null) {
-            if (userId.equals("")) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-            if (ofy().load().type(UserObject.class).id(userId).now() == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-
-            // TODO: Unify capitalization of userId with EntityListServlet
-            // UserService uses `userId` as per Google Style Guide definition of CamelCase
-            reviews = ofy().load().type(ReviewObject.class)
-                    .filter("authorId", userId)
-                    .list();
+            sendUserReviews(userId, response);
         }
         else if (userId == null && contentType != null && contentId != null) {
-            if (contentId.equals("")
-                    || !(contentType.equals("book") || contentType.equals("movie"))) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            reviews = ofy().load().type(ReviewObject.class)
-                    .filter("contentType", contentType)
-                    .filter("contentId", contentId)
-                    .list();
+            sendContentReviews(contentType, contentId, response);
         }
         else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
         }
-
-        response.getWriter().println(gson.toJson(reviews));
     }
 
     /**
      * doPost() attempts to post a review for a given item from a user
      * Returns error 400 if any parameters are invalid
      * Returns error 401 if user is not authenticated
+     * Returns error 500 if an error occurs with response writing
      * @param request: expects contentType, contentId, reviewTitle, reviewBody, and rating
      * @param response: returns a JSON string of the review if successful
      * @throws IOException
@@ -92,43 +73,21 @@ public class ReviewServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
 
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
-        if (user == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        UserObject userObject = ofy().load().type(UserObject.class).id(user.getUserId()).now();
+        UserObject userObject = getUserObject();
         if (userObject == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        Integer rating = parseInt(request.getParameter("rating"));
-        if (rating == null || !(1 <= rating && rating <= 5)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         String contentType = request.getParameter("contentType");
         String contentId = request.getParameter("contentId");
-        if (contentType == null || contentId == null
-                || contentId.equals("")
-                || !(contentType.equals("book") || contentType.equals("movie"))) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         String reviewTitle = request.getParameter("reviewTitle");
         String reviewBody = request.getParameter("reviewBody");
-        if (reviewTitle == null || reviewBody == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
+        Integer rating = parseInt(request.getParameter("rating"));
 
         Boolean itemExists = mediaItemExists(contentType, contentId);
-        if (itemExists == null) {
+        if (!validateParameters(contentType, contentId, reviewTitle, reviewBody, rating)
+                || itemExists == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -138,15 +97,94 @@ public class ReviewServlet extends HttpServlet {
         }
 
         try {
-            ReviewObject reviewObject = new ReviewObject(userObject,
-                    contentType, contentId,
-                    reviewTitle, reviewBody, rating);
-            ofy().save().entity(reviewObject).now();
-            response.getWriter().println(gson.toJsonTree(reviewObject));
+            response.getWriter().println(gson.toJsonTree(
+                    createAndSaveReview(userObject, contentType, contentId, reviewTitle, reviewBody, rating)));
         }
         catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void sendUserReviews(String userId, HttpServletResponse response) throws IOException {
+        if (userId.equals("")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        else if (ofy().load().type(UserObject.class).id(userId).now() == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else {
+            List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
+                    .filter("authorId", userId)
+                    .list();
+            response.getWriter().println(gson.toJson(reviews));
+        }
+    }
+
+    private void sendContentReviews(String contentType, String contentId,
+                                    HttpServletResponse response) throws IOException {
+        if (contentId.equals("")
+                || !(contentType.equals("book") || contentType.equals("movie"))) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+        else {
+            List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
+                    .filter("contentType", contentType)
+                    .filter("contentId", contentId)
+                    .list();
+            response.getWriter().println(gson.toJson(reviews));
+        }
+    }
+
+    private UserObject getUserObject() {
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        return (user == null) ? null : ofy().load().type(UserObject.class).id(user.getUserId()).now();
+    }
+
+    private boolean validateParameters(String contentType, String contentId,
+                                       String reviewTitle, String reviewBody, Integer rating) {
+        if (contentType == null || contentId == null) return false;
+        if (contentId.isEmpty()) return false;
+        if (!(contentType.equals("book") || contentType.equals("movie"))) return false;
+        if (rating == null || !(1 <= rating && rating <= 5)) return false;
+        if (reviewTitle == null || reviewBody == null) return false;
+        if (reviewTitle.isEmpty() || reviewBody.isEmpty()) return false;
+
+        return true;
+    }
+
+    private Pair<String, String> getTitleAndArtUrl(String contentType, String contentId) throws Exception {
+        String title, artUrl;
+        switch (contentType) {
+            case "book":
+                Volume volume = new BookDetailsServlet().getDetails(contentId);
+                title = volume.getVolumeInfo().getTitle();
+                artUrl = volume.getVolumeInfo().getImageLinks().getThumbnail();
+                break;
+            case "movie":
+                Integer intId = parseInt(contentId);
+                if (intId == null) {
+                    throw new IllegalArgumentException();
+                }
+                MovieDb movie = new MovieDetailsServlet().getDetails(intId);
+                title = movie.getTitle();
+                artUrl = movie.getPosterPath();
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+        return new Pair<>(title, artUrl);
+    }
+
+    private ReviewObject createAndSaveReview(UserObject userObject,
+                                             String contentType, String contentId,
+                                             String reviewTitle, String reviewBody, int rating) throws Exception {
+        Pair<String, String> titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
+        ReviewObject reviewObject = new ReviewObject(userObject,
+                contentType, contentId,
+                titleAndArtUrl.getKey(), titleAndArtUrl.getValue(),
+                reviewTitle, reviewBody, rating);
+        ofy().save().entity(reviewObject).now();
+        return reviewObject;
     }
 }
