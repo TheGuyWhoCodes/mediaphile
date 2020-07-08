@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.google.sps.util.HttpUtils.*;
+import static com.google.sps.util.Utils.isCorrectListType;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @WebServlet("/list/entity")
@@ -44,7 +45,7 @@ public class EntityListServlet extends HttpServlet {
             return;
         }
 
-        if(!Utils.isCorrectListType(queueType)) {
+        if(!isCorrectListType(queueType)) {
             setInvalidGetResponse(response);
             return;
         }
@@ -108,22 +109,14 @@ public class EntityListServlet extends HttpServlet {
             sendNotLoggedIn(response);
             return;
         }
-
-        QueryKeys<?> allKeys;
-        if(listType.equals("queue")) {
-            allKeys = ofy().load().type(WantToWatchQueueObject.class)
-                    .filter("userID", user.getUserId())
-                    .filter("entityId", id).keys();
-        } else if(listType.equals("viewed")) {
-            allKeys = ofy().load().type(WatchedQueueObject.class)
-                    .filter("userID", user.getUserId())
-                    .filter("entityId", id).keys();
-
-        } else {
-            // not a valid list type
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        // if the user sends something that isn't viewed / queued
+        if(!isCorrectListType(listType)) {
+            setInvalidGetResponse(response);
             return;
         }
+        // gather keys related to list
+        QueryKeys<?> allKeys = returnListQueryKeys(listType, user, id);
+
         // if no entities are found, we should throw a 404 to notate
         // nothing was found to delete
         if(Iterables.size(allKeys) == 0) {
@@ -163,6 +156,19 @@ public class EntityListServlet extends HttpServlet {
             return mapper.readValue(body, WantToWatchQueueObject.class);
         } else {
             throw new NoSuchFieldException();
+        }
+    }
+
+    private QueryKeys<?> returnListQueryKeys(String listType, User user, String id) {
+        if(listType.equals("queue")) {
+            return ofy().load().type(WantToWatchQueueObject.class)
+                    .filter("userID", user.getUserId())
+                    .filter("entityId", id).keys();
+        } else {
+            return ofy().load().type(WatchedQueueObject.class)
+                    .filter("userID", user.getUserId())
+                    .filter("entityId", id).keys();
+
         }
     }
 }
