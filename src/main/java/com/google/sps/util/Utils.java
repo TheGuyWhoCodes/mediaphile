@@ -17,7 +17,8 @@ public class Utils {
     // Leverages servlets to check if an item of type contentType exists with ID == contentId
     // Returns null if parameters are invalid
     public static Boolean mediaItemExists(String contentType, String contentId) {
-        if (contentId.equals("")) {
+        if (contentId == null || contentId.isEmpty()
+            || contentType == null || contentType.isEmpty()) {
             return null;
         }
 

@@ -84,8 +84,8 @@ public class ReviewServlet extends HttpServlet {
         String reviewTitle = request.getParameter("reviewTitle");
         String reviewBody = request.getParameter("reviewBody");
         Integer rating = parseInt(request.getParameter("rating"));
-
         Boolean itemExists = mediaItemExists(contentType, contentId);
+
         if (!validateParameters(contentType, contentId, reviewTitle, reviewBody, rating)
                 || itemExists == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
