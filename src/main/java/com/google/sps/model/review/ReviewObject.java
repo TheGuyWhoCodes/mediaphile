@@ -26,7 +26,8 @@ public class ReviewObject {
 
     public ReviewObject(UserObject userObject,
                         String contentType, String contentId,
-                        String reviewTitle, String reviewBody, int rating) throws IOException, GeneralSecurityException {
+                        String contentTitle, String artUrl,
+                        String reviewTitle, String reviewBody, int rating) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         this.timestamp = currentTime.getTime();
 
@@ -35,25 +36,8 @@ public class ReviewObject {
 
         this.contentType = contentType;
         this.contentId = contentId;
-
-        switch (contentType) {
-            case "book":
-                Volume volume = new BookDetailsServlet().getDetails(contentId);
-                this.contentTitle = volume.getVolumeInfo().getTitle();
-                this.artUrl = volume.getVolumeInfo().getImageLinks().getThumbnail();
-                break;
-            case "movie":
-                Integer intId = parseInt(contentId);
-                if (intId == null) {
-                    throw new IllegalArgumentException();
-                }
-                MovieDb movie = new MovieDetailsServlet().getDetails(intId);
-                this.contentTitle = movie.getTitle();
-                this.artUrl = movie.getPosterPath();
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
+        this.contentTitle = contentTitle;
+        this.artUrl = artUrl;
 
         this.reviewTitle = reviewTitle;
         this.reviewBody = reviewBody;
@@ -87,6 +71,14 @@ public class ReviewObject {
 
     @JsonProperty
     @Index
+    private String contentTitle;
+
+    @JsonProperty
+    @Index
+    private String artUrl;
+
+    @JsonProperty
+    @Index
     private String reviewTitle;
 
     @JsonProperty
@@ -96,12 +88,4 @@ public class ReviewObject {
     @JsonProperty
     @Index
     private int rating;
-
-    @JsonProperty
-    @Index
-    private String contentTitle;
-
-    @JsonProperty
-    @Index
-    private String artUrl;
 }
