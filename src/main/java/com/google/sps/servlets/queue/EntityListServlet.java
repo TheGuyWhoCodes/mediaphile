@@ -58,7 +58,7 @@ public class EntityListServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
         QueueResponse newResponse = new QueueResponse();
-        String body = Utils.parseBody(request);
+        String body = Utils.collectRequestLines(request);
         EntityDbQueue entityDb = null;
         User user = userService.getCurrentUser();
         if(userService.isUserLoggedIn()) {

@@ -22,7 +22,7 @@ public class Utils {
      * @return: Stringified JSON request
      * @throws IOException : if the body can't be parsed
      */
-    public static String parseBody(HttpServletRequest request) throws IOException {
+    public static String collectRequestLines(HttpServletRequest request) throws IOException {
         return request.getReader().lines()
                 .reduce("", (accumulator, actual) -> accumulator + actual);
     }
