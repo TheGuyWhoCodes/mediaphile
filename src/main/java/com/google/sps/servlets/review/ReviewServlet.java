@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.google.sps.model.review.ReviewObject;
-import com.google.sps.servlets.user.UserObject;
+import com.google.sps.model.user.UserObject;
 
 import static com.google.sps.util.Utils.mediaItemExists;
 import static com.google.sps.util.Utils.parseInt;
@@ -29,7 +29,8 @@ public class ReviewServlet extends HttpServlet {
      * Expects either ?contentType={book | movie}&contentId={id}  OR ?userId={id}
      * Returns error 400 if the query parameters are not in either of these formats
      * Returns error 400 if a parameter is empty or invalid (e.g. "bok")
-     * Returns error 404 if the given user or media item is not found
+     * Returns error 404 if the given user is not found
+     * Simply returns an empty list if the given media ID does not exist to avoid API call
      * @param request: expects contentType&contentId OR userId
      * @param response: returns a JSON list of ReviewObject
      * @throws IOException
@@ -45,24 +46,24 @@ public class ReviewServlet extends HttpServlet {
         List<ReviewObject> reviews;
         if (userId != null && contentType == null && contentId == null) {
             if (userId.equals("")) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
             if (ofy().load().type(UserObject.class).id(userId).now() == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
             // TODO: Unify capitalization of userId with EntityListServlet
             // UserService uses `userId` as per Google Style Guide definition of CamelCase
             reviews = ofy().load().type(ReviewObject.class)
-                    .filter("userId", userId)
+                    .filter("authorId", userId)
                     .list();
         }
         else if (userId == null && contentType != null && contentId != null) {
             if (contentId.equals("")
                     || !(contentType.equals("book") || contentType.equals("movie"))) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
@@ -72,7 +73,7 @@ public class ReviewServlet extends HttpServlet {
                     .list();
         }
         else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -94,19 +95,19 @@ public class ReviewServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
         if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         UserObject userObject = ofy().load().type(UserObject.class).id(user.getUserId()).now();
         if (userObject == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         Integer rating = parseInt(request.getParameter("rating"));
         if (rating == null || !(1 <= rating && rating <= 5)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
@@ -115,24 +116,24 @@ public class ReviewServlet extends HttpServlet {
         if (contentType == null || contentId == null
                 || contentId.equals("")
                 || !(contentType.equals("book") || contentType.equals("movie"))) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         String reviewTitle = request.getParameter("reviewTitle");
         String reviewBody = request.getParameter("reviewBody");
         if (reviewTitle == null || reviewBody == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         Boolean itemExists = mediaItemExists(contentType, contentId);
         if (itemExists == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         else if (!itemExists) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
@@ -144,7 +145,7 @@ public class ReviewServlet extends HttpServlet {
             response.getWriter().println(gson.toJsonTree(reviewObject));
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
     }
