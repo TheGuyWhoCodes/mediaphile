@@ -26,6 +26,19 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class ReviewServletTest extends Mockito {
 
+    public static final String GOOD_BOOK_ID = "ASImDQAAQBAJ";
+    public static final String GOOD_MOVIE_ID = "127";
+    public static final String DUMMY_REVIEW_TITLE = "Test review";
+    public static final String DUMMY_REVIEW_BODY = "This is a test review";
+    public static final String TOO_BIG_RATING = "7";
+    public static final String GOOD_DUMMY_RATING = "3";
+
+    public static final String DUMMY_USER_ID = "123";
+    public static final String DUMMY_EMAIL = "test@example.com";
+    public static final String DUMMY_USERNAME = "test";
+    public static final String DUMMY_DOMAIN = "example.com";
+    public static final String DUMMY_PROFILE_PIC_URL = "";
+
     private final LocalServiceTestHelper helper =
             new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
 
@@ -53,10 +66,25 @@ public class ReviewServletTest extends Mockito {
         ofy().clear();
     }
 
-    @Test
-    public void testGetNullParameters() throws IOException {
+    public void initLoggedOut() {
         helper.setEnvIsLoggedIn(false)
                 .setUp();
+    }
+
+    public void initLoggedIn() {
+        Map<String, Object> attr = new HashMap<>();
+        attr.put("com.google.appengine.api.users.UserService.user_id_key", DUMMY_USER_ID);
+        helper.setEnvEmail(DUMMY_EMAIL)
+                .setEnvAttributes(attr)
+                .setEnvAuthDomain(DUMMY_DOMAIN)
+                .setEnvIsLoggedIn(true)
+                .setUp();
+        ofy().save().entity(new UserObject(DUMMY_USER_ID, DUMMY_USERNAME, DUMMY_EMAIL, DUMMY_PROFILE_PIC_URL)).now();
+    }
+
+    @Test
+    public void testGetNullParameters() throws IOException {
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -68,8 +96,7 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetEmptyUserId() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("userId")).thenReturn("");
@@ -82,8 +109,7 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetEmptyContent() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn("");
@@ -97,8 +123,7 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetEmptyBookId() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
@@ -112,11 +137,10 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetEmptyMovieId() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("movie");
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
         when(request.getParameter("contentId")).thenReturn("");
 
 
@@ -128,12 +152,11 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetGoodBook() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn("ASImDQAAQBAJ");
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
@@ -143,12 +166,11 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testGetGoodMovie() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn("127");
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
@@ -158,15 +180,14 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostUnauthenticated() throws IOException {
-        helper.setEnvIsLoggedIn(false)
-                .setUp();
+        initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn("127");
-        when(request.getParameter("reviewTitle")).thenReturn("Test review");
-        when(request.getParameter("reviewBody")).thenReturn("This is a test review");
-        when(request.getParameter("rating")).thenReturn("3");
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
+        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
+        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -176,15 +197,7 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostNullParameters() throws IOException {
-        Map<String, Object> attr = new HashMap<>();
-        String id = "123";
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
-        helper.setEnvEmail("test@example.com")
-                .setEnvAttributes(attr)
-                .setEnvAuthDomain("example.com")
-                .setEnvIsLoggedIn(true)
-                .setUp();
-        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+        initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -196,15 +209,7 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostEmptyParameters() throws IOException {
-        Map<String, Object> attr = new HashMap<>();
-        String id = "123";
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
-        helper.setEnvEmail("test@example.com")
-                .setEnvAttributes(attr)
-                .setEnvAuthDomain("example.com")
-                .setEnvIsLoggedIn(true)
-                .setUp();
-        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+        initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn("");
@@ -221,22 +226,14 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostBadRating() throws IOException {
-        Map<String, Object> attr = new HashMap<>();
-        String id = "123";
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
-        helper.setEnvEmail("test@example.com")
-                .setEnvAttributes(attr)
-                .setEnvAuthDomain("example.com")
-                .setEnvIsLoggedIn(true)
-                .setUp();
-        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+        initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn("127");
-        when(request.getParameter("reviewTitle")).thenReturn("Test review");
-        when(request.getParameter("reviewBody")).thenReturn("This is a test review");
-        when(request.getParameter("rating")).thenReturn("7");
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
+        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
+        when(request.getParameter("rating")).thenReturn(TOO_BIG_RATING);
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -246,22 +243,14 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostGoodReview() throws IOException {
-        Map<String, Object> attr = new HashMap<>();
-        String id = "123";
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
-        helper.setEnvEmail("test@example.com")
-                .setEnvAttributes(attr)
-                .setEnvAuthDomain("example.com")
-                .setEnvIsLoggedIn(true)
-                .setUp();
-        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+        initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn("127");
-        when(request.getParameter("reviewTitle")).thenReturn("Test review");
-        when(request.getParameter("reviewBody")).thenReturn("This is a test review");
-        when(request.getParameter("rating")).thenReturn("3");
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
+        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
+        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -274,7 +263,7 @@ public class ReviewServletTest extends Mockito {
 
         reviews = ofy().load().type(ReviewObject.class)
                 .filter("contentType", ContentType.MOVIE)
-                .filter("contentId", "127")
+                .filter("contentId", GOOD_MOVIE_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -282,22 +271,14 @@ public class ReviewServletTest extends Mockito {
 
     @Test
     public void testPostGoodBookReview() throws IOException {
-        Map<String, Object> attr = new HashMap<>();
-        String id = "123";
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
-        helper.setEnvEmail("test@example.com")
-                .setEnvAttributes(attr)
-                .setEnvAuthDomain("example.com")
-                .setEnvIsLoggedIn(true)
-                .setUp();
-        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+        initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn("ASImDQAAQBAJ");
-        when(request.getParameter("reviewTitle")).thenReturn("Test review");
-        when(request.getParameter("reviewBody")).thenReturn("This is a test review");
-        when(request.getParameter("rating")).thenReturn("3");
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
+        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
+        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -310,7 +291,7 @@ public class ReviewServletTest extends Mockito {
 
         reviews = ofy().load().type(ReviewObject.class)
                 .filter("contentType", ContentType.BOOK)
-                .filter("contentId", "ASImDQAAQBAJ")
+                .filter("contentId", GOOD_BOOK_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
