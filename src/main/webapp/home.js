@@ -81,3 +81,30 @@ function displayContent(content) {
 
     document.getElementById(content).style.display = "block";
 }
+
+function loadUser(id) {
+    const userName = document.getElementById('userName');
+    fetch('/user?id=' + id)
+    .then(response => response.json())
+    .then((user) => {
+        userName.innerText = user.username;
+        userName.style.display = "block";
+    });
+}
+
+function loadLogin() {
+    document.getElementById("userName").style.display = "none";
+
+    fetch('/login/status').then(response => response.json())
+    .then((json) => {
+        let userLogin = document.getElementById('user-login');
+
+        userLogin.href = json.url;
+        userLogin.innerText = "Login/Register";
+
+        if(json.loggedIn) {
+            userLogin.innerText = "Logout";
+            loadUser(json.id);
+        }
+    });
+}

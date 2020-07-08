@@ -7,9 +7,12 @@
     <script src="home.js"></script>
   </head>
 
-  <body>
+  <body onload="loadLogin()">
       <div class="topnav">
           <h1>Mediaphile</h1>
+          <a id="userName"></a>
+          <a class="button" id="user-login">Login/Register</a>
+          
           <div class="search-container">
                   <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
                   <button class="button" onclick="loadContent()">Submit</button>
