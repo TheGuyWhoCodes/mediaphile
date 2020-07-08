@@ -1,22 +1,20 @@
 function loadProfile() {
-    const id;
     fetch('/login/status').then(response => response.json())
     .then((json) => {
-        id = json.id;
+        if(json.loggedIn) {
+            isLoggedIn = true;
+            loadUser(json.id);
+            loadQuery(json.id);
+        }
     });
-
-    loadUser(id);
-    loadQuery(id);
 }
 
 function loadUser(id) {
     fetch('/user?id=' + id)
-    .then(response => response.text())
+    .then(response => response.json())
     .then((user) => {
         document.getElementById("username").innerText = user.username;
-        document.getElementById("email").innerText = user.email;
         document.getElementById("profile-pic").innerText = user.username.charAt(0);
-        console.log(user.username);
     });
 }
 
@@ -45,4 +43,8 @@ function displayContent(content) {
     document.getElementById("watched-read").style.display = "none";
 
     document.getElementById(content).style.display = "block";
+}
+
+function goBack() {
+    window.history.back();
 }
