@@ -8,7 +8,6 @@ import com.google.api.services.books.Books;
 import com.google.api.services.books.model.Volume;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
-import org.mortbay.util.IO;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,6 +44,7 @@ public class BookDetailsServlet extends HttpServlet {
      * doGet() returns details of the particular volume with the given id
      * Returns error 400 if no id is provided
      * Returns error 404 if no book is returned by the API
+     * Returns error 500 if HTTP connection fails
      * @param request: expects id parameter
      * @param response: returns a Volume object
      * @throws IOException
@@ -64,7 +64,7 @@ public class BookDetailsServlet extends HttpServlet {
             response.getWriter().println(gson.toJsonTree(volume));
         }
         catch (GeneralSecurityException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         catch (IOException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
