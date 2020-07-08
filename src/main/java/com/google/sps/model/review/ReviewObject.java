@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.api.services.books.model.Volume;
 import com.google.sps.servlets.book.BookDetailsServlet;
 import com.google.sps.servlets.movie.MovieDetailsServlet;
-import com.google.sps.servlets.user.UserObject;
+import com.google.sps.model.user.UserObject;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
