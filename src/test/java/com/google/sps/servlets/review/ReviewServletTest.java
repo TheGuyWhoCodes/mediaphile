@@ -256,7 +256,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", "123")
+                .filter("authorId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -284,7 +284,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", "123")
+                .filter("authorId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
