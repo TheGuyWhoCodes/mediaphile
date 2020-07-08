@@ -4,8 +4,20 @@ import com.google.sps.servlets.book.BookDetailsServlet;
 import com.google.sps.servlets.movie.MovieDetailsServlet;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class Utils {
+    public static class ContentType {
+        public static final String BOOK = "book";
+        public static final String MOVIE = "movie";
+        private static final List<String> types = Arrays.asList(BOOK, MOVIE);
+
+        private ContentType() {}
+
+        public static boolean isType(String s) { return types.contains(s); }
+    }
+
     public static Integer parseInt(String s) {
         try {
             return Integer.parseInt(s);
@@ -24,10 +36,10 @@ public class Utils {
 
         try {
             switch (contentType) {
-                case "book":
+                case ContentType.BOOK:
                     new BookDetailsServlet().getDetails(contentId);
                     return true;
-                case "movie":
+                case ContentType.MOVIE:
                     Integer intId = parseInt(contentId);
                     if (intId == null) return null;
                     new MovieDetailsServlet().getDetails(intId);

@@ -17,9 +17,10 @@ import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
 import com.google.sps.servlets.book.BookDetailsServlet;
 import com.google.sps.servlets.movie.MovieDetailsServlet;
+import com.google.sps.util.Utils.ContentType;
 import info.movito.themoviedbapi.model.MovieDb;
-import javafx.util.Pair;
 
+import static com.google.sps.util.Utils.ContentType.isType;
 import static com.google.sps.util.Utils.mediaItemExists;
 import static com.google.sps.util.Utils.parseInt;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -122,8 +123,7 @@ public class ReviewServlet extends HttpServlet {
 
     private void sendContentReviews(String contentType, String contentId,
                                     HttpServletResponse response) throws IOException {
-        if (contentId.equals("")
-                || !(contentType.equals("book") || contentType.equals("movie"))) {
+        if (contentId.equals("") || !isType(contentType)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         else {
@@ -145,7 +145,7 @@ public class ReviewServlet extends HttpServlet {
                                        String reviewTitle, String reviewBody, Integer rating) {
         if (contentType == null || contentId == null) return false;
         if (contentId.isEmpty()) return false;
-        if (!(contentType.equals("book") || contentType.equals("movie"))) return false;
+        if (!isType(contentType)) return false;
         if (rating == null || !(1 <= rating && rating <= 5)) return false;
         if (reviewTitle == null || reviewBody == null) return false;
         if (reviewTitle.isEmpty() || reviewBody.isEmpty()) return false;
@@ -153,15 +153,15 @@ public class ReviewServlet extends HttpServlet {
         return true;
     }
 
-    private Pair<String, String> getTitleAndArtUrl(String contentType, String contentId) throws Exception {
+    private String[] getTitleAndArtUrl(String contentType, String contentId) throws Exception {
         String title, artUrl;
         switch (contentType) {
-            case "book":
+            case ContentType.BOOK:
                 Volume volume = new BookDetailsServlet().getDetails(contentId);
                 title = volume.getVolumeInfo().getTitle();
                 artUrl = volume.getVolumeInfo().getImageLinks().getThumbnail();
                 break;
-            case "movie":
+            case ContentType.MOVIE:
                 Integer intId = parseInt(contentId);
                 if (intId == null) {
                     throw new IllegalArgumentException();
@@ -182,7 +182,7 @@ public class ReviewServlet extends HttpServlet {
         String[] titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
         ReviewObject reviewObject = new ReviewObject(userObject,
                 contentType, contentId,
-                titleAndArtUrl[0], titleAndArtUrl.[0],
+                titleAndArtUrl[0], titleAndArtUrl[0],
                 reviewTitle, reviewBody, rating);
         ofy().save().entity(reviewObject).now();
         return reviewObject;

@@ -5,6 +5,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.ContextListener;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
+import com.google.sps.util.Utils.ContentType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -100,7 +101,7 @@ public class ReviewServletTest extends Mockito {
                 .setUp();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("book");
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
         when(request.getParameter("contentId")).thenReturn("");
 
         new ReviewServlet().doGet(request, response);
@@ -131,7 +132,7 @@ public class ReviewServletTest extends Mockito {
                 .setUp();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("book");
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
         when(request.getParameter("contentId")).thenReturn("ASImDQAAQBAJ");
 
         new ReviewServlet().doGet(request, response);
@@ -146,7 +147,7 @@ public class ReviewServletTest extends Mockito {
                 .setUp();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("movie");
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
         when(request.getParameter("contentId")).thenReturn("127");
 
         new ReviewServlet().doGet(request, response);
@@ -161,7 +162,7 @@ public class ReviewServletTest extends Mockito {
                 .setUp();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("movie");
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
         when(request.getParameter("contentId")).thenReturn("127");
         when(request.getParameter("reviewTitle")).thenReturn("Test review");
         when(request.getParameter("reviewBody")).thenReturn("This is a test review");
@@ -231,7 +232,7 @@ public class ReviewServletTest extends Mockito {
         ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("movie");
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
         when(request.getParameter("contentId")).thenReturn("127");
         when(request.getParameter("reviewTitle")).thenReturn("Test review");
         when(request.getParameter("reviewBody")).thenReturn("This is a test review");
@@ -256,7 +257,7 @@ public class ReviewServletTest extends Mockito {
         ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("movie");
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
         when(request.getParameter("contentId")).thenReturn("127");
         when(request.getParameter("reviewTitle")).thenReturn("Test review");
         when(request.getParameter("reviewBody")).thenReturn("This is a test review");
@@ -272,8 +273,44 @@ public class ReviewServletTest extends Mockito {
         assertFalse(reviews.isEmpty());
 
         reviews = ofy().load().type(ReviewObject.class)
-                .filter("contentType", "movie")
+                .filter("contentType", ContentType.MOVIE)
                 .filter("contentId", "127")
+                .list();
+        assertNotNull(reviews);
+        assertFalse(reviews.isEmpty());
+    }
+
+    @Test
+    public void testPostGoodBookReview() throws IOException {
+        Map<String, Object> attr = new HashMap<>();
+        String id = "123";
+        attr.put("com.google.appengine.api.users.UserService.user_id_key", id);
+        helper.setEnvEmail("test@example.com")
+                .setEnvAttributes(attr)
+                .setEnvAuthDomain("example.com")
+                .setEnvIsLoggedIn(true)
+                .setUp();
+        ofy().save().entity(new UserObject(id, "test", "test@example.com", "")).now();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
+        when(request.getParameter("contentId")).thenReturn("ASImDQAAQBAJ");
+        when(request.getParameter("reviewTitle")).thenReturn("Test review");
+        when(request.getParameter("reviewBody")).thenReturn("This is a test review");
+        when(request.getParameter("rating")).thenReturn("3");
+
+        new ReviewServlet().doPost(request, response);
+        writer.flush();
+
+        List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
+                .filter("authorId", "123")
+                .list();
+        assertNotNull(reviews);
+        assertFalse(reviews.isEmpty());
+
+        reviews = ofy().load().type(ReviewObject.class)
+                .filter("contentType", ContentType.BOOK)
+                .filter("contentId", "ASImDQAAQBAJ")
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
