@@ -1,6 +1,7 @@
 package com.google.sps.servlets.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.sps.model.user.LoginStatus;
 import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
