@@ -1,4 +1,4 @@
-package com.google.sps.servlets.user;
+package com.google.sps.model.user;
 
 public class LoginStatus {
     private boolean loggedIn;

@@ -1,6 +1,7 @@
 package com.google.sps.servlets.user;
 
 import com.google.sps.ContextListener;
+import com.google.sps.model.user.UserObject;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

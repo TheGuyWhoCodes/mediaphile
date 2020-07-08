@@ -10,6 +10,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
+import com.google.sps.model.user.LoginStatus;
 
 /** Servlet that handles user logins. */
 @WebServlet("/login/status")

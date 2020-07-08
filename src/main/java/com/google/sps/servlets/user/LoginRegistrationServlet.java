@@ -9,6 +9,7 @@ import java.io.IOException;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.users.User;
+import com.google.sps.model.user.UserObject;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
