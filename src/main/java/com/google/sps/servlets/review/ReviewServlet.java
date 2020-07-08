@@ -173,16 +173,16 @@ public class ReviewServlet extends HttpServlet {
             default:
                 throw new IllegalArgumentException();
         }
-        return new Pair<>(title, artUrl);
+        return new String[]{title, artUrl};
     }
 
     private ReviewObject createAndSaveReview(UserObject userObject,
                                              String contentType, String contentId,
                                              String reviewTitle, String reviewBody, int rating) throws Exception {
-        Pair<String, String> titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
+        String[] titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
         ReviewObject reviewObject = new ReviewObject(userObject,
                 contentType, contentId,
-                titleAndArtUrl.getKey(), titleAndArtUrl.getValue(),
+                titleAndArtUrl[0], titleAndArtUrl.[0],
                 reviewTitle, reviewBody, rating);
         ofy().save().entity(reviewObject).now();
         return reviewObject;
