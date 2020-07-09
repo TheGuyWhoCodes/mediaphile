@@ -37,7 +37,7 @@ public class BookDetailsServlet extends HttpServlet {
                 .setApplicationName(KeyConfig.APPLICATION_NAME)
                 .build();
 
-        return books.volumes().get(id).execute();
+        return books.volumes().get(id).set("country", "US").execute();
     }
 
     /**
@@ -61,7 +61,7 @@ public class BookDetailsServlet extends HttpServlet {
 
         try {
             Volume volume = getDetails(id);
-            response.getWriter().println(gson.toJsonTree(volume));
+            response.getWriter().println(gson.toJson(volume));
         }
         catch (GeneralSecurityException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
