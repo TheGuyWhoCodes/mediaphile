@@ -135,10 +135,10 @@ public class EntityListServlet extends HttpServlet {
      * @return: a list of abstracted type EntityDbQueue
      */
     private List<? extends EntityDbQueue> getQueueWithType(String type, String userID) {
-        if(type.equals(Utils.typeQueue)) {
-            return ofy().load().type(WantToWatchQueueObject.class).filter("userID", userID).list();
+        if(type.equals(WantToWatchQueueObject.typeQueue)) {
+            return ofy().load().type(WantToWatchQueueObject.class).filter("userID", userID).order("timeStamp").list();
         } else {
-            return ofy().load().type(WatchedQueueObject.class).filter("userID", userID).list();
+            return ofy().load().type(WatchedQueueObject.class).filter("userID", userID).order("timeStamp").list();
         }
     }
 
@@ -150,9 +150,9 @@ public class EntityListServlet extends HttpServlet {
      */
     private EntityDbQueue decideDbType(String body) throws JsonProcessingException, NoSuchFieldException {
         EntityDbQueue entity = mapper.readValue(body, EntityDbQueue.class);
-        if(entity.getEntityType().equals(Utils.typeViewed)) {
+        if(entity.getEntityType().equals(WatchedQueueObject.typeViewed)) {
             return mapper.readValue(body, WatchedQueueObject.class);
-        } else if(entity.getEntityType().equals(Utils.typeQueue)) {
+        } else if(entity.getEntityType().equals(WantToWatchQueueObject.typeQueue)) {
             return mapper.readValue(body, WantToWatchQueueObject.class);
         } else {
             throw new NoSuchFieldException();

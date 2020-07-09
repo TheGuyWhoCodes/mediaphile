@@ -3,10 +3,10 @@ package com.google.sps.util;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class Utils {
+import static com.google.sps.model.queue.WantToWatchQueueObject.typeQueue;
+import static com.google.sps.model.queue.WatchedQueueObject.typeViewed;
 
-    public static final String typeQueue = "queue";
-    public static final String typeViewed = "viewed";
+public class Utils {
 
     public static Integer parseInt(String s) {
         try {
