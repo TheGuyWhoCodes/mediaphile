@@ -1,17 +1,18 @@
 package com.google.sps.servlets.book;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.Books;
+import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
 import org.json.simple.JSONObject;
-
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,23 +20,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.security.GeneralSecurityException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class BookSearchServletTest extends Mockito {
+public class BookDetailsServletTest extends Mockito {
 
     private static final long RESULTS_PER_PAGE = 20L;
+    private static final String GOOD_BOOK_ID = "ASImDQAAQBAJ";
+    private static final String BAD_BOOK_ID = "notRealBook";
 
-    private static JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    private Gson gson = new Gson();
+    private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    private final Gson gson = new Gson();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void testNormalSearch() throws IOException {
+    public void testNormalQuery() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
-        when(request.getParameter("pageNumber")).thenReturn("0");
+        when(request.getParameter("id")).thenReturn(GOOD_BOOK_ID);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -43,20 +46,24 @@ public class BookSearchServletTest extends Mockito {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        new BookSearchServlet().doGet(request, response);
-        verify(request, atLeast(1)).getParameter("query");
-        verify(request, atLeast(1)).getParameter("pageNumber");
+        new BookDetailsServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        JSONObject json = new JSONObject();
+        verify(response, never()).sendError(HttpServletResponse.SC_BAD_REQUEST);
+        verify(response, never()).sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testNormalQueryDetails() throws IOException, GeneralSecurityException {
+        Volume result = new BookDetailsServlet().getDetails(GOOD_BOOK_ID);
 
         final NetHttpTransport httpTransport;
         try {
-            // Can throw an exception if trusted certificate cannot be established
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         }
         catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            fail("HTTP transport connection failed");
             return;
         }
 
@@ -64,23 +71,31 @@ public class BookSearchServletTest extends Mockito {
                 .setApplicationName(KeyConfig.APPLICATION_NAME)
                 .build();
 
-        Volumes volumes = books.volumes().list("Harry Potter")
-                .setMaxResults(RESULTS_PER_PAGE)
-                .setStartIndex(0L)
-                .set("country", "US")
-                .execute();
+        Volume volume = books.volumes().get(GOOD_BOOK_ID).set("country", "US").execute();
 
-        json.put("results", gson.toJsonTree(volumes.getItems()));
-        json.put("page", 0);
-
-        assertEquals(stringWriter.toString().trim(), json.toString().trim());
+        assertEquals(result.getId(), volume.getId());
     }
 
     @Test
-    public void testNullBookQuery() throws Exception {
+    public void testNullId() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn(null);
-        when(request.getParameter("pageNumber")).thenReturn("0");
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        new BookDetailsServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testEmptyId() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("id")).thenReturn("");
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -88,18 +103,17 @@ public class BookSearchServletTest extends Mockito {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        new BookSearchServlet().doGet(request, response);
-        verify(request, atLeast(1)).getParameter("query");
+        new BookDetailsServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
         verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Test
-    public void testEmptyBookQuery() throws Exception {
+    public void testNoBookFound() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("");
-        when(request.getParameter("pageNumber")).thenReturn("0");
+        when(request.getParameter("id")).thenReturn(BAD_BOOK_ID);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -107,48 +121,10 @@ public class BookSearchServletTest extends Mockito {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        new BookSearchServlet().doGet(request, response);
-        verify(request, atLeast(1)).getParameter("query");
+        new BookDetailsServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("id");
         writer.flush();
 
-        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
-    }
-
-    @Test
-    public void testNullBookPage() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
-        when(request.getParameter("pageNumber")).thenReturn(null);
-
-        HttpServletResponse response = mock(HttpServletResponse.class);
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        new BookSearchServlet().doGet(request, response);
-        verify(request, atLeast(1)).getParameter("pageNumber");
-        writer.flush();
-
-        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
-    }
-
-    @Test
-    public void testBadBookPage() throws Exception {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
-        when(request.getParameter("pageNumber")).thenReturn("abc");
-
-        HttpServletResponse response = mock(HttpServletResponse.class);
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        new BookSearchServlet().doGet(request, response);
-        verify(request, atLeast(1)).getParameter("pageNumber");
-        writer.flush();
-
-        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+        verify(response, times(1)).sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 }
