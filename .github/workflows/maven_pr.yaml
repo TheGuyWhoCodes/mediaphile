@@ -1,0 +1,27 @@
+name: Test Mediaphile with mvn test
+
+on: [push]
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8]
+    name: Java ${{ matrix.java }} compile
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Write value to Properties-file
+        uses: christian-draeger/write-properties@1.0.0
+        with:
+          path: './src/main/resources/config.properties'
+          property: 'movie_apikey'
+          value: ${{secrets.MOVIE_APIKEY}}
+
+      - run: |
+          mvn -f pom.xml clean install test
