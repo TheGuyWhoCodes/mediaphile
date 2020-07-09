@@ -39,7 +39,7 @@ function loadMovies() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("movie-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createContentElement(info));
+            contentList.appendChild(createContentElement(info, null));
         })
     });
 }
@@ -51,26 +51,34 @@ function loadBooks() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("book-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createContentElement(info.volumeInfo));
+            contentList.appendChild(createContentElement(info.volumeInfo, info));
         })
     });
 }
 
 //Creates a box to display the title and description of movies or book.
-function createContentElement(info) {
+function createContentElement(infoMain, infoSide) {
     const contentElement = document.createElement('div');
     contentElement.className = 'content-box';
 
     const title = document.createElement('div');
     title.className = 'title-box';
-    title.innerText = info.title;
+    title.innerText = infoMain.title;
     
     const description = document.createElement('div');
     description.className = 'description-box';
-    description.innerText = info.description ? info.description : info.overview;
+    description.innerText = infoMain.description ? infoMain.description : infoMain.overview;
+
+    const id = document.createElement('div');
+    id.innerText = infoMain.id ? infoMain.id : infoSide.id;
+    id.style.display = "none";
 
     contentElement.appendChild(title);
     contentElement.appendChild(description);
+    contentElement.appendChild(id);
+
+    contentElement.setAttribute("onclick", "contentDetails("+ id.innerText+ ")");
+    
     return contentElement;
 }
 
@@ -80,4 +88,14 @@ function displayContent(content) {
     document.getElementById("book-list").style.display = "none";
 
     document.getElementById(content).style.display = "block";
+}
+
+function contentDetails(id) {
+    let type = "book"
+    if(document.getElementById("movie-list").style.display === "block") {
+        type = "movie";
+    }
+    localStorage.setItem('ident', id);
+    localStorage.setItem('type', type);
+    window.document.location = 'contentDetails/content.html';
 }

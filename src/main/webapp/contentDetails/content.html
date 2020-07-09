@@ -7,13 +7,13 @@
     <script src="content.js"></script>
   </head>
 
-  <body>
+  <body onload="loadDetails()">
       <div class="topnav">
           <h1>Mediaphile</h1>
           <a class="button" onclick="goBack()">Back</a>
           <div class="search-container">
                   <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
-                  <button class="button" onclick="loadContent()">Submit</button>
+                  <button class="button">Submit</button>
                   <label>in</label>
                   <select id="selection" class="button">
                       <option value="Mv/Bk">Movies and Books</option>
