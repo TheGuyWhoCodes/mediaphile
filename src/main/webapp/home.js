@@ -83,7 +83,7 @@ function displayContent(content) {
 }
 
 function loadUser(id) {
-    const userName = document.getElementById('userName');
+    const userName = document.getElementById('username');
     fetch('/user?id=' + id)
     .then(response => response.json())
     .then((user) => {
@@ -93,18 +93,18 @@ function loadUser(id) {
 }
 
 function loadLogin() {
-    document.getElementById("userName").style.display = "none";
+    document.getElementById("username").style.display = "none";
 
     fetch('/login/status').then(response => response.json())
     .then((json) => {
-        let userLogin = document.getElementById('user-login');
+        let btnText = document.getElementById('login-text');
 
-        userLogin.href = json.url;
-        userLogin.innerText = "Login/Register";
+        btnText.href = json.url;
+        btnText.innerText = "Sign in with Google";
 
         if(json.loggedIn) {
-            userLogin.innerText = "Logout";
             loadUser(json.id);
+            btnText.innerText  = "Sign Out";
         }
     });
 }

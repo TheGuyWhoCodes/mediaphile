@@ -10,9 +10,13 @@
   <body onload="loadLogin()">
       <div class="topnav">
           <h1>Mediaphile</h1>
-          <a id="userName"></a>
-          <a class="button" id="user-login">Login/Register</a>
+          <a id="username"></a>
+          <div id="user-login">
+              <img id="google-logo" src="images/btn_google_light_normal_ios.svg"></img>
+              <a id="login-text"></a>
+          </div>
           
+
           <div class="search-container">
                   <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
                   <button class="button" onclick="loadContent()">Submit</button>
