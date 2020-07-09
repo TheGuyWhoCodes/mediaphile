@@ -7,11 +7,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.books.Books;
 import com.google.api.services.books.model.Volume;
-import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import org.json.simple.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -27,13 +24,10 @@ import static org.junit.Assert.fail;
 
 public class BookDetailsServletTest extends Mockito {
 
-    private static final long RESULTS_PER_PAGE = 20L;
     private static final String GOOD_BOOK_ID = "ASImDQAAQBAJ";
     private static final String BAD_BOOK_ID = "notRealBook";
 
     private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    private final Gson gson = new Gson();
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     public void testNormalQuery() throws IOException {
