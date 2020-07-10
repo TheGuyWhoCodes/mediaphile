@@ -1,0 +1,37 @@
+name: Deploy Java Backend to Appengine
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [8]
+    name: Java ${{ matrix.java }} compile then deploy
+    steps:
+      - uses: actions/checkout@master
+      - name: Setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+
+      - name: Authenticate into Google Cloud Platform
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '275.0.0'
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+      - name: Write value to Properties-file
+        uses: christian-draeger/write-properties@1.0.0
+        with:
+          path: './src/main/resources/config.properties'
+          property: 'movie_apikey'
+          value: ${{secrets.MOVIE_APIKEY}}
+
+      - name: Publish app to Google App Engine
+        run: |
+          gcloud config set project kirankubetest2
+          mvn clean package appengine:deploy

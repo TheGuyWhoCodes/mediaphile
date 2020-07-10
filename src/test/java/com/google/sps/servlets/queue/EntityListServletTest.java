@@ -35,7 +35,7 @@ public class EntityListServletTest extends Mockito {
     public void initialize() {
         new ContextListener().initDbObjects();
         Map<String, Object> attr = new HashMap<>();
-        attr.put("com.google.appengine.api.users.UserService.user_id_key", "0987");
+        attr.put("com.google.appengine.api.users.UserService.user_id_key", "5678");
 
         helper =
                 new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),
@@ -66,7 +66,7 @@ public class EntityListServletTest extends Mockito {
         writer.flush();
         List<WatchedQueueObject> db = mapper.readValue(stringWriter.toString(), new TypeReference<List<WatchedQueueObject>>(){});
         assertEquals(1, db.size());
-        assertEquals(1234, db.get(0).getEntityId());
+        assertEquals("1234", db.get(0).getEntityId());
         assertEquals("movie", db.get(0).getType());
     }
 
@@ -87,7 +87,7 @@ public class EntityListServletTest extends Mockito {
         writer.flush();
         List<WatchedQueueObject> db = mapper.readValue(stringWriter.toString(), new TypeReference<List<WatchedQueueObject>>(){});
         assertEquals(1, db.size());
-        assertEquals(1234, db.get(0).getEntityId());
+        assertEquals("1234", db.get(0).getEntityId());
         assertEquals("book", db.get(0).getType());
         assertEquals("queue", db.get(0).getEntityType());
     }
@@ -121,7 +121,7 @@ public class EntityListServletTest extends Mockito {
                 "    \"type\": \"movie\",\n" +
                 "    \"entityType\": \"queue\",\n" +
                 "    \"artUrl\": \"hey.com/coolimage.png\",\n" +
-                "    \"userID\": \"0987\"\n" +
+                "    \"userID\": \"5678\"\n" +
                 "}";
         when(request.getInputStream()).thenReturn(
                 new TestDelegatingServletInputStream(
@@ -166,9 +166,64 @@ public class EntityListServletTest extends Mockito {
         verify(response, times(1)).setStatus(400);
     }
 
+
+    @Test
+    public void deleteFromDbWatched() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(request.getParameter("id")).thenReturn("1234");
+        when(request.getParameter("listType")).thenReturn("viewed");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(writer);
+
+        new EntityListServlet().doDelete(request, response);
+        writer.flush();
+
+        System.out.println(stringWriter);
+        assertEquals(0, ofy().load().type(WatchedQueueObject.class).list().size());
+    }
+
+    @Test
+    public void deleteFromDbQueued() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(request.getParameter("id")).thenReturn("1234");
+        when(request.getParameter("listType")).thenReturn("queue");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(writer);
+
+        new EntityListServlet().doDelete(request, response);
+        writer.flush();
+        assertEquals(0, ofy().load().type(WantToWatchQueueObject.class).list().size());
+    }
+
+    @Test
+    public void invalidDeleteRequest() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(writer);
+
+        new EntityListServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).setStatus(400);
+    }
+
     private void populateDb() {
         WatchedQueueObject watched = new WatchedQueueObject();
-        watched.setEntityId(1234);
+        watched.setEntityId("1234");
         watched.setUserID("5678");
         watched.setType("movie");
         watched.setEntityType("viewed");
@@ -176,7 +231,7 @@ public class EntityListServletTest extends Mockito {
         ofy().save().entity(watched).now();
 
         WantToWatchQueueObject queue = new WantToWatchQueueObject();
-        queue.setEntityId(1234);
+        queue.setEntityId("1234");
         queue.setUserID("5678");
         queue.setType("book");
         queue.setEntityType("queue");

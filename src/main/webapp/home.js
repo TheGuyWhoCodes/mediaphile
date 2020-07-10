@@ -95,3 +95,30 @@ function contentDetails(id) {
     localStorage.setItem('type', type);
     window.document.location = 'contentDetails/content.html';
 }
+
+function loadUser(id) {
+    const userName = document.getElementById('username');
+    fetch('/user?id=' + id)
+    .then(response => response.json())
+    .then((user) => {
+        userName.innerText = user.username;
+        userName.style.display = "block";
+    });
+}
+
+function loadLogin() {
+    document.getElementById("username").style.display = "none";
+
+    fetch('/login/status').then(response => response.json())
+    .then((json) => {
+        let btnText = document.getElementById('login-text');
+
+        btnText.href = json.url;
+        btnText.innerText = "Sign in with Google";
+
+        if(json.loggedIn) {
+            loadUser(json.id);
+            btnText.innerText  = "Sign Out";
+        }
+    });
+}
