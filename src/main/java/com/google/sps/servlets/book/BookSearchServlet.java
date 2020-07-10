@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 import com.google.sps.util.Utils;
 
@@ -27,6 +29,28 @@ public class BookSearchServlet extends HttpServlet {
     private static JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     private Gson gson = new Gson();
 
+    public Volumes getResults(String query, int pageNumber) throws GeneralSecurityException, IOException {
+        final NetHttpTransport httpTransport;
+        try {
+            // Can throw an exception if trusted certificate cannot be established
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        }
+        catch (Exception e) {
+            throw new GeneralSecurityException();
+        }
+
+        Books books = new Books.Builder(httpTransport, jsonFactory, null)
+                .setApplicationName(KeyConfig.APPLICATION_NAME)
+                .build();
+
+        return books.volumes().list(query)
+                .setMaxResults(RESULTS_PER_PAGE)
+                .setStartIndex(pageNumber*RESULTS_PER_PAGE)
+                .set("country", "US")
+                .execute();
+    }
+
+
     /**
      * doGet() handles search queries to Books database.
      * @param request: a request may have the following query params: query, pageNumber
@@ -38,38 +62,19 @@ public class BookSearchServlet extends HttpServlet {
         response.setContentType("application/json; charset=UTF-8");
 
         String query = request.getParameter("query");
-        if (query == null || query.equals("")) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
         Integer pageNumber = Utils.parseInt(request.getParameter("pageNumber"));
-        if (pageNumber == null) {
+        if (query == null || query.equals("") || pageNumber == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        final NetHttpTransport httpTransport;
         try {
-            // Can throw an exception if trusted certificate cannot be established
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+            Volumes volumes = getResults(query, pageNumber);
+            response.getWriter().println(convertResultsToJson(volumes, pageNumber));
         }
         catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-
-        Books books = new Books.Builder(httpTransport, jsonFactory, null)
-                .setApplicationName(KeyConfig.APPLICATION_NAME)
-                .build();
-
-        Volumes volumes = books.volumes().list(query)
-               .setMaxResults(RESULTS_PER_PAGE)
-               .setStartIndex(pageNumber*RESULTS_PER_PAGE)
-               .set("country", "US")
-               .execute();
-
-        response.getWriter().println(convertResultsToJson(volumes, pageNumber));
     }
 
     /**
