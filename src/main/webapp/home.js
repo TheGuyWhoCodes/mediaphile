@@ -70,14 +70,14 @@ function createContentElement(infoMain, infoSide) {
     description.innerText = infoMain.description ? infoMain.description : infoMain.overview;
 
     const id = document.createElement('div');
-    id.innerText = infoMain.id ? infoMain.id : infoSide.id;
+    id.innerText = infoMain.id ? infoMain.id : infoSide.id.toString();
     id.style.display = "none";
 
     contentElement.appendChild(title);
     contentElement.appendChild(description);
     contentElement.appendChild(id);
 
-    contentElement.setAttribute("onclick", "contentDetails("+ id.innerText+ ")");
+    contentElement.setAttribute("onclick", "contentDetails(\""+ id.innerText+ "\")");
     
     return contentElement;
 }

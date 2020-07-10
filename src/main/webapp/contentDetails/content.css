@@ -15,21 +15,6 @@ html, body {
     float:left;
 }
 
-.topnav label {
-    padding: 6px;
-}
-
-.topnav .search-container {
-    float: right;
-}
-
-.topnav input[type=text] {
-    padding: 6px;
-    margin-top: 8px;
-    font-size: 17px;
-    border: none;
-}
-
 .button {
     float: right;
     padding: 6px 8px;
@@ -43,12 +28,6 @@ html, body {
 }
 .button:hover {
     background: #ccc;
-}
-
-.bar {
-    margin: 0 2%;
-    border-bottom: thin solid rgb(17, 164, 209);
-    overflow: auto;
 }
 
 .info-box {

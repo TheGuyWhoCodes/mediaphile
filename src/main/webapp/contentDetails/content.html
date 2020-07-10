@@ -11,30 +11,8 @@
       <div class="topnav">
           <h1>Mediaphile</h1>
           <a class="button" onclick="goBack()">Back</a>
-          <div class="search-container">
-                  <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
-                  <button class="button">Submit</button>
-                  <label>in</label>
-                  <select id="selection" class="button">
-                      <option value="Mv/Bk">Movies and Books</option>
-                      <option value="movie">Movies only</option>
-                      <option value="book">Books only</option>
-                  </select>
-          </div>
       </div>
       <br/>
-      <div class="info-box">
-          <div id="title"></div>
-          <div class="information">
-              <div class="details-bar">
-                  <div class="details" id="date"></div>
-                  <div class="details" id="runtime"></div>
-                  <div class="details" id="rating"></div>
-                  <div id="orig-lang">en</div>
-              </div>
-              <div id="description"></div>
-          </div>
-          
-      </div>
+      <div id="details-element"></div>
   </body>
 </html>
