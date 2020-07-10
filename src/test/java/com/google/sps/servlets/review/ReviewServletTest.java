@@ -323,4 +323,143 @@ public class ReviewServletTest extends Mockito {
 
         verify(response, times(1)).sendError(HttpServletResponse.SC_CONFLICT);
     }
+
+    @Test
+    public void testDeleteUnauthenticated() throws IOException {
+        initLoggedOut();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    @Test
+    public void testDeleteNullParameters() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testDeleteEmptyParameters() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn("");
+        when(request.getParameter("contentId")).thenReturn("");
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+
+    @Test
+    public void testDeleteBadMovie() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
+        when(request.getParameter("contentId")).thenReturn(BAD_MOVIE_ID);
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testDeleteBadBook() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
+        when(request.getParameter("contentId")).thenReturn(BAD_BOOK_ID);
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testDeleteNoReview() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @Test
+    public void testDeleteGoodMovieReview() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
+        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+
+        UserObject userObject = new UserObject(DUMMY_USER_ID, DUMMY_USERNAME, DUMMY_EMAIL, DUMMY_PROFILE_PIC_URL);
+        ReviewObject reviewObject = new ReviewObject(userObject,
+                ContentType.MOVIE, GOOD_MOVIE_ID,
+                DUMMY_MOVIE_TITLE, DUMMY_MOVIE_ART_URL,
+                DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
+        ofy().save().entity(reviewObject).now();
+        List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
+                .filter("authorId", DUMMY_USER_ID)
+                .list();
+        assertFalse(reviews.isEmpty());
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        reviews = ofy().load().type(ReviewObject.class)
+                .filter("authorId", DUMMY_USER_ID)
+                .list();
+        assertTrue(reviews.isEmpty());
+    }
+
+    @Test
+    public void testDeleteGoodBookReview() throws IOException {
+        initLoggedIn();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+
+        UserObject userObject = new UserObject(DUMMY_USER_ID, DUMMY_USERNAME, DUMMY_EMAIL, DUMMY_PROFILE_PIC_URL);
+        ReviewObject reviewObject = new ReviewObject(userObject,
+                ContentType.BOOK, GOOD_BOOK_ID,
+                DUMMY_BOOK_TITLE, DUMMY_BOOK_ART_URL,
+                DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
+        ofy().save().entity(reviewObject).now();
+        List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
+                .filter("authorId", DUMMY_USER_ID)
+                .list();
+        assertFalse(reviews.isEmpty());
+
+
+        new ReviewServlet().doDelete(request, response);
+        writer.flush();
+
+        reviews = ofy().load().type(ReviewObject.class)
+                .filter("authorId", DUMMY_USER_ID)
+                .list();
+        assertTrue(reviews.isEmpty());
+    }
 }

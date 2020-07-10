@@ -115,6 +115,54 @@ public class ReviewServlet extends HttpServlet {
         }
     }
 
+    /**
+     * doDelete() attempts to delete the logged in user's review for a given media item
+     * Returns error 400 if any parameters are invalid
+     * Returns error 401 if user is not authenticated
+     * Returns error 404 if the media item or respective review is not found
+     * Returns error 500 if an error occurs with deletion
+     * @param request: expects contentType and contentId
+     * @param response: returns OK code on success
+     * @throws IOException
+     */
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String contentType = request.getParameter("contentType");
+        String contentId = request.getParameter("contentId");
+
+        Boolean itemExists = mediaItemExists(contentType, contentId);
+        if (itemExists == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        else if (!itemExists) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        if(!userService.isUserLoggedIn()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        tryDelete(user.getUserId(), contentType, contentId, response);
+    }
+
+    private void tryDelete(String authorId, String contentType, String contentId, HttpServletResponse response)
+            throws IOException {
+        QueryKeys<ReviewObject> keys =  getMatchingReviews(authorId, contentType, contentId);
+
+        if(Iterables.size(keys) == 0) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else {
+            ofy().delete().keys(keys).now();
+            response.sendError(HttpServletResponse.SC_OK);
+        }
+    }
+
     private QueryKeys<ReviewObject> getMatchingReviews(String authorId, String contentType, String contentId) {
         return ofy().load().type(ReviewObject.class)
                 .filter("authorId", authorId)
