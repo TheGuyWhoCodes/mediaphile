@@ -29,6 +29,11 @@ public class EntityDbQueue {
     private String type;
 
     @JsonProperty
+    @Index
+    private String entityId;
+
+    @JsonProperty
+    @Index
     private String entityType;
 
     @JsonProperty
@@ -45,8 +50,7 @@ public class EntityDbQueue {
 
     @Id
     @Index
-    @JsonProperty
-    private long id;
+    private Long id;
 
     public String getTitle() {
         return title;
@@ -64,11 +68,19 @@ public class EntityDbQueue {
         this.type = type;
     }
 
-    public long getEntityId() {
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setEntityId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
