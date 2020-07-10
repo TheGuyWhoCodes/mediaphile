@@ -60,6 +60,7 @@ function loadBooks() {
 function createContentElement(infoMain, infoSide) {
     const contentElement = document.createElement('div');
     contentElement.className = 'content-box';
+    contentElement.value = infoMain.id ? infoMain.id : infoSide.id.toString();
 
     const title = document.createElement('div');
     title.className = 'title-box';
@@ -69,15 +70,10 @@ function createContentElement(infoMain, infoSide) {
     description.className = 'description-box';
     description.innerText = infoMain.description ? infoMain.description : infoMain.overview;
 
-    const id = document.createElement('div');
-    id.innerText = infoMain.id ? infoMain.id : infoSide.id.toString();
-    id.style.display = "none";
-
     contentElement.appendChild(title);
     contentElement.appendChild(description);
-    contentElement.appendChild(id);
 
-    contentElement.setAttribute("onclick", "contentDetails(\""+ id.innerText+ "\")");
+    contentElement.setAttribute("onclick", "contentDetails(\""+ contentElement.value + "\")");
     
     return contentElement;
 }

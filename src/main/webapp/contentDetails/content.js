@@ -16,7 +16,8 @@ function loadDetails() {
 function getBookDetails(id) {
     fetch('/books/details?id=' + id)
     .then(response => response.json()).then((info) => {
-        console.log(info.volumeInfo);
+        const infoElement = document.getElementById('details-element');
+        infoElement.appendChild(bookDetailElement(info.volumeInfo));
     });
 }
 
@@ -53,7 +54,7 @@ function movieDetailElement(info) {
 
     const origLang = document.createElement('div');
     origLang.setAttribute("id", "orig-lang");
-    origLang.innerText = "rating:" + info.voteAverage;
+    origLang.innerText = info.originalLanguage;
 
     const overview = document.createElement('div');
     overview.setAttribute("id", "description");
@@ -67,6 +68,44 @@ function movieDetailElement(info) {
     detailElement.appendChild(title);
     detailElement.appendChild(bar);
     detailElement.appendChild(overview);
+
+    return detailElement;
+}
+
+function bookDetailElement(info) {
+    const detailElement = document.createElement('div');
+    detailElement.className = 'info-box';
+
+    const title = document.createElement('div');
+    title.setAttribute("id", "title");
+    title.innerText = info.title;
+
+    const bar = document.createElement('div');
+    bar.className = 'details-bar';
+
+    const author = document.createElement('div');
+    author.className = 'details';
+    author.innerText = "Author: " + info.authors;
+
+    const pageCount = document.createElement('div');
+    pageCount.className = 'details';
+    pageCount.innerText = info.pageCount + " pages";
+
+    const date = document.createElement('div');
+    date.className = 'details';
+    date.innerText = "published: " + info.publishedDate;
+
+    const description = document.createElement('div');
+    description.setAttribute("id", "description");
+    description.innerHTML = info.description;
+
+    bar.appendChild(author);
+    bar.appendChild(pageCount);
+    bar.appendChild(date);
+
+    detailElement.appendChild(title);
+    detailElement.appendChild(bar);
+    detailElement.appendChild(description);
 
     return detailElement;
 }
