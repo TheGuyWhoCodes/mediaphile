@@ -60,7 +60,7 @@ function loadBooks() {
 function createContentElement(infoMain, infoSide) {
     const contentElement = document.createElement('div');
     contentElement.className = 'content-box';
-    contentElement.value = infoMain.id ? infoMain.id : infoSide.id.toString();
+    contentElement.value = infoMain.id || infoSide.id.toString();
 
     const title = document.createElement('div');
     title.className = 'title-box';
@@ -68,7 +68,7 @@ function createContentElement(infoMain, infoSide) {
     
     const description = document.createElement('div');
     description.className = 'description-box';
-    description.innerText = infoMain.description ? infoMain.description : infoMain.overview;
+    description.innerText = infoMain.description || infoMain.overview;
 
     contentElement.appendChild(title);
     contentElement.appendChild(description);
