@@ -10,6 +10,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
+import com.google.sps.model.user.UserObject;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -26,7 +27,7 @@ public class UserServlet extends HttpServlet {
      * Returns error 400 if no id is provided
      * Returns error 404 if the user cannot be found
      * @param request: expects id parameter
-     * @param response: returns a Volume object
+     * @param response: returns a UserObject
      * @throws IOException
      */
     @Override

@@ -49,7 +49,6 @@ public class BookSearchServlet extends HttpServlet {
             return;
         }
 
-
         final NetHttpTransport httpTransport;
         try {
             // Can throw an exception if trusted certificate cannot be established

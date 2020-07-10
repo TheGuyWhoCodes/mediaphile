@@ -2,6 +2,11 @@ html, body {
     margin: 0%;
     padding: 0%;
 }
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Medium.ttf');
+}
 .topnav {
     overflow: auto;
     background-color: #f8f8f8;
@@ -13,6 +18,23 @@ html, body {
     margin: 5px;
     font-size: 30px;
     float:left;
+}
+
+#username {
+    float: right;
+    font-size: 25px;
+    font-family: serif;
+    color: black;
+    padding: 3px 5px;
+    margin: 8px 16px 8px 0px;
+}
+
+.topnav a:link, a:visited {
+    text-decoration: none;
+}
+
+.topnav label {
+    padding: 6px;
 }
 
 .topnav .search-container {
@@ -52,13 +74,66 @@ html, body {
     font-size: 20px;
     float: left;
     padding: 6px 8px;
-    margin: 8px 16px 0px;
+    margin: 8px 0px 0px;
+    border-right: thin solid rgb(17, 164, 209);
 }
 
-.content {
+.bar a:hover {
+    background: #ccc;
+}
+
+.content-box {
+    margin: 25px 0px 0px 25px;
+    padding: 8px;
+    width: 300px;
+    height: 425px;
+    background-color: #f8f8f8;
+    overflow: auto;
+    text-align:center;
     float: left;
 }
 
-.info {
+.title-box {
+    position: relative;
+    margin: 0px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family:Arial;
+}
+
+.description-box {
+    position: relative;
+    margin: 0px;
+    font-size: 12px;
+    font-family:Arial;
+}
+
+#user-login {
+    height: 40px;
     overflow: auto;
+    float: right;
+    background-color: white;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 1px 1px 1px grey;
+    margin: 6px 8px;
+}
+
+#google-logo {
+    padding: 0px;
+    margin: 0px 8px 0px 0px;
+    height: 100%;
+    width:auto;
+    float: left;
+}
+
+#login-text {
+    display: inline-block;
+    vertical-align: middle;
+    padding:10px 15px 0px 6px;
+    font-size: 14px;
+    font-weight: bold;
+    /* Use the Roboto font that is loaded in the <head> */
+    font-family: 'Roboto', sans-serif;
+    color: #444; 
 }

@@ -1,4 +1,4 @@
-package com.google.sps.servlets.user;
+package com.google.sps.model.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.objectify.annotation.Entity;
