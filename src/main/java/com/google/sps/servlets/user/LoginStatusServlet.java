@@ -32,7 +32,7 @@ public class LoginStatusServlet extends HttpServlet {
 
         boolean loggedIn = userService.isUserLoggedIn();
         String url = (loggedIn)
-                ? userService.createLogoutURL("/")
+                ? "/login/register?logout=1"
                 : userService.createLoginURL("/login/register");
         User user = userService.getCurrentUser();
         String id = (user != null) ? user.getUserId() : "";
