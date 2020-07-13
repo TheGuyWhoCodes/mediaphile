@@ -1,0 +1,10 @@
+<div *ngIf = "hasReceivedResults()">
+  <div *ngFor="let entry of entities">
+    <app-home-entity [entity]="entry"></app-home-entity>
+  </div>
+  <div *ngIf="isEntitiesEmpty()">
+    <div class = "text-center">
+      <h2><fa-icon [icon]="faEye"></fa-icon> Find some movies to add!</h2>
+    </div>
+  </div>
+</div>
