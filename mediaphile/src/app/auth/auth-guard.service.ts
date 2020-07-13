@@ -15,14 +15,14 @@ export class AuthGuardService implements CanActivate {
   }
 
   async getLoginStatus() {
-    let responseData = this.getStatus().then(x => {
-      if(x.loggedIn) {
-        this.loginStatus.setValues(x.id, x.url, x.loggedIn)
+    let responseData = this.getStatus().then(authState => {
+      if(authState.loggedIn) {
+        this.loginStatus.setValues(authState.id, authState.url, authState.loggedIn)
       } else {
-        this.loginStatus.setValues(x.id, x.url, x.loggedIn)
+        this.loginStatus.setValues(authState.id, authState.url, authState.loggedIn)
         this.router.navigate(["/login"]);
       }
-      return x.loggedIn;
+      return authState.loggedIn;
     })
     return responseData;
   }
