@@ -1,0 +1,26 @@
+<div class = "container">
+  <div class = "search-container">
+
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">
+          <fa-icon [icon]="faFilm"></fa-icon> <span class = "text-header">Movie</span>
+        </a>
+        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
+          <fa-icon [icon]="faBook"></fa-icon> <span class = "text-header"> Book</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <app-results [type]="movie"></app-results>
+      </div>
+      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <app-results [type]="book"></app-results>
+      </div>
+    </div>
+
+  </div>
+
+</div>
