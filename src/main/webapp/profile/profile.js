@@ -1,12 +1,17 @@
 function loadProfile() {
-    fetch('/login/status').then(response => response.json())
+    /*fetch('/login/status').then(response => response.json())
     .then((json) => {
         if(json.loggedIn) {
             isLoggedIn = true;
             loadUser(json.id);
             loadQuery(json.id);
         }
-    });
+    });*/
+    let id = localStorage.getItem('user-id');
+    postContent(id);
+    loadUser(id);
+    loadQuery(id);
+    
 }
 
 function loadUser(id) {
@@ -19,23 +24,42 @@ function loadUser(id) {
 }
 
 function loadQuery(id) {
-    fetch('/list/entity?userid=' + id + 'entityType=queue')
-    .then(response = response.json())
+    
+    fetch('/list/entity?userId=' + id + '&entityType=queue')
+    .then(response => response.json())
     .then((queue) => {
-        const queueList = document.getElementById('queue-list');
-        queue.forEach((content) => {
-            queueList.appendChild(content);
-        })
+        console.log(queue);
+        console.log("queue loaded");
     });
 
-    fetch('/list/entity?userid=' + id + 'entityType=viewed')
-    .then(response = response.json())
+    
+    fetch('/list/entity?userId=' + id + '&entityType=viewed')
+    .then(response => response.json())
     .then((viewed) => {
-        const queueList = document.getElementById('queue-list');
-        viewed.forEach((content) => {
-            queueList.appendChild(content);
-        })
+        console.log("Watched loaded ===========================" + viewed);
+            console.log(viewed);
     });
+    console.log("step 3");
+}
+
+function postContent(ident) {
+    const theFile = {id: '4541', title: 'afdsafdsafdsa cool', type:'book',
+     entityType: 'queue',artUrl: 'hey.com/coolimage.png', userID: ident};
+
+    fetch('/list/entity', {
+        method: 'POST',
+        headers: {
+            'content-Type': 'applicatoin/json',
+        },
+        body: JSON.stringify(theFile),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('success', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
 
 function displayContent(content) {

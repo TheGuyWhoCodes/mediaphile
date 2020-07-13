@@ -1,3 +1,8 @@
+var ident;
+
+function getId() {
+    return ident;
+}
 function handle(event) {
     if(event.keyCode === 13) {
         console.log(event.keyCode);
@@ -105,6 +110,7 @@ function loadLogin() {
         if(json.loggedIn) {
             loadUser(json.id);
             btnText.innerText  = "Sign Out";
+            localStorage.setItem('user-id', json.id);
         }
     });
 }

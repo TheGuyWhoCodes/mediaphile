@@ -16,7 +16,7 @@ html, body {
 }
 
 .bar {
-    margin: 0 2%;
+    margin: 25px 2%;
     border-bottom: thin solid rgb(17, 164, 209);
     overflow: auto;
 }
@@ -41,14 +41,13 @@ html, body {
 }
 
 #profile-pic {
-    width: 125px;
-    height: 125px;
-    padding: 30px 10px 10px;
     background-color: rgb(17, 164, 209);
     border-radius: 5px;
+    width: 125px;
+    height: 125px;
+    font-size: 50px;
+    line-height: 115px;
     text-align: center;
-    align-items: center;
-    font-size: 50px
 }
 
 .info {
@@ -58,8 +57,9 @@ html, body {
 #username {
     font-size: 25px;
     font-weight: bold;
-    margin: 8px 12px;
-    padding: 8px;
+    margin-top: 20px;
+    width: 125px;
+    text-align: center;
 }
 
 .button {
