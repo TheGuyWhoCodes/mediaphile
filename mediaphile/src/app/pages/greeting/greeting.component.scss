@@ -1,0 +1,59 @@
+@import "src/styles.scss";
+
+.hero {
+  width:100vw;
+  height:100vh;
+  max-width:100%;  /* added */
+  background: linear-gradient(180deg, #00b8df 0%, #3a47d5 100%);
+  text-align: center;
+}
+
+.break {
+  height:7rem;
+}
+
+h1 {
+  font-size:3em;
+  color: white;
+  padding: .5em;
+}
+
+h2 {
+  font-size: 2em;
+  color:white;
+  padding: .5em;
+}
+
+h6 {
+  font-size: 1em;
+  display:inline;
+  margin-left: .5em;
+  margin-right: .5em;
+  color:white;
+}
+
+.hero-search {
+  padding: 1em;
+  display: block;
+}
+
+.search-button {
+  color:white;
+  border-color:white;
+}
+
+.search-button:hover {
+  color:$base-color;
+  border-color:white;
+  background-color:white;
+}
+
+.search-width {
+  width:50%;
+}
+
+@media only screen and (max-width: 600px) {
+  .search-width {
+    width:100%;
+  }
+}
