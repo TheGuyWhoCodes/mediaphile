@@ -17,7 +17,7 @@
             </div>
             <p>{{entity["overview"]}}<p>
             <div *ngIf = "loginStatus.sharedStatus | async" class="btn-block">
-              <button (click)="addToQueue()" class="btn-watch">Watch Later</button>
+              <button (click)="addToQueuedList()" class="btn-watch">Watch Later</button>
               <button (click)="addToWatched()" class="btn-watch">Marked as Watched</button>
               <button class="btn-wait">Write a Review</button>
             </div>

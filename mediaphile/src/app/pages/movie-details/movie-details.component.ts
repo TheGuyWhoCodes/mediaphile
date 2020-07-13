@@ -46,7 +46,7 @@ export class MovieDetailsComponent implements OnInit {
     return "assets/poster-placeholder.png"
   }
 
-  public addToQueue() {
+  public addToQueuedList() {
     this.infoSvc.postQueue(
       this.entity["posterPath"],
       this.id,
@@ -61,7 +61,7 @@ export class MovieDetailsComponent implements OnInit {
     })
   }
 
-  public addToWatched() {
+  public addToWatchedList() {
     this.infoSvc.postQueue(
       this.entity["posterPath"],
       this.id,
