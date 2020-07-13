@@ -4,6 +4,7 @@ import com.google.api.services.books.model.Volume;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 
 import javax.servlet.annotation.WebServlet;
@@ -13,11 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
 import com.google.sps.servlets.book.BookDetailsServlet;
 import com.google.sps.servlets.movie.MovieDetailsServlet;
 import com.google.sps.util.Utils.ContentType;
+import com.googlecode.objectify.cmd.QueryKeys;
 import info.movito.themoviedbapi.model.MovieDb;
 
 import static com.google.sps.util.Utils.ContentType.isType;
@@ -65,6 +68,7 @@ public class ReviewServlet extends HttpServlet {
      * doPost() attempts to post a review for a given item from a user
      * Returns error 400 if any parameters are invalid
      * Returns error 401 if user is not authenticated
+     * Returns error 409 if the user already has a review for the item
      * Returns error 500 if an error occurs with response writing
      * @param request: expects contentType, contentId, reviewTitle, reviewBody, and rating
      * @param response: returns a JSON string of the review if successful
@@ -97,6 +101,11 @@ public class ReviewServlet extends HttpServlet {
             return;
         }
 
+        if (Iterables.size(getMatchingReviews(userObject.getId(), contentType, contentId)) != 0) {
+            response.sendError(HttpServletResponse.SC_CONFLICT);
+            return;
+        }
+
         try {
             response.getWriter().println(gson.toJsonTree(
                     createAndSaveReview(userObject, contentType, contentId, reviewTitle, reviewBody, rating)));
@@ -104,6 +113,61 @@ public class ReviewServlet extends HttpServlet {
         catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * doDelete() attempts to delete the logged in user's review for a given media item
+     * Returns error 400 if any parameters are invalid
+     * Returns error 401 if user is not authenticated
+     * Returns error 404 if the media item or respective review is not found
+     * Returns error 500 if an error occurs with deletion
+     * @param request: expects contentType and contentId
+     * @param response: returns OK code on success
+     * @throws IOException
+     */
+    @Override
+    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String contentType = request.getParameter("contentType");
+        String contentId = request.getParameter("contentId");
+
+        Boolean itemExists = mediaItemExists(contentType, contentId);
+        if (itemExists == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        else if (!itemExists) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        UserService userService = UserServiceFactory.getUserService();
+        User user = userService.getCurrentUser();
+        if(!userService.isUserLoggedIn()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        tryDelete(user.getUserId(), contentType, contentId, response);
+    }
+
+    private void tryDelete(String authorId, String contentType, String contentId, HttpServletResponse response)
+            throws IOException {
+        QueryKeys<ReviewObject> keys =  getMatchingReviews(authorId, contentType, contentId);
+
+        if(Iterables.size(keys) == 0) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+        else {
+            ofy().delete().keys(keys).now();
+            response.sendError(HttpServletResponse.SC_OK);
+        }
+    }
+
+    private QueryKeys<ReviewObject> getMatchingReviews(String authorId, String contentType, String contentId) {
+        return ofy().load().type(ReviewObject.class)
+                .filter("authorId", authorId)
+                .filter("contentType", contentType)
+                .filter("contentId", contentId).keys();
     }
 
     private void sendUserReviews(String userId, HttpServletResponse response) throws IOException {
