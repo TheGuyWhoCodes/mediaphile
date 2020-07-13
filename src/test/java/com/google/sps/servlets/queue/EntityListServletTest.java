@@ -9,6 +9,7 @@ import com.google.sps.ContextListener;
 import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.queue.WatchedQueueObject;
 import com.google.sps.servlets.TestDelegatingServletInputStream;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -27,6 +28,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import static junit.framework.Assert.assertEquals;
 
 public class EntityListServletTest extends Mockito {
+
+    public static final String GOOD_MOVIE_ID = "127";
 
     private ObjectMapper mapper = new ObjectMapper();
     private LocalServiceTestHelper helper;
@@ -47,6 +50,12 @@ public class EntityListServletTest extends Mockito {
                         .setEnvAuthDomain("mediaphile.com");
         helper.setUp();
         populateDb();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
+        ofy().clear();
     }
 
     @Test
@@ -111,12 +120,12 @@ public class EntityListServletTest extends Mockito {
     }
 
     @Test
-    public void postEntity() throws IOException, ServletException {
+    public void postEntity() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         String json = "{\n" +
-                "\t\"id\": 15123,\n" +
+                "\t\"id\": " + GOOD_MOVIE_ID + ",\n" +
                 "\t\"title\": \"afdsafdsafdsa cool\",\n" +
                 "    \"type\": \"movie\",\n" +
                 "    \"entityType\": \"queue\",\n" +
@@ -136,6 +145,43 @@ public class EntityListServletTest extends Mockito {
         new EntityListServlet().doPost(request, response);
         writer.flush();
         assertEquals(2, ofy().load().type(WantToWatchQueueObject.class).list().size());
+    }
+
+    @Test
+    public void postDuplicateEntity() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        String json = "{\n" +
+                "\t\"id\": " + GOOD_MOVIE_ID + ",\n" +
+                "\t\"title\": \"afdsafdsafdsa cool\",\n" +
+                "    \"type\": \"movie\",\n" +
+                "    \"entityType\": \"queue\",\n" +
+                "    \"artUrl\": \"hey.com/coolimage.png\",\n" +
+                "    \"userID\": \"5678\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        new EntityListServlet().doPost(request, response);
+        writer.flush();
+
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
+        new EntityListServlet().doPost(request, response);
+        writer.flush();
+
+        verify(response, times(1)).setStatus(HttpServletResponse.SC_CONFLICT);
     }
 
     @Test
