@@ -91,9 +91,8 @@ function contentDetails(id) {
     if(document.getElementById("movie-list").style.display === "block") {
         type = "movie";
     }
-    localStorage.setItem('ident', id);
-    localStorage.setItem('type', type);
-    window.document.location = 'contentDetails/content.html';
+
+    window.document.location = 'contentDetails/content.html?ident=' + id + '&type=' + type;
 }
 
 function loadUser(id) {

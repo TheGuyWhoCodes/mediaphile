@@ -3,8 +3,10 @@ function goBack() {
 }
 
 function loadDetails() {
-    let id = localStorage.getItem('ident');
-    let type = localStorage.getItem('type');
+
+    var queryParams = new URLSearchParams(window.location.search);
+    let id = queryParams.get('ident');
+    let type = queryParams.get('type');
 
     if(type === "movie") {
         getMovieDetails(id);
