@@ -1,0 +1,30 @@
+<div *ngIf="hasResults">
+  <main class="movie-info" [ngStyle]="{ 'background': 'linear-gradient(0deg, rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0.80)), url(' + getEntityImageUrl() + ') no-repeat center / cover'}">
+    <div class="d-md-flex h-md-100 align-items-center">
+      <div class="col-md-6 p-0 bg-indigo h-md-100">
+        <div class="d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
+          <img [src]="getEntityPosterUrl()">
+        </div>
+      </div>
+      <div class="col-md-6 p-0 h-md-100 ">
+        <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
+          <div class="centered-container">
+            <h1>{{entity["title"]}}</h1>
+            <div class="movie-meta">
+              <span class="movie-duration">{{entity["runtime"]}} min</span>
+              <span class="movie-year">{{entity["releaseDate"]}}</span>
+              <span class="movie-lang">{{entity["originalLanguage"]}}</span>
+            </div>
+            <p>{{entity["overview"]}}<p>
+            <div *ngIf = "loginStatus.sharedStatus | async" class="btn-block">
+              <button (click)="addToQueuedList()" class="btn-watch">Watch Later</button>
+              <button (click)="addToWatched()" class="btn-watch">Marked as Watched</button>
+              <button class="btn-wait">Write a Review</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
