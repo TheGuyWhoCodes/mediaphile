@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.google.sps.util.HttpUtils.*;
 import static com.google.sps.util.Utils.isCorrectListType;
+import static com.google.sps.util.Utils.mediaItemExists;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @WebServlet("/list/entity")
@@ -66,11 +67,27 @@ public class EntityListServlet extends HttpServlet {
             try {
                 entityDb = decideDbType(body);
                 if(!currentUserID.equals(entityDb.getUserID())) {
-                    sendInvalidPostResponse(response, newResponse);
+                    sendInvalidPostResponse(HttpServletResponse.SC_UNAUTHORIZED, response, newResponse);
                     return;
                 }
             } catch(Exception exception) {
-                sendInvalidPostResponse(response, newResponse);
+                sendInvalidPostResponse(HttpServletResponse.SC_BAD_REQUEST, response, newResponse);
+                return;
+            }
+
+            Boolean itemExists = mediaItemExists(entityDb.getType(), entityDb.getId().toString());
+            if (itemExists == null) {
+                sendInvalidPostResponse(HttpServletResponse.SC_BAD_REQUEST, response, newResponse);
+                return;
+            }
+            else if (!itemExists) {
+                sendInvalidPostResponse(HttpServletResponse.SC_NOT_FOUND, response, newResponse);
+                return;
+            }
+
+            // Check if the posted object already exists
+            if (Iterables.size(returnListQueryKeys(entityDb.getEntityType(), user, entityDb.getEntityId())) != 0) {
+                sendInvalidPostResponse(HttpServletResponse.SC_CONFLICT, response, newResponse);
                 return;
             }
 
@@ -78,7 +95,7 @@ public class EntityListServlet extends HttpServlet {
                 // Entry being saved to the datastore instance
                 ofy().save().entity(entityDb).now();
             } catch(Exception e) {
-                sendInvalidPostResponse(response, newResponse);
+                sendInvalidPostResponse(HttpServletResponse.SC_BAD_REQUEST, response, newResponse);
                 return;
             }
             newResponse.setSuccess(true);
