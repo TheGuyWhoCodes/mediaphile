@@ -13,12 +13,15 @@ public class HttpUtils {
     /**
      * Sets up return body and response status when an invalid input comes in on POST
      * requests
+     * @param errorCode: HTTP error code (e.g. 200, 404); generally a constant within HttpServletResponse
      * @param httpResponse: response to add status to
      * @param newResponse: response body
      * @throws IOException : if writer can't write (worse case scenario)
      */
-    public static void sendInvalidPostResponse(HttpServletResponse httpResponse, QueueResponse newResponse) throws IOException {
-        httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+    public static void sendInvalidPostResponse(int errorCode,
+                                               HttpServletResponse httpResponse,
+                                               QueueResponse newResponse) throws IOException {
+        httpResponse.setStatus(errorCode);
         newResponse.setSuccess(false);
         newResponse.setEntity(null);
         httpResponse.getWriter().println(gson.toJsonTree(newResponse));
