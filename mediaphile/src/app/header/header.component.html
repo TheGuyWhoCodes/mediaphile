@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class = "container">
+    <a class="navbar-brand"  *ngIf = "loginStatus.sharedStatus | async" href="/home"><fa-icon [icon]="faTicketAlt"></fa-icon> Mediaphile</a>
+    <a class="navbar-brand" *ngIf = "!(loginStatus.sharedStatus | async)" href="/"><fa-icon [icon]="faTicketAlt"></fa-icon> Mediaphile</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <div class ="form-inline my-2 my-lg-0" (keydown)="keyDownFunction($event)">
+          <input [(ngModel)]="searchInput"  class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button (click)="search()" class="btn btn-outline-success my-2 my-sm-0 btn-search" type="submit">Search</button>
+        </div>
+      </ul>
+      <ul class="navbar-nav" *ngIf = "loginStatus.sharedStatus | async">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <fa-icon [icon]="faPersonBooth"></fa-icon> Account
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="user/{{(loginStatus.sharedAccountId | async )}}">My Account</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item color"  (click) = logout()>Logout</a>
+          </div>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav" *ngIf = "!(loginStatus.sharedStatus | async)">
+        <li class="nav-item">
+          <a class="nav-link" href="/login">Login</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
