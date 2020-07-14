@@ -14,8 +14,8 @@ export class LoginComponent implements OnInit {
   }
 
   public login() {
-    this.infoSvc.login().subscribe(x => {
-      window.location.href = x["url"];
+    this.infoSvc.login().subscribe(loginStatus => {
+      window.location.href = loginStatus["url"];
     })
   }
 }
