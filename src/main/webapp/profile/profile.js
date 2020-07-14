@@ -16,7 +16,7 @@ function loadUser(id) {
 
 function loadQuery(id) {
     
-    fetch('/list/entity?userId=' + id + '&entityType=queue')
+    fetch('/list/entity?userId=' + id + '&listType=queue')
     .then(response => response.json())
     .then((queue) => {
         const queueList = document.getElementById('queue-list');
@@ -26,7 +26,7 @@ function loadQuery(id) {
     });
 
     
-    fetch('/list/entity?userId=' + id + '&entityType=viewed')
+    fetch('/list/entity?userId=' + id + '&listType=viewed')
     .then(response => response.json())
     .then((viewed) => {
         const viewedList = document.getElementById('watched-read');
@@ -46,7 +46,7 @@ function displayContent(content) {
 function createList(info) {
     const box = document.createElement('div');
     box.className = 'box-info'
-    box.value = info.id;
+    box.value = info.mediaId;
 
     const title = document.createElement('div');
     title.className = 'title';
@@ -54,7 +54,7 @@ function createList(info) {
 
     const type = document.createElement('div');
     type.className = 'type';
-    type.innerText = info.type;
+    type.innerText = info.mediaType;
 
     box.appendChild(title);
     box.appendChild(type);
