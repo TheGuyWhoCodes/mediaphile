@@ -2,7 +2,7 @@ package com.google.sps.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.sps.model.queue.QueueResponse;
+import com.google.sps.model.queue.MediaListResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class HttpUtils {
      */
     public static void sendInvalidPostResponse(int errorCode,
                                                HttpServletResponse httpResponse,
-                                               QueueResponse newResponse) throws IOException {
+                                               MediaListResponse newResponse) throws IOException {
         httpResponse.setStatus(errorCode);
         newResponse.setSuccess(false);
         newResponse.setEntity(null);
