@@ -19,7 +19,7 @@ function loadQuery(id) {
     fetch('/list/entity?userId=' + id + '&entityType=queue')
     .then(response => response.json())
     .then((queue) => {
-        const queueList = document.getElementById('queeu-list');
+        const queueList = document.getElementById('queue-list');
         queue.forEach((info) => {
             viewedList.appendChild(createList(info));
         })
