@@ -1,0 +1,15 @@
+<div class = "hero">
+  <div class = "break"></div>
+  <h1><fa-icon [icon]="faTicketAlt"></fa-icon> Mediaphile</h1>
+  <h2>Movies, Music, Art. All in one place.</h2>
+
+  <div class="form-inline my-2 my-lg-0 hero-search " (keydown)="keyDownFunction($event)">
+    <input [(ngModel)]="searchInput" class="form-control mr-sm-2 search-width" type="search" placeholder="Search for Books or Movies..." aria-label="search">
+    <button (click)="search()" class="btn btn-outline-success my-2 my-sm-0 search-button" type="submit">Search</button>
+  </div>
+  <div *ngIf = "!(loginStatus.sharedStatus | async)">
+    <button routerLink="/login" class="btn btn-outline-success my-2 my-sm-0 search-button">Login</button>
+    <h6> - or - </h6>
+    <button routerLink="/register"  class="btn btn-outline-success my-2 my-sm-0 search-button">Register</button>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+@import "src/styles.scss";
+
+.btn-search {
+  border-color:$base-color;
+  color:$base-color;
+}
+.btn-search:hover {
+  background-color:$base-color;
+  color:white;
+}
+.account {
+  color:rgba(0,0,0,.9);
+}
+.color {
+  text-decoration: none;
+  cursor:pointer;
+}

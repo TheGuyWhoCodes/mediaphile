@@ -8,5 +8,6 @@ import com.googlecode.objectify.annotation.Entity;
  */
 @Entity(name="WantToWatch")
 public class WantToWatchQueueObject extends EntityDbQueue {
+    public static final String typeQueue = "queue";
 
 }

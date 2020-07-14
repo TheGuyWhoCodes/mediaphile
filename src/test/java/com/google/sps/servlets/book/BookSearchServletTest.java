@@ -19,14 +19,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class BookSearchServletTest extends Mockito {
 
-    private static final long RESULTS_PER_PAGE = 20L;
+    private static final long RESULTS_PER_PAGE = 5L;
+    public static final String GOOD_BOOK_QUERY = "War and Peace";
 
     private static JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
     private Gson gson = new Gson();
@@ -34,7 +37,7 @@ public class BookSearchServletTest extends Mockito {
     @Test
     public void testNormalSearch() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
+        when(request.getParameter("query")).thenReturn(GOOD_BOOK_QUERY);
         when(request.getParameter("pageNumber")).thenReturn("0");
 
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -48,15 +51,20 @@ public class BookSearchServletTest extends Mockito {
         verify(request, atLeast(1)).getParameter("pageNumber");
         writer.flush();
 
-        JSONObject json = new JSONObject();
+        verify(response, never()).sendError(HttpServletResponse.SC_BAD_REQUEST);
+        verify(response, never()).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    }
+
+    @Test
+    public void testNormalSearchDetails() throws IOException, GeneralSecurityException {
+        Volumes results = new BookSearchServlet().getResults(GOOD_BOOK_QUERY, 0);
 
         final NetHttpTransport httpTransport;
         try {
-            // Can throw an exception if trusted certificate cannot be established
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         }
         catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            fail("HTTP transport connection failed");
             return;
         }
 
@@ -64,17 +72,16 @@ public class BookSearchServletTest extends Mockito {
                 .setApplicationName(KeyConfig.APPLICATION_NAME)
                 .build();
 
-        Volumes volumes = books.volumes().list("Harry Potter")
+        Volumes volumes = books.volumes().list(GOOD_BOOK_QUERY)
                 .setMaxResults(RESULTS_PER_PAGE)
                 .setStartIndex(0L)
                 .set("country", "US")
                 .execute();
 
-        json.put("results", gson.toJsonTree(volumes.getItems()));
-        json.put("page", 0);
 
-        assertEquals(stringWriter.toString().trim(), json.toString().trim());
+        assertEquals(volumes.getItems().get(0).getId(), results.getItems().get(0).getId());
     }
+
 
     @Test
     public void testNullBookQuery() throws Exception {
@@ -117,7 +124,7 @@ public class BookSearchServletTest extends Mockito {
     @Test
     public void testNullBookPage() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
+        when(request.getParameter("query")).thenReturn(GOOD_BOOK_QUERY);
         when(request.getParameter("pageNumber")).thenReturn(null);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
@@ -136,7 +143,7 @@ public class BookSearchServletTest extends Mockito {
     @Test
     public void testBadBookPage() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("query")).thenReturn("Harry Potter");
+        when(request.getParameter("query")).thenReturn(GOOD_BOOK_QUERY);
         when(request.getParameter("pageNumber")).thenReturn("abc");
 
         HttpServletResponse response = mock(HttpServletResponse.class);

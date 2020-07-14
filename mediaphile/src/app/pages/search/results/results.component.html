@@ -1,0 +1,10 @@
+  <h2>Exploring {{query}}: </h2>
+  <div *ngIf="hasReceivedResults()">
+    <h6>Found {{total_results}} results!</h6>
+    <h6 *ngIf="type=='book'"><img src = "assets/gbs_preview_button1.png"></h6>
+
+    <div *ngFor="let entry of arrayResults">
+      <app-entity [entity]="entry" [type]="type"></app-entity>
+    </div>
+    <div (click)="loadMore()" *ngIf="canLoadMore" class="load-more">Load More Results <fa-icon [icon]="faAngleDoubleRight"></fa-icon></div>
+  </div>
