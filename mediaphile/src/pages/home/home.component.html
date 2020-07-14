@@ -1,0 +1,27 @@
+<div class = "container">
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-queue-tab" data-toggle="tab" href="#nav-queue" role="tab" aria-controls="nav-queue" aria-selected="true">
+        <fa-icon [icon]="clip"></fa-icon> <span class = "text-header"> Your Queue </span>
+      </a>
+      <a class="nav-item nav-link" id="nav-watched-tab" data-toggle="tab" href="#nav-watched" role="tab" aria-controls="nav-watched" aria-selected="false">
+        <fa-icon [icon]="clipCheck"></fa-icon> <span class = "text-header"> Read/Watched List </span>
+      </a>
+      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">
+        <fa-icon [icon]="friends"></fa-icon> <span class = "text-header"> Recent Activity </span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-queue" role="tabpanel" aria-labelledby="nav-queue-tab">
+        <app-queue [userID]="loginStatus.sharedAccountId | async" [type]="'queue'"></app-queue>
+    </div>
+    <div class="tab-pane fade" id="nav-watched" role="tabpanel" aria-labelledby="nav-watched-tab">
+      <app-queue [userID]="loginStatus.sharedAccountId | async" [type]="'viewed'"></app-queue>
+    </div>
+    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        this is a placeholder for a future section
+    </div>
+  </div>
+</div>
