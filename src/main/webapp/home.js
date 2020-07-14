@@ -39,7 +39,7 @@ function loadMovies() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("movie-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createContentElement(info));
+            contentList.appendChild(createContentElement(info, null));
         })
     });
 }
@@ -51,26 +51,30 @@ function loadBooks() {
     .then(response => response.json()).then((data) => {
         const contentList = document.getElementById("book-list");
         data.results.forEach((info) => {
-            contentList.appendChild(createContentElement(info.volumeInfo));
+            contentList.appendChild(createContentElement(info.volumeInfo, info));
         })
     });
 }
 
 //Creates a box to display the title and description of movies or book.
-function createContentElement(info) {
+function createContentElement(infoMain, infoSide) {
     const contentElement = document.createElement('div');
     contentElement.className = 'content-box';
+    contentElement.value = infoMain.id || infoSide.id;
 
     const title = document.createElement('div');
     title.className = 'title-box';
-    title.innerText = info.title;
+    title.innerText = infoMain.title;
     
     const description = document.createElement('div');
     description.className = 'description-box';
-    description.innerText = info.description ? info.description : info.overview;
+    description.innerText = infoMain.description || infoMain.overview;
 
     contentElement.appendChild(title);
     contentElement.appendChild(description);
+
+    contentElement.setAttribute("onclick", "contentDetails(\""+ contentElement.value + "\")");
+    
     return contentElement;
 }
 
@@ -80,6 +84,15 @@ function displayContent(content) {
     document.getElementById("book-list").style.display = "none";
 
     document.getElementById(content).style.display = "block";
+}
+
+function contentDetails(id) {
+    let type = "book"
+    if(document.getElementById("movie-list").style.display === "block") {
+        type = "movie";
+    }
+
+    window.document.location = 'contentDetails/content.html?ident=' + id + '&type=' + type;
 }
 
 function loadUser(id) {
