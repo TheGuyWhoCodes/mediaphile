@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {LoginStatus} from "../../auth/login.status";
 import {Title} from "@angular/platform-browser";
-import {faClipboard, faClipboardCheck, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {faClipboardCheck, faClock, faUserFriends} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-home',
@@ -10,7 +10,7 @@ import {faClipboard, faClipboardCheck, faUserFriends} from "@fortawesome/free-so
 })
 export class HomeComponent implements OnInit {
 
-  clip = faClipboard
+  clip = faClock
   clipCheck = faClipboardCheck
   friends = faUserFriends
 
