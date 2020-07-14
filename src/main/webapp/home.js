@@ -1,8 +1,3 @@
-var ident;
-
-function getId() {
-    return ident;
-}
 function handle(event) {
     if(event.keyCode === 13) {
         console.log(event.keyCode);
@@ -94,6 +89,7 @@ function loadUser(id) {
     .then((user) => {
         userName.innerText = user.username;
         userName.style.display = "block";
+        userName.href = "profile/profile.html?id=" + id;
     });
 }
 
@@ -110,7 +106,6 @@ function loadLogin() {
         if(json.loggedIn) {
             loadUser(json.id);
             btnText.innerText  = "Sign Out";
-            localStorage.setItem('user-id', json.id);
         }
     });
 }

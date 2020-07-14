@@ -1,17 +1,8 @@
 function loadProfile() {
-    /*fetch('/login/status').then(response => response.json())
-    .then((json) => {
-        if(json.loggedIn) {
-            isLoggedIn = true;
-            loadUser(json.id);
-            loadQuery(json.id);
-        }
-    });*/
-    let id = localStorage.getItem('user-id');
-    postContent(id);
+    var queryParams = new URLSearchParams(window.location.search);
+    let id = queryParams.get('id');
     loadUser(id);
     loadQuery(id);
-    
 }
 
 function loadUser(id) {
@@ -28,38 +19,21 @@ function loadQuery(id) {
     fetch('/list/entity?userId=' + id + '&entityType=queue')
     .then(response => response.json())
     .then((queue) => {
-        console.log(queue);
-        console.log("queue loaded");
+        const queueList = document.getElementById('queeu-list');
+        queue.forEach((info) => {
+            viewedList.appendChild(createList(info));
+        })
     });
 
     
     fetch('/list/entity?userId=' + id + '&entityType=viewed')
     .then(response => response.json())
     .then((viewed) => {
-        console.log("Watched loaded ===========================" + viewed);
-            console.log(viewed);
+        const viewedList = document.getElementById('watched-read');
+        viewed.forEach((info) => {
+            viewedList.appendChild(createList(info));
+        })
     });
-    console.log("step 3");
-}
-
-function postContent(ident) {
-    const theFile = {id: '4541', title: 'afdsafdsafdsa cool', type:'book',
-     entityType: 'queue',artUrl: 'hey.com/coolimage.png', userID: ident};
-
-    fetch('/list/entity', {
-        method: 'POST',
-        headers: {
-            'content-Type': 'applicatoin/json',
-        },
-        body: JSON.stringify(theFile),
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('success', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
 }
 
 function displayContent(content) {
@@ -67,6 +41,29 @@ function displayContent(content) {
     document.getElementById("watched-read").style.display = "none";
 
     document.getElementById(content).style.display = "block";
+}
+
+function createList(info) {
+    const box = document.createElement('div');
+    box.className = 'box-info'
+    box.value = info.id;
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.innerText = info.title;
+
+    const type = document.createElement('div');
+    type.className = 'type';
+    type.innerText = info.type;
+
+    box.appendChild(title);
+    box.appendChild(type);
+    box.setAttribute("onclick", "contentDetails(\""+ box.value + "\", " + type.innerText +")");
+    return box;
+}
+
+function contentDetails(id, type) {
+    window.document.location = 'contentDetails/content.html?ident=' + id + '&type=' + type;
 }
 
 function goBack() {

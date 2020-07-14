@@ -76,3 +76,26 @@ html, body {
 .button:hover {
     background: #ccc;
 }
+.list {
+    overflow: auto;
+}
+.box-info {
+    margin: 10px 15px;
+    overflow: auto;
+    height: 100px;
+    width: 175px;
+    background-color: #f8f8f8;
+    float: left;
+}
+
+.title {
+    text-align: center;
+    line-height: 25px;
+    font-size: 20px;
+}
+
+.type {
+    text-align: center;
+    font-size: 12px;
+    padding-top: 5px;
+}
