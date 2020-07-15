@@ -17,6 +17,8 @@ public class FollowServlet extends HttpServlet {
         String userId = request.getParameter("userId");
         String list = request.getParameter("");
 
+        if(!userId)
+
         response.setContentType("application/json; charset=utf-8");
         response.getWritter().println(gson.toJsonTree(result));
     }
