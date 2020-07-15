@@ -1,6 +1,8 @@
 function loadProfile() {
+    document.getElementById("watched-read").style.display = "none";
     var queryParams = new URLSearchParams(window.location.search);
     let id = queryParams.get('id');
+    postContent(id);
     loadUser(id);
     loadQuery(id);
 }
@@ -21,7 +23,7 @@ function loadQuery(id) {
     .then((queue) => {
         const queueList = document.getElementById('queue-list');
         queue.forEach((info) => {
-            viewedList.appendChild(createList(info));
+            queueList.appendChild(createList(info));
         })
     });
 
@@ -56,8 +58,8 @@ function createList(info) {
     type.className = 'type';
     type.innerText = info.mediaType;
 
-    box.appendChild(title);
     box.appendChild(type);
+    box.appendChild(title);
     box.setAttribute("onclick", "contentDetails(\""+ box.value + "\", " + type.innerText +")");
     return box;
 }
