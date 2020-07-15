@@ -6,8 +6,5 @@ import com.googlecode.objectify.annotation.Entity;
  * Simple class to extend the entity db queue, this allows us
  * to store this in a separate database table.
  */
-@Entity(name="WantToWatch")
-public class WantToWatchQueueObject extends EntityDbQueue {
-    public static final String typeQueue = "queue";
-
-}
+@Entity(name="ViewedListItem")
+public class ViewedListItemObject extends MediaListItem { }

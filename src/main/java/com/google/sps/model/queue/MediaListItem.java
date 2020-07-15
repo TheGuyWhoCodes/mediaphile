@@ -13,11 +13,14 @@ import java.sql.Timestamp;
  * to end up in different tables in the db.
  */
 @Entity
-public class EntityDbQueue {
+public class MediaListItem {
 
-    public EntityDbQueue() {
+    public static final String TYPE_VIEWED = "viewed";
+    public static final String TYPE_QUEUE = "queue";
+
+    public MediaListItem() {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-        timeStamp = currentTime.getTime();
+        timestamp = currentTime.getTime();
     }
 
     @JsonProperty
@@ -26,15 +29,20 @@ public class EntityDbQueue {
 
     @JsonProperty
     @Index
-    private String type;
+    private String mediaType;
 
     @JsonProperty
     @Index
-    private String entityId;
+    private String mediaId;
 
     @JsonProperty
     @Index
-    private String entityType;
+    @Id
+    private Long id;
+
+    @JsonProperty
+    @Index
+    private String listType;
 
     @JsonProperty
     @Index
@@ -42,15 +50,11 @@ public class EntityDbQueue {
 
     @JsonProperty
     @Index
-    private long timeStamp;
+    private long timestamp;
 
     @JsonProperty
     @Index
-    private String userID;
-
-    @Id
-    @Index
-    private Long id;
+    private String userId;
 
     public String getTitle() {
         return title;
@@ -60,20 +64,12 @@ public class EntityDbQueue {
         this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getMediaType() {
+        return mediaType;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
     public Long getId() {
@@ -84,6 +80,14 @@ public class EntityDbQueue {
         this.id = id;
     }
 
+    public String getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(String mediaId) {
+        this.mediaId = mediaId;
+    }
+
     public String getArtUrl() {
         return artUrl;
     }
@@ -92,27 +96,27 @@ public class EntityDbQueue {
         this.artUrl = artUrl;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getEntityType() {
-        return entityType;
+    public String getListType() {
+        return listType;
     }
 
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
+    public void setListType(String listType) {
+        this.listType = listType;
     }
 }
