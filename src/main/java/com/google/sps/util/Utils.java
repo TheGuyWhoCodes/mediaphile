@@ -3,8 +3,8 @@ package com.google.sps.util;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import static com.google.sps.model.queue.WantToWatchQueueObject.typeQueue;
-import static com.google.sps.model.queue.WatchedQueueObject.typeViewed;
+import static com.google.sps.model.queue.QueueListItemObject.TYPE_QUEUE;
+import static com.google.sps.model.queue.ViewedListItemObject.TYPE_VIEWED;
 
 import com.google.sps.servlets.book.BookDetailsServlet;
 import com.google.sps.servlets.movie.MovieDetailsServlet;
@@ -48,7 +48,7 @@ public class Utils {
      * @return: true / false if the type is valid
      */
     public static boolean isCorrectListType(String queueType) {
-        return queueType.equals(typeQueue) || queueType.equals(typeViewed);
+        return queueType.equals(TYPE_QUEUE) || queueType.equals(TYPE_VIEWED);
     }
 
     // Leverages servlets to check if an item of type contentType exists with ID == contentId

@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "deleteOutputPath": false,
             "outputPath": "../src/main/webapp/",
             "index": "src/index.html",
             "main": "src/main.ts",

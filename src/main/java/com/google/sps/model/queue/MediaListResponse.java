@@ -8,12 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * response type. It returns a success and an entity IFF
  * we found one, if not, it'll return null.
  */
-public class QueueResponse {
+public class MediaListResponse {
     @JsonProperty
     private boolean success;
 
     @JsonProperty
-    private EntityDbQueue entity;
+    private MediaListItem entity;
 
     public boolean isSuccess() {
         return success;
@@ -23,11 +23,11 @@ public class QueueResponse {
         this.success = success;
     }
 
-    public EntityDbQueue getEntity() {
+    public MediaListItem getEntity() {
         return entity;
     }
 
-    public void setEntity(EntityDbQueue entity) {
+    public void setEntity(MediaListItem entity) {
         this.entity = entity;
     }
 }
