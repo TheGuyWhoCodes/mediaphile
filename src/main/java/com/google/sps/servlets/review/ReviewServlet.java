@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import com.google.sps.model.queue.WantToWatchQueueObject;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
 import com.google.sps.servlets.book.BookDetailsServlet;
