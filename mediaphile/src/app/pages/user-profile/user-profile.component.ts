@@ -4,6 +4,7 @@ import {Title} from "@angular/platform-browser";
 import {faClipboardCheck, faClock, faUserFriends} from "@fortawesome/free-solid-svg-icons";
 import {InfoService} from "../../info.service";
 import {ActivatedRoute} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-user-profile',
@@ -16,8 +17,9 @@ export class UserProfileComponent implements OnInit {
   clipCheck = faClipboardCheck;
   friends = faUserFriends;
 
-  private userId: string;
+  public userId: string;
   public profileId: string;
+  public isSelf: boolean;
 
   public entity: {};
   public hasResults: boolean;
@@ -30,20 +32,29 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.title.setTitle(`Mediaphile :: Profile`)
 
-    this.loginStatus.sharedAccountId.subscribe(userId => {
-      this.userId = userId;
-    });
-
     if (this.route.snapshot.paramMap.get("id") != undefined) {
       this.profileId = this.route.snapshot.paramMap.get("id");
     }
+
     if(this.profileId != null) {
       this.infoSvc.getUser(this.profileId).subscribe(data => {
         this.entity = data;
         this.hasResults = true;
-        this.title.setTitle(`Mediaphile :: ${this.entity['username']} Profile`)
+
+        this.subscribeSelf();
       });
+    } else {
+      this.subscribeSelf();
     }
+  }
+
+  subscribeSelf() {
+    this.loginStatus.sharedAccountId.subscribe(userId => {
+      this.userId = userId;
+      this.isSelf = (this.userId === this.profileId);
+      let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
+      this.title.setTitle(`Mediaphile :: ${whose}Profile`);
+    });
   }
 
   hasProfilePic() : boolean {
