@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Mediaphile</title>
+    <link rel="stylesheet" href="profile.css">
+    <script src="profile.js"></script>
+  </head>
+
+  <body onload="loadProfile()">
+      <div class="topnav">
+          <h1>Profile</h1>
+          <a class="button" onClick="goBack()">Back</a>
+      </div>
+
+      <div id="profile-info">
+          <div id ="profile-pic"></div>
+          <div id="username"></div>
+      </div>
+
+      <div class="bar">
+          <a id="Queue" onclick="displayContent('queue-list')">Queue</a>
+          <a id="Watched/Read" onclick="displayContent('watched-read')">Watched/Read</a>
+      </div>
+
+      
+
+      <div id="queue-list" class="list"></div>
+      
+      <div id="watched-read" class="list"></div>
+  </body>
+</html>
