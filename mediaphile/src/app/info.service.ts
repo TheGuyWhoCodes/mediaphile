@@ -21,6 +21,7 @@ export class InfoService {
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
   private getReviews: string = `${this.apiBackendUrl}reviews`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
+  private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
@@ -64,6 +65,14 @@ export class InfoService {
     this.loginStatusService.sharedUrl.subscribe(x => {
       window.location.href = (x);
     })
+  }
+
+  public getUser(userId: string) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "id": userId,
+      }
+    });
   }
 
   public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userId: String) {
