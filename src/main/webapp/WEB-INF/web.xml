@@ -11,4 +11,13 @@
         <filter-name>ObjectifyFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <servlet-name>html-mapping</servlet-name>
+        <jsp-file>/index.html</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>html-mapping</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 </web-app>

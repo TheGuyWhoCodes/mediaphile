@@ -9,14 +9,18 @@
       <div class="col-md-6 p-0 h-md-100 ">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
           <div class="centered-container">
-            <h1>{{entity["title"]}}</h1>
-            <div class="movie-meta">
-              <span class="movie-duration">{{entity["runtime"]}} min</span>
-              <span class="movie-year">{{entity["releaseDate"]}}</span>
-              <span class="movie-lang">{{entity["originalLanguage"]}}</span>
+            <h1>{{entity["volumeInfo"]["title"]}}</h1>
+            <div *ngFor='let entry of entity["volumeInfo"]["authors"]'>
+              <h6>{{entry}}</h6>
             </div>
-            <p>{{entity["overview"]}}<p>
-            <div *ngIf = "loginStatus.sharedStatus | async" class="btn-block">
+            <div class="movie-meta">
+              <span class="movie-duration">{{entity["volumeInfo"]["printedPageCount"]}} pages</span>
+              <span class="movie-year">{{entity["volumeInfo"]["publishedDate"]}}</span>
+              <span class="movie-lang">{{entity["volumeInfo"]["language"]}}</span>
+            </div>
+            <p [innerHTML]='entity["volumeInfo"]["description"]'><p>
+            <div *ngIf = "(loginStatus.sharedStatus | async) && (queue | async) as queue" class="btn-block">
+              {{queue}}
               <button (click)="addToQueuedList()" class="btn-watch">Watch Later</button>
               <button (click)="addToWatchedList()" class="btn-watch">Marked as Watched</button>
               <button class="btn-wait">Write a Review</button>
@@ -25,6 +29,5 @@
         </div>
       </div>
     </div>
-
   </main>
 </div>

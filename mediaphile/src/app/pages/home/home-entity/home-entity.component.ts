@@ -14,15 +14,15 @@ export class HomeEntityComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    if (this.entity["type"] != undefined){
-      this.type = this.entity["type"]
+    if (this.entity["mediaType"] != undefined){
+      this.type = this.entity["mediaType"]
     }
     console.log(this.entity);
     console.log(this.getEntityUrl())
   }
   public getEntityImageUrl() : string {
     if(this.entity["artUrl"]) {
-      return "https://image.tmdb.org/t/p/w500" + this.entity['artUrl']
+      return this.entity['artUrl']
     }
     return "https://critics.io/img/movies/poster-placeholder.png"
   }
@@ -42,9 +42,9 @@ export class HomeEntityComponent implements OnInit {
 
   public getEntityUrl() : string {
     if(this.type == "book") {
-      return `/book/${this.entity["entityId"]}`
+      return `/book/${this.entity["mediaId"]}`
     } else if(this.type == "movie") {
-      return `/movie/${this.entity["entityId"]}`
+      return `/movie/${this.entity["mediaId"]}`
     }
   }
 

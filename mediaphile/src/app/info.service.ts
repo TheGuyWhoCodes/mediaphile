@@ -17,6 +17,7 @@ export class InfoService {
   private getMovieDetailsEndpoint: string = `${this.apiBackendUrl}movies/details`;
   private getMovieSearch: string = `${this.apiBackendUrl}movies/search`;
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
+  private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
 
@@ -53,6 +54,14 @@ export class InfoService {
     })
   }
 
+  public getBookDetails(id: string) {
+    return this.http.get(this.getBookDetailsEndpoint, {
+      params: {
+        "id": id
+      }
+    })
+  }
+
   public login() {
     return this.http.get<LoginStatusStruct>(this.loginStatus)
   }
@@ -63,22 +72,22 @@ export class InfoService {
     })
   }
 
-  public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userID: String) {
+  public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userId: String) {
     return this.http.post(this.postQueueEndpoint, {
-      "entityId": id,
+      "mediaId": id,
       "title": title,
-      "type":type,
-      "entityType": entityType,
+      "mediaType":type,
+      "listType": entityType,
       "artUrl": posterPath,
-      "userID": userID
+      "userId": userId
     })
   }
 
   public getQueue(userID: string, type: string) {
     return this.http.get(this.postQueueEndpoint, {
       params: {
-        "userID": userID,
-        "entityType": type
+        "userId": userID,
+        "listType": type
       }
     });
   }
