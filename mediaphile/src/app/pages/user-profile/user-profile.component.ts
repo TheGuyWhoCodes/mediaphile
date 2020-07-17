@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {LoginStatus} from "../../auth/login.status";
 import {Title} from "@angular/platform-browser";
-import {faClipboardCheck, faClock, faUserFriends} from "@fortawesome/free-solid-svg-icons";
+import {faClipboardCheck, faClock, faHeart, faUserFriends} from "@fortawesome/free-solid-svg-icons";
 import {InfoService} from "../../info.service";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
@@ -15,6 +15,7 @@ export class UserProfileComponent implements OnInit {
 
   clock = faClock;
   clipCheck = faClipboardCheck;
+  heart = faHeart;
   friends = faUserFriends;
 
   public userId: string;

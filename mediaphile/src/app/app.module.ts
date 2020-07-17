@@ -26,7 +26,9 @@ import { ReviewEntityComponent } from './pages/helper/review/review-entity/revie
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewSubmitComponent } from './pages/helper/review-submit/review-submit.component';
 import {HttpErrorInterceptor} from "./http.error.interceptor";
-import {UserProfileComponent} from "./pages/user-profile/user-profile.component";
+import { UserProfileComponent } from "./pages/user-profile/user-profile.component";
+import { FollowListComponent } from "./pages/user-profile/follow-list/follow-list.component";
+import { FollowEntityComponent } from "./pages/user-profile/follow-list/follow-entity/follow-entity.component";
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import {UserProfileComponent} from "./pages/user-profile/user-profile.component"
     ReviewComponent,
     ReviewEntityComponent,
     ReviewSubmitComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    FollowListComponent,
+    FollowEntityComponent
   ],
   imports: [
     BrowserModule,

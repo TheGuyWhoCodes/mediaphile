@@ -23,6 +23,7 @@ export class InfoService {
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
   private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
+  private followListEndpoint: string = `${this.apiBackendUrl}follow`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -112,6 +113,22 @@ export class InfoService {
         "reviewTitle": title,
         "reviewBody": reviewBody,
         "rating": String(rating)
+      }
+    })
+  }
+
+  public postFollow(userId: string, targetId: string) {
+    return this.http.post(this.followListEndpoint, {
+      "userId": userId,
+      "targetId": targetId // TODO: Ensure these names are correct
+    });
+  }
+
+  public getFollowList(userId: string, type: string) {
+    return this.http.get(this.followListEndpoint, {
+      params: {
+        "userId": userId,
+        "type": type // TODO: Ensure these names are correct
       }
     });
   }
