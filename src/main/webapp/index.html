@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Mediaphile</title>
-    <link rel="stylesheet" href="home.css">
-    <script src="home.js"></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <title>Mediaphile</title>
+  <link rel="stylesheet" href="home.css">
+  <script src="home.js"></script>
+</head>
 
-  <body onload="loadLogin()">
-      <div class="topnav">
-          <h1>Mediaphile</h1>
-          <a id="username"></a>
-          <div id="user-login">
-              <img id="google-logo" src="images/btn_google_light_normal_ios.svg"></img>
-              <a id="login-text"></a>
-          </div>
-          
+<body onload="loadLogin()">
+<div class="topnav">
+  <h1>Mediaphile</h1>
+  <a id="username"></a>
+  <div id="user-login">
+    <img id="google-logo" src="images/btn_google_light_normal_ios.svg"></img>
+    <a id="login-text"></a>
+  </div>
 
-          <div class="search-container">
-                  <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
-                  <button class="button" onclick="loadContent()">Submit</button>
-                  <label>in</label>
-                  <select id="selection" class="button">
-                      <option value="Mv/Bk">Movies and Books</option>
-                      <option value="movie">Movies only</option>
-                      <option value="book">Books only</option>
-                  </select>
-          </div>
-      </div>
-      <br/>
 
-      <div class="bar">
-          <a class="tab" id="movie-tab" onclick="displayContent('movie-list')">Movies</a>
-          <a class="tab" id="book-tab" onclick="displayContent('book-list')">Books</a>
-      </div>
+  <div class="search-container">
+    <input type="text" placeholder="Search.." id="search" onkeypress="handle(event)">
+    <button class="button" onclick="loadContent()">Submit</button>
+    <label>in</label>
+    <select id="selection" class="button">
+      <option value="Mv/Bk">Movies and Books</option>
+      <option value="movie">Movies only</option>
+      <option value="book">Books only</option>
+    </select>
+  </div>
+</div>
+<br/>
 
-      <div id="movie-list"></div>
+<div class="bar">
+  <a class="tab" id="movie-tab" onclick="displayContent('movie-list')">Movies</a>
+  <a class="tab" id="book-tab" onclick="displayContent('book-list')">Books</a>
+</div>
 
-      <div id="book-list"></div>
-  </body>
+<div id="movie-list"></div>
+
+<div id="book-list"></div>
+</body>
 </html>

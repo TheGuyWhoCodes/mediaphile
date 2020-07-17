@@ -93,7 +93,7 @@ public class LoginRegistrationServletTest extends Mockito {
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());
-        assertEquals("/", captor.getValue());
+        assertEquals("/home", captor.getValue());
 
         UserObject result = ofy().load().type(UserObject.class).id(id).now();
 
@@ -134,14 +134,14 @@ public class LoginRegistrationServletTest extends Mockito {
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());
-        assertEquals("/", captor.getValue());
+        assertEquals("/home", captor.getValue());
 
         // Duplicate request shouldn't change the result
         new LoginRegistrationServlet().doGet(request, response);
         writer.flush();
 
         verify(response, atLeast(1)).sendRedirect(captor.capture());
-        assertEquals("/", captor.getValue());
+        assertEquals("/home", captor.getValue());
 
         UserObject result = ofy().load().type(UserObject.class).id(id).now();
 

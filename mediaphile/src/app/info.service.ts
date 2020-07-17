@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {map, tap} from "rxjs/operators";
 import {Observable, Subscription} from "rxjs";
@@ -8,15 +8,18 @@ import {MovieSearchResult} from "./struct/MovieSearchResult";
 import {LoginStatusStruct} from "./struct/loginStatusStruct";
 import {QueueEntity} from "./struct/queue.entity";
 import {LoginStatus} from "./auth/login.status";
+import {Review} from "./struct/Review";
 
-@Injectable()
-
+@Injectable({
+  providedIn: "root"
+})
 export class InfoService {
 
   private apiBackendUrl: string = environment.backendEndpoint;
   private getMovieDetailsEndpoint: string = `${this.apiBackendUrl}movies/details`;
   private getMovieSearch: string = `${this.apiBackendUrl}movies/search`;
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
+  private getReviews: string = `${this.apiBackendUrl}reviews`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
 
@@ -63,22 +66,43 @@ export class InfoService {
     })
   }
 
-  public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userID: String) {
+  public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userId: String) {
     return this.http.post(this.postQueueEndpoint, {
-      "entityId": id,
+      "mediaId": id,
       "title": title,
-      "type":type,
-      "entityType": entityType,
+      "mediaType":type,
+      "listType": entityType,
       "artUrl": posterPath,
-      "userID": userID
+      "userId": userId
     })
   }
 
-  public getQueue(userID: string, type: string) {
+  public getQueue(userId: string, type: string) {
     return this.http.get(this.postQueueEndpoint, {
       params: {
-        "userID": userID,
-        "entityType": type
+        "userId": userId,
+        "listType": type
+      }
+    });
+  }
+
+  public getReviewsForMedia(id: string, contentType: string) {
+    return this.http.get<Review[]>(this.getReviews, {
+      params: {
+        contentType: contentType,
+        contentId: id
+      }
+    })
+  }
+
+  public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
+    return this.http.post(this.getReviews, {}, {
+      params: {
+        "contentType": contentType,
+        "contentId": id,
+        "reviewTitle": title,
+        "reviewBody": reviewBody,
+        "rating": String(rating)
       }
     });
   }

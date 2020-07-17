@@ -1,0 +1,21 @@
+<div class = "container">
+  <a href = "user/{{review.authorId}}" class = "author-name">{{review.authorName}}</a>
+  <span> rated it </span>
+
+  <ngb-rating  [(rate)]="currentRate" [max]="5" [readonly]=true>
+    <ng-template let-fill="fill" let-index="index">
+      <span class="star" [class.filled]="fill === 100" [class.bad]="index < 5">&#9733;</span>
+    </ng-template>
+  </ngb-rating>
+  <span class ="float-right">
+    {{review.timestamp | date: 'MM-dd-yyyy'}}
+  </span>
+  <div class = "review-title">
+    {{review.reviewTitle}}
+  </div>
+  <div class = "review-text"  [class.show]="show">
+    {{review.reviewBody}}
+  </div>
+
+  <span class = "show-more" (click)="show = !show">{{ show ? 'Show less': 'Show More' }}</span>
+</div>

@@ -43,8 +43,9 @@ export class MovieDetailsComponent implements OnInit {
       if(this.entity["posterPath"]) {
         return "https://image.tmdb.org/t/p/w500" + this.entity['posterPath']
       }
-    return "assets/poster-placeholder.png"
-  }
+      return "assets/poster-placeholder.png"
+    }
+
 
   public addToQueuedList() {
     this.infoSvc.postQueue(
@@ -74,5 +75,9 @@ export class MovieDetailsComponent implements OnInit {
         alert("Successfully added to watched list!");
       }
     })
+  }
+
+  scroll(el: HTMLElement) {
+    el.scrollIntoView();
   }
 }

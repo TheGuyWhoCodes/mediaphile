@@ -1,0 +1,75 @@
+<div class="container">
+  <div *ngIf="error" class="alert alert-danger">
+    {{error}}
+  </div>
+  <form #heroForm="ngForm" (ngSubmit)="submitReview()">
+    <div [hidden]="heroForm.submitted && successfullySubmitted">
+      <div class="cross-validation" [class.cross-validation-error]="heroForm.errors?.identityRevealed && (heroForm.touched || heroForm.dirty)">
+        <div class="form-group">
+          <label for="name">Review Title</label>
+          <input id="name" name="name" class="form-control"
+                 required minlength="4"
+                 maxlength="25"
+                 [(ngModel)]="hero.title" #name="ngModel" >
+
+          <div *ngIf="name.invalid && (name.dirty || name.touched)"
+               class="alert alert-danger">
+
+            <div *ngIf="name.errors.required">
+              Title is required.
+            </div>
+            <div *ngIf="name.errors.minlength">
+              Title must be at least 4 characters long.
+            </div>
+            <div *ngIf="name.errors.maxLength">
+              Title cannot be more than 25 characters long.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="review">Review</label>
+          <textarea id="review" name="review" class="form-control"
+                 required minlength="10"
+                 [(ngModel)]="hero.review" #review="ngModel" rows="3"></textarea>
+
+          <div *ngIf="review.invalid && (review.dirty || review.touched)"
+               class="alert alert-danger">
+
+            <div *ngIf="review.errors.required">
+              Review body is required.
+            </div>
+            <div *ngIf="review.errors.minlength">
+              Review body must be at least 10 characters long.
+            </div>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <span>Rating: </span>
+          <ngb-rating [(rate)]="hero.currentRate" [max]="5">
+            <ng-template let-fill="fill" let-index="index">
+              <span class="star" [class.filled]="fill === 100" [class.bad]="index < 5">&#9733;</span>
+            </ng-template>
+          </ngb-rating>
+        </div>
+      </div>
+
+      <div class="modal-footer" >
+        <div class="spinner-border" *ngIf = loading>
+          <span class="sr-only">Loading...</span>
+        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-default" [disabled]="(heroForm.invalid) || (hero.currentRate == 0)">Submit</button>
+      </div>
+    </div>
+
+    <div class="submitted-message" *ngIf="(heroForm.submitted) && successfullySubmitted">
+      <h4>You've submitted your review, "{{ heroForm.value.name }}"!</h4>
+      <div class="modal-footer">
+        <button (click)="reload()" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </form>
+</div>

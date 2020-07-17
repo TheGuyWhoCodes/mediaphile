@@ -1,0 +1,18 @@
+.review-container {
+  width:60%;
+}
+.review {
+  margin: .3em 0 ;
+}
+
+h3 {
+  padding: 1em;
+}
+@media only screen and (max-width: 768px) {
+  span {
+    display:none;
+  }
+  .review-container {
+    width:90%;
+  }
+}
