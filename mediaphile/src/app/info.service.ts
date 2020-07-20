@@ -86,10 +86,10 @@ export class InfoService {
     })
   }
 
-  public getQueue(userID: string, type: string) {
+  public getQueue(userId: string, type: string) {
     return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
-        "userId": userID,
+        "userId": userId,
         "listType": type
       }
     });
