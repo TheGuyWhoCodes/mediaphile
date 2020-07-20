@@ -21,6 +21,7 @@ import {AuthGuardService} from "./auth/auth-guard.service";
 import {LoginStatus} from "./auth/login.status";
 import { QueueComponent } from './pages/home/queue/queue.component';
 import { HomeEntityComponent } from './pages/home/home-entity/home-entity.component';
+import { ModalComponent } from './pages/helper/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { HomeEntityComponent } from './pages/home/home-entity/home-entity.compon
     LoginComponent,
     HomeComponent,
     QueueComponent,
-    HomeEntityComponent
+    HomeEntityComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
