@@ -25,6 +25,14 @@ export class UserProfileComponent implements OnInit {
   public entity: {};
   public hasResults: boolean;
 
+<<<<<<< HEAD
+=======
+  public followed: boolean;
+
+  public nFollowing: number;
+  public nFollowers: number;
+
+>>>>>>> cd47572... Implement working follow button and follower/following lists populated by dummy data
   private profileColor: string;
 
   constructor(public loginStatus: LoginStatus, private title: Title,
@@ -47,6 +55,13 @@ export class UserProfileComponent implements OnInit {
     } else {
       this.subscribeSelf();
     }
+<<<<<<< HEAD
+=======
+
+    this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
+      this.followed = data;
+    });
+>>>>>>> cd47572... Implement working follow button and follower/following lists populated by dummy data
   }
 
   subscribeSelf() {
@@ -99,4 +114,18 @@ export class UserProfileComponent implements OnInit {
 
     return (brightness > 125) ? '#000000' : '#FFFFFF';
   }
+<<<<<<< HEAD
+=======
+
+  toggleFollow() {
+    let old_followed = this.followed;
+    this.followed = !this.followed;
+
+    if (old_followed) {
+      this.infoSvc.deleteFollow(this.profileId);
+    } else {
+      this.infoSvc.postFollow(this.profileId);
+    }
+  }
+>>>>>>> cd47572... Implement working follow button and follower/following lists populated by dummy data
 }

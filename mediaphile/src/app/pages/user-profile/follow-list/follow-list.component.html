@@ -1,6 +1,6 @@
 <div *ngIf = "hasReceivedResults()">
   <div *ngFor="let entry of entities">
-    <app-follow-entity [entity]="entry"></app-follow-entity>
+    <app-follow-entity [userId]="entry"></app-follow-entity>
   </div>
   <div *ngIf="isEntitiesEmpty()">
     <div class = "text-center">

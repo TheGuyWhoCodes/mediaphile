@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {InfoService} from "../../../../info.service";
 
 @Component({
   selector: 'app-follow-entity',
@@ -8,49 +9,17 @@ import {Component, Input, OnInit} from '@angular/core';
 export class FollowEntityComponent implements OnInit {
 
   @Input()
-  entity: {} = {}
-  type: string
+  userId: string;
 
-  constructor() { }
+  public entity: {};
+  public hasResults: boolean;
+
+  constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    if (this.entity["type"] != undefined){
-      this.type = this.entity["type"]
-    }
-    console.log(this.entity);
-    console.log(this.getEntityUrl())
-  }
-  public getEntityImageUrl() : string {
-    if(this.entity["artUrl"]) {
-      return "https://image.tmdb.org/t/p/w500" + this.entity['artUrl']
-    }
-    return "https://critics.io/img/movies/poster-placeholder.png"
-  }
-
-  public getReleaseYear() : string {
-    if(this.type == "movie") {
-      if(this.entity["release_date"]) {
-        return this.entity["release_date"].slice(0,4);
-      }
-    } else if(this.type == "book") {
-      if(this.entity["volumeInfo"]["publishedDate"]) {
-        return this.entity["volumeInfo"]["publishedDate"].slice(0,4);
-      }
-    }
-    return "N/A"
-  }
-
-  public getEntityUrl() : string {
-    if(this.type == "book") {
-      return `/book/${this.entity["entityId"]}`
-    } else if(this.type == "movie") {
-      return `/movie/${this.entity["entityId"]}`
-    }
-  }
-
-  public getEntityTitle() : string {
-    if(this.entity["title"]) {
-      return this.entity["title"];
-    }
+    this.infoSvc.getUser(this.userId).subscribe(data => {
+      this.entity = data;
+      this.hasResults = true;
+    });
   }
 }
