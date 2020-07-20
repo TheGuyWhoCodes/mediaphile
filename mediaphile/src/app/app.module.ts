@@ -10,7 +10,7 @@ import { GreetingComponent } from './pages/greeting/greeting.component';
 import {FormsModule} from "@angular/forms";
 import { SearchComponent } from './pages/search/search.component';
 import {InfoService} from "./info.service";
-import {HttpClient, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from "@angular/common/http";
 import { ResultsComponent } from './pages/search/results/results.component';
 import { EntityComponent } from './pages/search/entity/entity.component';
 import { BookDetailsComponent } from './pages/book-details/book-details.component';
@@ -26,6 +26,7 @@ import {ReviewComponent} from "./pages/helper/review/review.component";
 import {ReviewSubmitComponent} from "./pages/helper/review-submit/review-submit.component";
 import {ReviewEntityComponent} from "./pages/helper/review/review-entity/review-entity.component";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {HttpErrorInterceptor} from "./http.error.interceptor";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,11 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
     HttpClient,
     AuthGuardService,
     LoginStatus,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    },
     ModalComponent
   ],
   bootstrap: [AppComponent]
