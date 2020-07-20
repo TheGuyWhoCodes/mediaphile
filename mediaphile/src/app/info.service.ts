@@ -84,11 +84,21 @@ export class InfoService {
   }
 
   public getQueue(userID: string, type: string) {
-    return this.http.get(this.postQueueEndpoint, {
+    return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
         "userId": userID,
         "listType": type
       }
     });
+  }
+
+  public deleteFromQueue(listType: string, mediaType: string, mediaId: string) {
+    return this.http.delete(this.postQueueEndpoint, {
+      params: {
+        mediaId: mediaId,
+        listType: listType,
+        mediaType: mediaType
+      }
+    })
   }
 }
