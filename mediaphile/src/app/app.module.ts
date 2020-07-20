@@ -60,7 +60,8 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
     InfoService,
     HttpClient,
     AuthGuardService,
-    LoginStatus
+    LoginStatus,
+    ModalComponent
   ],
   bootstrap: [AppComponent]
 })
