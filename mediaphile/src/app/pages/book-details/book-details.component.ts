@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {InfoService} from "../../info.service";
 import {LoginStatus} from "../../auth/login.status";
 import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 import {Observable} from "rxjs";
 import {faMinusCircle} from "@fortawesome/free-solid-svg-icons";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {ModalComponent} from "../helper/modal/modal.component";
 
 @Component({
   selector: 'app-book-details',
@@ -12,6 +14,7 @@ import {faMinusCircle} from "@fortawesome/free-solid-svg-icons";
   styleUrls: ['./book-details.component.scss']
 })
 export class BookDetailsComponent implements OnInit {
+
 
   public miniusCircle = faMinusCircle;
 
@@ -31,7 +34,7 @@ export class BookDetailsComponent implements OnInit {
   public isInQueue: boolean;
   public isInWatched: boolean;
 
-  constructor(private infoSvc: InfoService, public loginStatus: LoginStatus, private route: ActivatedRoute, private title: Title) { }
+  constructor(private infoSvc: InfoService, public loginStatus: LoginStatus, private route: ActivatedRoute, private title: Title, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.loginStatus.sharedAccountId.subscribe(x => {
@@ -89,8 +92,10 @@ export class BookDetailsComponent implements OnInit {
     ).subscribe(x => {
       this.isInQueue = true;
       if(x["success"]) {
-        alert("Successfully added to queue!");
+        this.showMessage("Success!", "Successfully added to queue!");
       }
+    }, error => {
+      this.showMessage("Oops!", "Unable to add book to queue, try again later!");
     })
   }
 
@@ -105,8 +110,10 @@ export class BookDetailsComponent implements OnInit {
     ).subscribe(x => {
       this.isInWatched = true;
       if(x["success"]) {
-        alert("Successfully added to watched list!");
+        this.showMessage("Success!", "Successfully added to read list!");
       }
+    }, error => {
+      this.showMessage("Oops!", "Unable to add book to read list, try again later!");
     })
   }
 
@@ -117,7 +124,9 @@ export class BookDetailsComponent implements OnInit {
       } else {
         this.isInWatched = false;
       }
-      alert("Successfully removed!");
+      this.showMessage("Success!", "Deleted book successfully!");
+    }, error => {
+      this.showMessage("Oops!", "Unable to delete book from list, try again later!");
     })
   }
 
@@ -129,5 +138,11 @@ export class BookDetailsComponent implements OnInit {
 
   scroll(el: HTMLElement) {
     el.scrollIntoView();
+  }
+
+  public showMessage(title: string, message: string) {
+    const modalRef = this.modalService.open(ModalComponent);
+    modalRef.componentInstance.title = title
+    modalRef.componentInstance.message = message
   }
 }
