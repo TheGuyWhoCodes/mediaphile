@@ -24,6 +24,25 @@ jobs:
         with:
           version: '275.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
+
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12.8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.8
+
+      - name: Install Angular
+        run: npm install -g @angular/cli
+
+      - name: Install Angular Dep.
+        run: cd mediaphile && npm install
+
+      - name: Test Angular Application
+        run: cd mediaphile && ng test --watch=false --browsers=ChromeHeadlessCustom
+
+      - name: Build Angular Application
+        run: cd mediaphile && ng b --prod
+
       - name: Write value to Properties-file
         uses: christian-draeger/write-properties@1.0.0
         with:

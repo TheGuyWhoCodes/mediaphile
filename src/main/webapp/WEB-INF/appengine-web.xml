@@ -8,4 +8,7 @@
         <!-- prevent unwanted caching when accessing via the web preview server -->
         <include path="/**" expiration="0s" />
     </static-files>
+    <static-error-handlers>
+        <handler file="index.html" />
+    </static-error-handlers>
 </appengine-web-app>

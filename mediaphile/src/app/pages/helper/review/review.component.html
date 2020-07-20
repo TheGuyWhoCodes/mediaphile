@@ -1,0 +1,29 @@
+<div class = "review-container" *ngIf="reviews | async as reviews ; else loading">
+  <button  *ngIf = "loginStatus.sharedStatus | async" class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">Write a Review</button>
+  <div *ngFor="let review of reviews">
+    <app-review-entity [review]="review"></app-review-entity>
+  </div>
+  <div *ngIf="reviews.length == 0">
+    <h3><fa-icon [icon]="faEye"></fa-icon> No reviews yet! Be the first to add one</h3>
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Submit a Review</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <app-review-submit [id]="id" [type]="type"></app-review-submit>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</ng-template>

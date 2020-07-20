@@ -21,7 +21,11 @@ import {AuthGuardService} from "./auth/auth-guard.service";
 import {LoginStatus} from "./auth/login.status";
 import { QueueComponent } from './pages/home/queue/queue.component';
 import { HomeEntityComponent } from './pages/home/home-entity/home-entity.component';
-import { ModalComponent } from './pages/helper/modal/modal.component';
+import {ModalComponent} from "./pages/helper/modal/modal.component";
+import {ReviewComponent} from "./pages/helper/review/review.component";
+import {ReviewSubmitComponent} from "./pages/helper/review-submit/review-submit.component";
+import {ReviewEntityComponent} from "./pages/helper/review/review-entity/review-entity.component";
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -38,6 +42,9 @@ import { ModalComponent } from './pages/helper/modal/modal.component';
     HomeComponent,
     QueueComponent,
     HomeEntityComponent,
+    ReviewComponent,
+    ReviewEntityComponent,
+    ReviewSubmitComponent,
     ModalComponent
   ],
   imports: [
@@ -45,7 +52,8 @@ import { ModalComponent } from './pages/helper/modal/modal.component';
     AppRoutingModule,
     FontAwesomeModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [
     Title,

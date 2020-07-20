@@ -11,6 +11,9 @@ span {
     display:none;
   }
   .nav-tabs {
-    width:33%;
+    width:100%;
+  }
+  .nav-tabs .nav-link {
+    width: 33%;
   }
 }

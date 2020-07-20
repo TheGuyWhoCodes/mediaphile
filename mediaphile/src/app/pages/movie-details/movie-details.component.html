@@ -19,12 +19,15 @@
             <div *ngIf = "loginStatus.sharedStatus | async" class="btn-block">
               <button (click)="addToQueuedList()" class="btn-watch">Watch Later</button>
               <button (click)="addToWatchedList()" class="btn-watch">Marked as Watched</button>
-              <button class="btn-wait">Write a Review</button>
+              <button (click)="scroll(reviews)" class="btn-wait">Write a Review</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-
   </main>
+  <div #reviews class = "container reviews">
+    <h2>Reviews: </h2>
+    <app-review [type]="'movie'" [id]="entity['id']"></app-review>
+  </div>
 </div>

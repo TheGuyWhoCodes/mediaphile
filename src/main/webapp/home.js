@@ -102,6 +102,7 @@ function loadUser(id) {
     .then((user) => {
         userName.innerText = user.username;
         userName.style.display = "block";
+        userName.href = "profile/profile.html?id=" + id;
     });
 }
 

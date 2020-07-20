@@ -65,6 +65,6 @@ public class LoginRegistrationServlet extends HttpServlet {
 
         storeUserIfNotFound(user.getUserId(), user.getEmail().split("@")[0], user.getEmail(), "");
 
-        response.sendRedirect("/");
+        response.sendRedirect("/home");
     }
 }

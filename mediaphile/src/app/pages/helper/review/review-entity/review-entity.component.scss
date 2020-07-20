@@ -1,0 +1,43 @@
+.container {
+  margin-bottom:2em;
+}
+.star {
+  font-size: 1.5rem;
+  color: #b0c4de;
+}
+.filled {
+  color: #1e90ff;
+}
+.bad {
+  color: #deb0b0;
+}
+.filled.bad {
+  color: #ff1e1e;
+}
+
+.author-name {
+  font-weight: 700;
+}
+
+.review-title {
+  font-weight: 700;
+  font-size: 18px;
+  margin:.3em 0;
+}
+
+.review-text {
+  font-size: 16px;
+  max-height: 150px;
+  overflow: hidden;
+}
+
+.show {
+  overflow: visible;
+  height: auto;
+  max-height: initial;
+}
+
+.show-more {
+  cursor:pointer;
+  color:#1d7fda;
+}

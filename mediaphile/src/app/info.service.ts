@@ -8,9 +8,11 @@ import {MovieSearchResult} from "./struct/MovieSearchResult";
 import {LoginStatusStruct} from "./struct/loginStatusStruct";
 import {QueueEntity} from "./struct/queue.entity";
 import {LoginStatus} from "./auth/login.status";
+import {Review} from "./struct/Review";
 
-@Injectable()
-
+@Injectable({
+  providedIn: "root"
+})
 export class InfoService {
 
   private apiBackendUrl: string = environment.backendEndpoint;
@@ -20,6 +22,7 @@ export class InfoService {
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
+  private getReviews: string = `${this.apiBackendUrl}reviews`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -88,6 +91,27 @@ export class InfoService {
       params: {
         "userId": userID,
         "listType": type
+      }
+    });
+  }
+
+  public getReviewsForMedia(id: string, contentType: string) {
+    return this.http.get<Review[]>(this.getReviews, {
+      params: {
+        contentType: contentType,
+        contentId: id
+      }
+    })
+  }
+
+  public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
+    return this.http.post(this.getReviews, {}, {
+      params: {
+        "contentType": contentType,
+        "contentId": id,
+        "reviewTitle": title,
+        "reviewBody": reviewBody,
+        "rating": String(rating)
       }
     });
   }

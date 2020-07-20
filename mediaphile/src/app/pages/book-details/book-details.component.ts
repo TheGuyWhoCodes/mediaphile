@@ -126,4 +126,8 @@ export class BookDetailsComponent implements OnInit {
       return el["mediaId"] === mediaId;
     }));
   }
+
+  scroll(el: HTMLElement) {
+    el.scrollIntoView();
+  }
 }
