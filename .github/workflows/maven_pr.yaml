@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         java: [8]
+
     name: Java ${{ matrix.java }} compile
     steps:
       - uses: actions/checkout@master
@@ -16,12 +17,26 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
 
+      - uses: actions/checkout@v1
+      - name: Use Node.js 12.8
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.8
+
+      - name: Install Angular
+        run: npm install -g @angular/cli
+
+      - name: Install Angular Dep.
+        run: cd mediaphile && npm install
+
+      - name: Test Angular Application
+        run: cd mediaphile && ng test --watch=false --browsers=ChromeHeadlessCustom
+
       - name: Write value to Properties-file
         uses: christian-draeger/write-properties@1.0.0
         with:
           path: './src/main/resources/config.properties'
           property: 'movie_apikey'
           value: ${{secrets.MOVIE_APIKEY}}
-
       - run: |
           mvn -f pom.xml clean install test
