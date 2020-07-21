@@ -21,7 +21,9 @@ export class InfoService {
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
   private getReviews: string = `${this.apiBackendUrl}reviews`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
+  private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
+  private followListEndpoint: string = `${this.apiBackendUrl}follow`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -66,6 +68,14 @@ export class InfoService {
     })
   }
 
+  public getUser(userId: string) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "id": userId,
+      }
+    });
+  }
+
   public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userId: String) {
     return this.http.post(this.postQueueEndpoint, {
       "mediaId": id,
@@ -103,6 +113,22 @@ export class InfoService {
         "reviewTitle": title,
         "reviewBody": reviewBody,
         "rating": String(rating)
+      }
+    })
+  }
+
+  public postFollow(userId: string, targetId: string) {
+    return this.http.post(this.followListEndpoint, {
+      "userId": userId,
+      "targetId": targetId // TODO: Ensure these names are correct
+    });
+  }
+
+  public getFollowList(userId: string, type: string) {
+    return this.http.get(this.followListEndpoint, {
+      params: {
+        "userId": userId,
+        "type": type // TODO: Ensure these names are correct
       }
     });
   }
