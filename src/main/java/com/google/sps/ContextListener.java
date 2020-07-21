@@ -6,6 +6,7 @@ import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
+import com.google.sps.model.follow.FollowItem;
 import com.googlecode.objectify.ObjectifyService;
 
 import javax.servlet.ServletContextEvent;
@@ -36,5 +37,6 @@ public class ContextListener implements ServletContextListener {
         ObjectifyService.register(ViewedListItemObject.class);
         ObjectifyService.register(UserObject.class);
         ObjectifyService.register(ReviewObject.class);
+        ObjectifyService.register(FollowItem.class);
     }
 }

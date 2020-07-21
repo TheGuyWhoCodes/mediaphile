@@ -36,9 +36,7 @@ public class FollowServlet extends HttpServlet {
         String userId = request.getParameter("userId");
         String listType = request.getParameter("listType");
 
-        if(userId == null || userId.isEmpty() || listType == null 
-            || !listType.equals(FollowItem.TYPE_FOLLOWERS)
-            || !listType.equals(FollowItem.TYPE_FOLLOWING)) {
+        if(userId == null || userId.isEmpty() || listType == null) {
                 setInvalidGetResponse(response);
             return;
         }
@@ -74,13 +72,12 @@ public class FollowServlet extends HttpServlet {
             return;
         }
 
-        ofy().save().entity(newFollowItem).now();
-        /*try {
+        try {
             ofy().save().entity(newFollowItem).now();
         } catch(Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
-        }*/
+        }
         newResponse.setSuccess(true);
         newResponse.setEntity(newFollowItem);
         response.getWriter().println(gson.toJsonTree(newResponse));

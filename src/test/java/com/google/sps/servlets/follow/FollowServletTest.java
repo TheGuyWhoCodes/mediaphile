@@ -73,11 +73,25 @@ public class FollowServletTest extends Mockito {
 
         new FollowServlet().doGet(request, response);
         writer.flush();
-        /*List<FollowItem> ob = mapper.readValue(stringWriter.toString(), new TypeReference<List<FollowItem>>(){});
+        List<FollowItem> ob = mapper.readValue(stringWriter.toString(), new TypeReference<List<FollowItem>>(){});
         assertEquals(1, ob.size());
-        assertEquals("3210", ob.get(0).getTargetId());*/
-        assertEquals(stringWriter.toString().trim(), "");
+        assertEquals("0123", ob.get(0).getUserId());
     }
+
+    @Test
+    public void testGetFollowingList() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        when(request.getParameter("userId")).thenReturn("9876");
+        when(request.getParameter("listType")).thenReturn(FollowItem.TYPE_FOLLOWING);
+
+        new FollowServlet().doGet(request, response);
+        writer.flush();
+        List<FollowItem> ob = mapper.readValue(stringWriter.toString(), new TypeReference<List<FollowItem>>(){});
+        assertEquals(1, ob.size());
+        assertEquals("3210", ob.get(0).getTargetId());
+    }
+
 
     @Test
     public void testPostFollowing() throws IOException {
@@ -85,7 +99,7 @@ public class FollowServletTest extends Mockito {
 
         String json = "{\n" +
                 "\t\"userId\": \"9876\",\n" +
-                "\t\"targetId\": \"3210\",\n" +
+                "\t\"targetId\": \"3210\"\n" +
                 "}";
         when(request.getInputStream()).thenReturn(
                 new TestDelegatingServletInputStream(
