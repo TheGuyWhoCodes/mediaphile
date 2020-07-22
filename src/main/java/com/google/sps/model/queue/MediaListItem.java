@@ -56,6 +56,10 @@ public class MediaListItem {
     @Index
     private String userId;
 
+    @JsonProperty
+    @Index
+    private String username;
+
     public String getTitle() {
         return title;
     }
@@ -118,5 +122,13 @@ public class MediaListItem {
 
     public void setListType(String listType) {
         this.listType = listType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
