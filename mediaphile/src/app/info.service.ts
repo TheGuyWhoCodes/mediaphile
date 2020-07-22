@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {map, tap} from "rxjs/operators";
 import {Observable, Subscription} from "rxjs";
@@ -19,11 +19,10 @@ export class InfoService {
   private getMovieDetailsEndpoint: string = `${this.apiBackendUrl}movies/details`;
   private getMovieSearch: string = `${this.apiBackendUrl}movies/search`;
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
-  private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
+  private getReviews: string = `${this.apiBackendUrl}reviews`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
   private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
-  private getReviews: string = `${this.apiBackendUrl}reviews`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
@@ -59,14 +58,6 @@ export class InfoService {
     })
   }
 
-  public getBookDetails(id: string) {
-    return this.http.get(this.getBookDetailsEndpoint, {
-      params: {
-        "id": id
-      }
-    })
-  }
-
   public login() {
     return this.http.get<LoginStatusStruct>(this.loginStatus)
   }
@@ -97,7 +88,7 @@ export class InfoService {
   }
 
   public getQueue(userId: string, type: string) {
-    return this.http.get<Object[]>(this.postQueueEndpoint, {
+    return this.http.get(this.postQueueEndpoint, {
       params: {
         "userId": userId,
         "listType": type
@@ -140,15 +131,5 @@ export class InfoService {
         "type": type // TODO: Ensure these names are correct
       }
     });
-  }
-
-  public deleteFromQueue(listType: string, mediaType: string, mediaId: string) {
-    return this.http.delete(this.postQueueEndpoint, {
-      params: {
-        mediaId: mediaId,
-        listType: listType,
-        mediaType: mediaType
-      }
-    })
   }
 }

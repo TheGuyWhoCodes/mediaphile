@@ -166,6 +166,7 @@ public class MediaListItemServlet extends HttpServlet {
         // delete from db, will delete ANY instance of that id from the user
         // ie. if somehow multiple of the same movie / book get saved in the list
         ofy().delete().keys(allKeys).now();
+        response.sendError(HttpServletResponse.SC_OK);
     }
 
     /**

@@ -3,11 +3,11 @@ import {InfoService} from "../../../info.service";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
-  selector: 'app-queue',
-  templateUrl: './queue.component.html',
-  styleUrls: ['./queue.component.scss']
+  selector: 'app-follow-list',
+  templateUrl: './follow-list.component.html',
+  styleUrls: ['./follow-list.component.scss']
 })
-export class QueueComponent implements OnInit {
+export class FollowListComponent implements OnInit {
 
   faEye = faEye;
 
@@ -24,7 +24,7 @@ export class QueueComponent implements OnInit {
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    this.infoSvc.getQueue(this.userID, this.type).subscribe(x => {
+    this.infoSvc.getFollowList(this.userID, this.type).subscribe(x => {
       this.entities.push.apply(this.entities, x)
       this.hasResults = true;
     })
@@ -39,7 +39,12 @@ export class QueueComponent implements OnInit {
   }
 
   public getEmptyText() : string {
-    return (this.userID === this.viewerId) ? "Find something to add!" : "No items added";
+    if (this.type == "followers") {
+      return (this.userID === this.viewerId) ? "Find someone to follow!" : "No followers";
+    } else if (this.type == "following") {
+      return "Not following anyone";
+    }
+    return "";
   }
 
 }
