@@ -19,7 +19,7 @@ export class BookDetailsComponent implements OnInit {
   public miniusCircle = faMinusCircle;
 
   public userId: string;
-  public id: string;
+  public bookId: string;
 
   public entity: Observable<any>;
   public bookData: {};
@@ -43,12 +43,12 @@ export class BookDetailsComponent implements OnInit {
         this.infoSvc.getQueue(this.userId, "queue").subscribe(data => {
           this.queue = data;
           this.hasQueue = true;
-          this.isInQueue = this.isItemInList(data, this.id);
+          this.isInQueue = this.isItemInList(data, this.bookId);
         })
         this.infoSvc.getQueue(this.userId, "viewed").subscribe(data => {
           this.watched = data;
           this.hasWatched = true;
-          this.isInWatched = this.isItemInList(data, this.id);
+          this.isInWatched = this.isItemInList(data, this.bookId);
         })
       }
     })
@@ -58,10 +58,10 @@ export class BookDetailsComponent implements OnInit {
     })
 
     if (this.route.snapshot.paramMap.get("id") != undefined) {
-      this.id = this.route.snapshot.paramMap.get("id");
+      this.bookId = this.route.snapshot.paramMap.get("id");
     }
-    if(this.id != null){
-      this.entity = this.infoSvc.getBookDetails(this.id);
+    if(this.bookId != null){
+      this.entity = this.infoSvc.getBookDetails(this.bookId);
       this.entity.subscribe(data => {
         this.bookData = data;
         this.title.setTitle(`Mediaphile Listing for "${data['volumeInfo']["title"]}"`)
@@ -84,7 +84,7 @@ export class BookDetailsComponent implements OnInit {
   public addToQueuedList() {
     this.infoSvc.postQueue(
       this.getEntityPosterUrl(),
-      this.id,
+      this.bookId,
       "book",
       this.bookData["volumeInfo"]["title"],
       "queue",
@@ -102,7 +102,7 @@ export class BookDetailsComponent implements OnInit {
   public addToWatchedList() {
     this.infoSvc.postQueue(
       this.getEntityPosterUrl(),
-      this.id,
+      this.bookId,
       "book",
       this.bookData["volumeInfo"]["title"],
       "viewed",
@@ -118,7 +118,7 @@ export class BookDetailsComponent implements OnInit {
   }
 
   public removeFromList(listType: string) {
-    this.infoSvc.deleteFromQueue(listType, "book", this.id).subscribe(data => {
+    this.infoSvc.deleteFromQueue(listType, "book", this.bookId).subscribe(data => {
       if(listType == "queue") {
         this.isInQueue = false;
       } else {
