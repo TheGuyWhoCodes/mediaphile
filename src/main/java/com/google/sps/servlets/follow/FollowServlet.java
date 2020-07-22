@@ -7,10 +7,15 @@ import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.common.collect.Iterables;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.sps.model.follow.FollowItem;
 import com.google.sps.model.follow.FollowResponse;
+import com.google.sps.model.follow.FollowListObject;
+import com.google.sps.model.user.UserObject;
 import com.google.sps.util.Utils;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.sps.util.HttpUtils.*;
@@ -34,14 +40,21 @@ public class FollowServlet extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
 
         String userId = request.getParameter("userId");
-        String listType = request.getParameter("listType");
 
-        if(userId == null || userId.isEmpty() || listType == null) {
+        if(userId == null || userId.isEmpty()) {
                 setInvalidGetResponse(response);
             return;
         }
 
-        List<FollowItem> result = getList(userId, listType);
+        List<FollowItem> followers = getList(userId, FollowItem.TYPE_FOLLOWERS);
+        List<FollowItem> following = getList(userId, FollowItem.TYPE_FOLLOWING);
+
+        List<UserObject> followerUserObjects = convertToUserObject(gson.toJsonTree(followers), "userId");
+        List<UserObject> targetUserObjects = convertToUserObject(gson.toJsonTree(following), "targetId");
+
+        FollowListObject result = new FollowListObject(followerUserObjects, targetUserObjects,
+         followerUserObjects.size(), targetUserObjects.size());
+
         response.getWriter().println(gson.toJsonTree(result));
     }
 
@@ -83,7 +96,7 @@ public class FollowServlet extends HttpServlet {
         response.getWriter().println(gson.toJsonTree(newResponse));
     }
 
-    /*@Override
+    @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         User user = userService.getCurrentUser();
@@ -95,11 +108,13 @@ public class FollowServlet extends HttpServlet {
         String userId = user.getUserId();
         String followingId = request.getParameter("followingId");
 
-        ofy().delete().type(FollowItem.class)
-        .filter("followerId", userId)
-        .filter("followingId", followingId).now();
+        ofy().delete().keys(
+            ofy().load().type(FollowItem.class)
+            .filter("userId", userId)
+            .filter("targetId", followingId).keys())
+        .now();
         response.sendError(HttpServletResponse.SC_OK);
-    }*/
+    }
 
 
     private List<FollowItem> getList(String userId, String followType) {
@@ -110,5 +125,18 @@ public class FollowServlet extends HttpServlet {
             //Sets user as follower to retrieve following.
             return ofy().load().type(FollowItem.class).filter("userId", userId).list();
         }
+    }
+
+    private List<UserObject> convertToUserObject(JsonElement followList, String type) {
+        JsonArray arrayList = followList.getAsJsonArray();
+        List<UserObject> userObject = new ArrayList<UserObject>();
+
+        for(int i=0; i < arrayList.size(); i++) {
+            String id = (((JsonObject)arrayList.get(0)).get(type)).toString();
+            UserObject user = ofy().load().type(UserObject.class).id(id.substring(1, id.length()-1)).now();
+            user.setEmail("");
+            userObject.add(user);
+        }
+        return userObject;
     }
 }
