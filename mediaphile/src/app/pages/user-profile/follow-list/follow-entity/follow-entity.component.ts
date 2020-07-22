@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-home-entity',
-  templateUrl: './home-entity.component.html',
-  styleUrls: ['./home-entity.component.scss']
+  selector: 'app-follow-entity',
+  templateUrl: './follow-entity.component.html',
+  styleUrls: ['./follow-entity.component.scss']
 })
-export class HomeEntityComponent implements OnInit {
+export class FollowEntityComponent implements OnInit {
 
   @Input()
   entity: {} = {}
