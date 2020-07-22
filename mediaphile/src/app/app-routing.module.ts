@@ -8,7 +8,7 @@ import {LoginComponent} from "./pages/login/login.component";
 import {HomeComponent} from "./pages/home/home.component";
 import {AuthGuardService} from "./auth/auth-guard.service";
 import {QueueComponent} from "./pages/home/queue/queue.component";
-import {UserProfileComponent} from "./pages/user-profile/user-profile.component";
+
 
 const routes: Routes = [
   {
@@ -44,10 +44,6 @@ const routes: Routes = [
   {
     path:"queue",
     component: QueueComponent
-  },
-  {
-    path: "user/:id",
-    component: UserProfileComponent
   }
 ];
 

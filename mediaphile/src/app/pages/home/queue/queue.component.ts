@@ -12,13 +12,10 @@ export class QueueComponent implements OnInit {
   faEye = faEye;
 
   @Input()
-  userID: string;
+  userID: string
 
   @Input()
-  viewerId: string;
-
-  @Input()
-  type: string;
+  type: string
   public hasResults: boolean = false;
   public entities: [] = [];
   constructor(private infoSvc: InfoService) { }
@@ -36,10 +33,6 @@ export class QueueComponent implements OnInit {
 
   public isEntitiesEmpty() : boolean {
     return this.entities.length == 0;
-  }
-
-  public getEmptyText() : string {
-    return (this.userID === this.viewerId) ? "Find something to add!" : "No items added";
   }
 
 }

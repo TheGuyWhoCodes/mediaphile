@@ -49,7 +49,7 @@ export class MovieDetailsComponent implements OnInit {
 
   public addToQueuedList() {
     this.infoSvc.postQueue(
-      this.entity["posterPath"],
+      this.getEntityPosterUrl(),
       this.id,
       "movie",
       this.entity["title"],
@@ -64,7 +64,7 @@ export class MovieDetailsComponent implements OnInit {
 
   public addToWatchedList() {
     this.infoSvc.postQueue(
-      this.entity["posterPath"],
+      this.getEntityPosterUrl(),
       this.id,
       "movie",
       this.entity["title"],
