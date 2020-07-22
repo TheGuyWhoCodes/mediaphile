@@ -21,12 +21,12 @@ import {AuthGuardService} from "./auth/auth-guard.service";
 import {LoginStatus} from "./auth/login.status";
 import { QueueComponent } from './pages/home/queue/queue.component';
 import { HomeEntityComponent } from './pages/home/home-entity/home-entity.component';
-import {ModalComponent} from "./pages/helper/modal/modal.component";
-import {ReviewComponent} from "./pages/helper/review/review.component";
-import {ReviewSubmitComponent} from "./pages/helper/review-submit/review-submit.component";
-import {ReviewEntityComponent} from "./pages/helper/review/review-entity/review-entity.component";
-import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import { ReviewComponent } from './pages/helper/review/review.component';
+import { ReviewEntityComponent } from './pages/helper/review/review-entity/review-entity.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ReviewSubmitComponent } from './pages/helper/review-submit/review-submit.component';
 import {HttpErrorInterceptor} from "./http.error.interceptor";
+import {ModalComponent} from "./pages/helper/modal/modal.component";
 
 @NgModule({
   declarations: [
@@ -54,7 +54,7 @@ import {HttpErrorInterceptor} from "./http.error.interceptor";
     FontAwesomeModule,
     FormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
   ],
   providers: [
     Title,
