@@ -15,7 +15,7 @@ describe('FollowEntityComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ FollowEntityComponent ],
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      providers: [InfoService, HttpClient, HttpHandler, LoginStatus]
+      providers: [InfoService, HttpClient, LoginStatus]
     })
     .compileComponents();
   }));

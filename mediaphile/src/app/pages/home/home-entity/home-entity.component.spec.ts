@@ -15,7 +15,7 @@ describe('HomeEntityComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HomeEntityComponent ],
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      providers: [InfoService, HttpClient, HttpHandler, LoginStatus]
+      providers: [InfoService, HttpClient, LoginStatus]
     })
     .compileComponents();
   }));

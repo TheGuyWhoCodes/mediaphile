@@ -16,7 +16,7 @@ describe('UserProfileComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ UserProfileComponent ],
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
-      providers: [InfoService, HttpClient, HttpHandler, LoginStatus]
+      providers: [InfoService, HttpClient, LoginStatus]
     })
     .compileComponents();
   }));
