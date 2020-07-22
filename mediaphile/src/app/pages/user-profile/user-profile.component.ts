@@ -62,8 +62,10 @@ export class UserProfileComponent implements OnInit {
     this.loginStatus.sharedAccountId.subscribe(userId => {
       this.userId = userId;
       this.isSelf = (this.userId === this.profileId);
-      let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
-      this.title.setTitle(`Mediaphile :: ${whose}Profile`);
+      if (this.entity) {
+        let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
+        this.title.setTitle(`Mediaphile :: ${whose}Profile`);
+      }
     });
   }
 
