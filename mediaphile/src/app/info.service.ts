@@ -150,12 +150,11 @@ export class InfoService {
   }
 
   public userFollows(userId: string, otherId: string) {
-    // TODO: Remove placeholder
-    return of(otherId === "123"); /* this.http.get(this.followListEndpoint, {
+    return this.http.get(this.followListEndpoint, {
       params: {
         "userId": userId,
-        "targetId": otherId // TODO: Ensure these names are correct
+        "targetId": otherId
       }
-    }); */
+    });
   }
 }

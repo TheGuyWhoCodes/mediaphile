@@ -57,7 +57,7 @@ export class UserProfileComponent implements OnInit {
     }
 
     this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
-      this.followed = data;
+      this.followed = (data == true);
     });
 
     // TODO: Pass page number... should it be passed up from follow-list?
