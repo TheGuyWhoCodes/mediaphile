@@ -6,7 +6,6 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {InfoService} from "../../../../info.service";
 import {HttpClient, HttpHandler} from "@angular/common/http";
 import {LoginStatus} from "../../../../auth/login.status";
-import {LoginStatus} from "../../../../auth/login.status";
 
 describe('FollowEntityComponent', () => {
   let component: FollowEntityComponent;
