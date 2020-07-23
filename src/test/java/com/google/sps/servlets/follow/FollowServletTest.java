@@ -83,6 +83,32 @@ public class FollowServletTest extends Mockito {
     }
 
     @Test
+    public void testTrueFollowingBoolean() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        when(request.getParameter("userId")).thenReturn("9876");
+        when(request.getParameter("followingId")).thenReturn("3210");
+
+        new FollowServlet().doGet(request, response);
+        writer.flush();
+        
+        assertEquals(stringWriter.toString().trim(), "true");
+    }
+
+    @Test
+    public void testFalseFollowingBoolean() throws IOException, ServletException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        when(request.getParameter("userId")).thenReturn("9876");
+        when(request.getParameter("followingId")).thenReturn("0123");
+
+        new FollowServlet().doGet(request, response);
+        writer.flush();
+        
+        assertEquals(stringWriter.toString().trim(), "false");
+    }
+
+    @Test
     public void testGetEmptyId() throws IOException, ServletException {
         HttpServletRequest request = mock(HttpServletRequest.class);
 

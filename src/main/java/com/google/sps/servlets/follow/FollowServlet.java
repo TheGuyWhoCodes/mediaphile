@@ -43,11 +43,12 @@ public class FollowServlet extends HttpServlet {
     /**
      * doGet() returns two lists of userobjects, one will be followers while 
      * the other will be a following list by a given user or of a given media item
+     * if followingId is provided it returns if the user is following that user or not
      * Expects either ?userId={id} or ?userId={id}&pageNumber{pageNumber}
      * Returns error 400 if the query parameters are not in either of these formats
      * Returns error 400 if a parameter is empty
      * Simply returns an empty list if the given media ID does not exist to avoid API call
-     * @param request: expects userId, pageNumber is optional
+     * @param request: expects userId, pageNumber and followingId is optional
      * @param response: returns a JSON object of FollowListObject
      * @throws IOException
      */
@@ -57,10 +58,22 @@ public class FollowServlet extends HttpServlet {
 
         String userId = request.getParameter("userId");
         String pageNumber = request.getParameter("pageNumber");
+        String followingId = request.getParameter("followingId");
         int startIndex;
 
         if(userId == null || userId.isEmpty()) {
             setInvalidGetResponse(response);
+            return;
+        }
+
+        if(followingId != null) {
+            QueryKeys<?> targetKey = getUserItems(userId, followingId);
+            
+            if(Iterables.size(targetKey) != 0) {
+                response.getWriter().append("true");
+                return;
+            } 
+            response.getWriter().append("false");
             return;
         }
 
