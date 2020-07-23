@@ -18,7 +18,7 @@ describe('UserProfileComponent', () => {
       imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])],
       providers: [InfoService, HttpClient, LoginStatus]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
 

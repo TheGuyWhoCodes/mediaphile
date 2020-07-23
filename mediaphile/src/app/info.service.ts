@@ -24,6 +24,7 @@ export class InfoService {
   private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
+  private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -48,12 +49,20 @@ export class InfoService {
         "query": query,
         "pageNumber": page.toString()
       }
-    })
+    });
   }
   public getMovieDetails(id: string) {
     return this.http.get(this.getMovieDetailsEndpoint, {
       params: {
         "id": id,
+      }
+    });
+  }
+
+  public getBookDetails(id: string) {
+    return this.http.get(this.getBookDetailsEndpoint, {
+      params: {
+        "id": id
       }
     })
   }
@@ -65,7 +74,7 @@ export class InfoService {
   public logout() {
     this.loginStatusService.sharedUrl.subscribe(x => {
       window.location.href = (x);
-    })
+    });
   }
 
   public getUser(userId: string) {
@@ -93,11 +102,11 @@ export class InfoService {
       "listType": entityType,
       "artUrl": posterPath,
       "userId": userId
-    })
+    });
   }
 
   public getQueue(userId: string, type: string) {
-    return this.http.get(this.postQueueEndpoint, {
+    return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
         "userId": userId,
         "listType": type
@@ -111,7 +120,7 @@ export class InfoService {
         contentType: contentType,
         contentId: id
       }
-    })
+    });
   }
 
   public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
@@ -123,7 +132,7 @@ export class InfoService {
         "reviewBody": reviewBody,
         "rating": String(rating)
       }
-    })
+    });
   }
 
   public postFollow(targetId: string) {
@@ -156,5 +165,15 @@ export class InfoService {
         "targetId": otherId
       }
     });
+  }
+
+  public deleteFromQueue(listType: string, mediaType: string, mediaId: string) {
+    return this.http.delete(this.postQueueEndpoint, {
+      params: {
+        mediaId: mediaId,
+        listType: listType,
+        mediaType: mediaType
+      }
+    })
   }
 }
