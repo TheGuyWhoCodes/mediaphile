@@ -44,14 +44,23 @@ public class FollowServlet extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
 
         String userId = request.getParameter("userId");
+        String section = request.getParameter("pageNum");
+        int page;
 
         if(userId == null || userId.isEmpty()) {
                 setInvalidGetResponse(response);
             return;
         }
 
-        List<FollowItem> followers = getList(userId, FollowItem.TYPE_FOLLOWERS);
-        List<FollowItem> following = getList(userId, FollowItem.TYPE_FOLLOWING);
+        //page start at 0
+        if(section == null || section.isEmpty()) {
+            page = 0;
+        } else {
+            page = 20 * Integer.parseInt(section);
+        }
+
+        List<FollowItem> followers = getList(userId, FollowItem.TYPE_FOLLOWERS, page);
+        List<FollowItem> following = getList(userId, FollowItem.TYPE_FOLLOWING, page);
 
         List<UserObject> followerUserObjects = convertToUserObject(gson.toJsonTree(followers), "userId");
         List<UserObject> targetUserObjects = convertToUserObject(gson.toJsonTree(following), "targetId");
@@ -137,13 +146,13 @@ public class FollowServlet extends HttpServlet {
     }
 
 
-    private List<FollowItem> getList(String userId, String followType) {
+    private List<FollowItem> getList(String userId, String followType, int page) {
         if(followType.equals(FollowItem.TYPE_FOLLOWERS)) {
             //Sets user as target to retrieve followers.
-            return ofy().load().type(FollowItem.class).filter("targetId", userId).list();
+            return ofy().load().type(FollowItem.class).limit(20).offset(page).filter("targetId", userId).list();
         } else {
             //Sets user as follower to retrieve following.
-            return ofy().load().type(FollowItem.class).filter("userId", userId).list();
+            return ofy().load().type(FollowItem.class).limit(20).offset(page).filter("userId", userId).list();
         }
     }
 
