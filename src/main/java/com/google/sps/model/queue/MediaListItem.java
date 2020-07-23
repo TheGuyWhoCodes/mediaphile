@@ -1,9 +1,10 @@
 package com.google.sps.model.queue;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.sps.model.activity.Activity;
 import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Subclass;
 
 import java.sql.Timestamp;
 
@@ -12,8 +13,8 @@ import java.sql.Timestamp;
  * queue object or already watched object. We abstract these later as
  * to end up in different tables in the db.
  */
-@Entity
-public class MediaListItem {
+@Subclass(index=true)
+public class MediaListItem extends Activity {
 
     public static final String TYPE_VIEWED = "viewed";
     public static final String TYPE_QUEUE = "queue";
@@ -34,11 +35,6 @@ public class MediaListItem {
     @JsonProperty
     @Index
     private String mediaId;
-
-    @JsonProperty
-    @Index
-    @Id
-    private Long id;
 
     @JsonProperty
     @Index
@@ -74,14 +70,6 @@ public class MediaListItem {
 
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getMediaId() {
