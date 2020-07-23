@@ -1,0 +1,49 @@
+<div class="container" *ngIf="hasResults">
+  <div class="jumbotron">
+    <div class="container row">
+      <div id="profile-pic-container" [style.background-color]="getProfileColor()">
+        <img *ngIf="hasProfilePic()" [src]="entity['profilePicUrl']" alt="Profile Picture" />
+        <div id="profile-pic-char" *ngIf="!hasProfilePic()" [style.color]="getContrastingColor()">
+          {{getProfilePicChar()}}
+        </div>
+      </div>
+      <h1 class="col-md-1 align-self-center">{{entity['username']}}</h1>
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-queue-tab" data-toggle="tab" href="#nav-queue" role="tab" aria-controls="nav-queue" aria-selected="true">
+        <fa-icon [icon]="clock"></fa-icon> <span class = "text-header"> {{(isSelf) ? "Your" : ""}} Queue </span>
+      </a>
+      <a class="nav-item nav-link" id="nav-watched-tab" data-toggle="tab" href="#nav-watched" role="tab" aria-controls="nav-watched" aria-selected="false">
+        <fa-icon [icon]="clipCheck"></fa-icon> <span class = "text-header"> Read/Watched List </span>
+      </a>
+      <a class="nav-item nav-link" id="nav-following-tab" data-toggle="tab" href="#nav-following" role="tab" aria-controls="nav-watched" aria-selected="false">
+        <fa-icon [icon]="heart"></fa-icon> <span class = "text-header"> Following </span>
+      </a>
+      <a class="nav-item nav-link" id="nav-followers-tab" data-toggle="tab" href="#nav-followers" role="tab" aria-controls="nav-watched" aria-selected="false">
+        <fa-icon [icon]="friends"></fa-icon> <span class = "text-header"> Followers </span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-queue" role="tabpanel" aria-labelledby="nav-queue-tab">
+      <app-queue [userID]="profileId"
+                 [viewerId]="loginStatus.sharedAccountId | async" [type]="'queue'"></app-queue>
+    </div>
+    <div class="tab-pane fade" id="nav-watched" role="tabpanel" aria-labelledby="nav-watched-tab">
+      <app-queue [userID]="profileId"
+                 [viewerId]="loginStatus.sharedAccountId | async" [type]="'viewed'"></app-queue>
+    </div>
+    <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab">
+      <app-follow-list [userID]="profileId"
+                       [viewerId]="loginStatus.sharedAccountId | async" [type]="'following'"></app-follow-list>
+    </div>
+    <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
+      <app-follow-list [userID]="profileId"
+                       [viewerId]="loginStatus.sharedAccountId | async" [type]="'followers'"></app-follow-list>
+    </div>
+  </div>
+</div>

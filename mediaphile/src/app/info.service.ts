@@ -21,7 +21,10 @@ export class InfoService {
   private getBookSearch: string = `${this.apiBackendUrl}books/search`;
   private getReviews: string = `${this.apiBackendUrl}reviews`;
   private loginStatus: string = `${this.apiBackendUrl}login/status`;
+  private userEndpoint: string = `${this.apiBackendUrl}user`;
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
+  private followListEndpoint: string = `${this.apiBackendUrl}follow`;
+  private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -46,12 +49,20 @@ export class InfoService {
         "query": query,
         "pageNumber": page.toString()
       }
-    })
+    });
   }
   public getMovieDetails(id: string) {
     return this.http.get(this.getMovieDetailsEndpoint, {
       params: {
         "id": id,
+      }
+    });
+  }
+
+  public getBookDetails(id: string) {
+    return this.http.get(this.getBookDetailsEndpoint, {
+      params: {
+        "id": id
       }
     })
   }
@@ -63,7 +74,15 @@ export class InfoService {
   public logout() {
     this.loginStatusService.sharedUrl.subscribe(x => {
       window.location.href = (x);
-    })
+    });
+  }
+
+  public getUser(userId: string) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "id": userId,
+      }
+    });
   }
 
   public postQueue(posterPath: String, id: String, type: String, title: String, entityType: String, userId: String) {
@@ -74,11 +93,11 @@ export class InfoService {
       "listType": entityType,
       "artUrl": posterPath,
       "userId": userId
-    })
+    });
   }
 
   public getQueue(userId: string, type: string) {
-    return this.http.get(this.postQueueEndpoint, {
+    return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
         "userId": userId,
         "listType": type
@@ -92,7 +111,7 @@ export class InfoService {
         contentType: contentType,
         contentId: id
       }
-    })
+    });
   }
 
   public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
@@ -105,5 +124,31 @@ export class InfoService {
         "rating": String(rating)
       }
     });
+  }
+
+  public postFollow(userId: string, targetId: string) {
+    return this.http.post(this.followListEndpoint, {
+      "userId": userId,
+      "targetId": targetId // TODO: Ensure these names are correct
+    });
+  }
+
+  public getFollowList(userId: string, type: string) {
+    return this.http.get(this.followListEndpoint, {
+      params: {
+        "userId": userId,
+        "type": type // TODO: Ensure these names are correct
+      }
+    });
+  }
+
+  public deleteFromQueue(listType: string, mediaType: string, mediaId: string) {
+    return this.http.delete(this.postQueueEndpoint, {
+      params: {
+        mediaId: mediaId,
+        listType: listType,
+        mediaType: mediaType
+      }
+    })
   }
 }

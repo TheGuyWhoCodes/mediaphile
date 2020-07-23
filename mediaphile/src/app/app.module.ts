@@ -26,6 +26,10 @@ import { ReviewEntityComponent } from './pages/helper/review/review-entity/revie
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReviewSubmitComponent } from './pages/helper/review-submit/review-submit.component';
 import {HttpErrorInterceptor} from "./http.error.interceptor";
+import { UserProfileComponent } from "./pages/user-profile/user-profile.component";
+import { FollowListComponent } from "./pages/user-profile/follow-list/follow-list.component";
+import { FollowEntityComponent } from "./pages/user-profile/follow-list/follow-entity/follow-entity.component";
+import { ModalComponent } from './pages/helper/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +48,11 @@ import {HttpErrorInterceptor} from "./http.error.interceptor";
     HomeEntityComponent,
     ReviewComponent,
     ReviewEntityComponent,
-    ReviewSubmitComponent
+    ReviewSubmitComponent,
+    UserProfileComponent,
+    FollowListComponent,
+    FollowEntityComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +72,8 @@ import {HttpErrorInterceptor} from "./http.error.interceptor";
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true
-    }
+    },
+    ModalComponent
   ],
   bootstrap: [AppComponent]
 })

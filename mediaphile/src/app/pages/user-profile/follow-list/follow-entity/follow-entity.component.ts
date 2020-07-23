@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-home-entity',
-  templateUrl: './home-entity.component.html',
-  styleUrls: ['./home-entity.component.scss']
+  selector: 'app-follow-entity',
+  templateUrl: './follow-entity.component.html',
+  styleUrls: ['./follow-entity.component.scss']
 })
-export class HomeEntityComponent implements OnInit {
+export class FollowEntityComponent implements OnInit {
 
   @Input()
   entity: {} = {}
@@ -14,13 +14,15 @@ export class HomeEntityComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    if (this.entity["mediaType"] != undefined){
-      this.type = this.entity["mediaType"]
+    if (this.entity["type"] != undefined){
+      this.type = this.entity["type"]
     }
+    console.log(this.entity);
+    console.log(this.getEntityUrl())
   }
   public getEntityImageUrl() : string {
     if(this.entity["artUrl"]) {
-      return this.entity['artUrl']
+      return "https://image.tmdb.org/t/p/w500" + this.entity['artUrl']
     }
     return "https://critics.io/img/movies/poster-placeholder.png"
   }
@@ -40,9 +42,9 @@ export class HomeEntityComponent implements OnInit {
 
   public getEntityUrl() : string {
     if(this.type == "book") {
-      return `/book/${this.entity["mediaId"]}`
+      return `/book/${this.entity["entityId"]}`
     } else if(this.type == "movie") {
-      return `/movie/${this.entity["mediaId"]}`
+      return `/movie/${this.entity["entityId"]}`
     }
   }
 
