@@ -2,6 +2,7 @@ package com.google.sps.servlets.follow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.googlecode.objectify.cmd.QueryKeys;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -24,7 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator; 
 import java.util.List;
+import java.util.function.Consumer;
+import java.lang.Iterable;
 
 import static com.google.sps.util.HttpUtils.*;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -52,8 +56,11 @@ public class FollowServlet extends HttpServlet {
         List<UserObject> followerUserObjects = convertToUserObject(gson.toJsonTree(followers), "userId");
         List<UserObject> targetUserObjects = convertToUserObject(gson.toJsonTree(following), "targetId");
 
+        int numFollowers = getListCount(userId, "targetId");
+        int numFollowing = getListCount(userId, "userId");
+
         FollowListObject result = new FollowListObject(followerUserObjects, targetUserObjects,
-         followerUserObjects.size(), targetUserObjects.size());
+         numFollowers, numFollowing);
 
         response.getWriter().println(gson.toJsonTree(result));
     }
@@ -85,6 +92,13 @@ public class FollowServlet extends HttpServlet {
             return;
         }
 
+        if(Iterables.size(ofy().load().type(FollowItem.class)
+            .filter("userId", newFollowItem.getUserId())
+            .filter("targetId", newFollowItem.getTargetId()).keys()) != 0) {
+            response.sendError(HttpServletResponse.SC_CONFLICT);
+            return;
+        }
+
         try {
             ofy().save().entity(newFollowItem).now();
         } catch(Exception e) {
@@ -108,11 +122,17 @@ public class FollowServlet extends HttpServlet {
         String userId = user.getUserId();
         String followingId = request.getParameter("followingId");
 
-        ofy().delete().keys(
-            ofy().load().type(FollowItem.class)
-            .filter("userId", userId)
-            .filter("targetId", followingId).keys())
-        .now();
+        try {
+            ofy().delete().keys(
+                ofy().load().type(FollowItem.class)
+                .filter("userId", userId)
+                .filter("targetId", followingId).keys())
+            .now();
+        } catch(Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        
         response.sendError(HttpServletResponse.SC_OK);
     }
 
@@ -138,5 +158,11 @@ public class FollowServlet extends HttpServlet {
             userObject.add(user);
         }
         return userObject;
+    }
+
+    public int getListCount(String userId, String type) {
+        int size = 
+        ofy().load().type(FollowItem.class).filter(type, userId).count();
+        return size;
     }
 }
