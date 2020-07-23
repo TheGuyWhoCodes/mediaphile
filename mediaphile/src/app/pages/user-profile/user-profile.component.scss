@@ -1,3 +1,9 @@
+@import "src/styles.scss";
+
+* {
+  transition-duration: .2s;
+}
+
 nav {
   margin-top: 2em;
 }
@@ -23,4 +29,18 @@ span {
   font-size: 50px;
   line-height: 115px;
   text-align: center;
+}
+
+#follow-button {
+  padding: 10px;
+  margin-left: 40px;
+  background-color:$base-color;
+  border-radius: 23px;
+  color: white;
+  font-size: 18px;
+  border: none;
+  width: 100px;
+}
+#follow-button:hover {
+  background-color: #1763a9;
 }

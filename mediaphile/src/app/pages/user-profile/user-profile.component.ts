@@ -25,6 +25,14 @@ export class UserProfileComponent implements OnInit {
   public entity: {};
   public hasResults: boolean;
 
+  public followed: boolean;
+
+  public following: [];
+  public followers: [];
+
+  public nFollowing: number;
+  public nFollowers: number;
+
   private profileColor: string;
 
   constructor(public loginStatus: LoginStatus, private title: Title,
@@ -47,14 +55,28 @@ export class UserProfileComponent implements OnInit {
     } else {
       this.subscribeSelf();
     }
+
+    this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
+      this.followed = (data == true);
+    });
+
+    // TODO: Pass page number... should it be passed up from follow-list?
+    this.infoSvc.getFollowLists(this.profileId, 0).subscribe(data => {
+      this.followers = data['followersList'];
+      this.nFollowers = data['followerLength'];
+      this.following = data['followingList'];
+      this.nFollowing = data['followingLength'];
+    });
   }
 
   subscribeSelf() {
     this.loginStatus.sharedAccountId.subscribe(userId => {
       this.userId = userId;
       this.isSelf = (this.userId === this.profileId);
-      let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
-      this.title.setTitle(`Mediaphile :: ${whose}Profile`);
+      if (this.entity) {
+        let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
+        this.title.setTitle(`Mediaphile :: ${whose}Profile`);
+      }
     });
   }
 
@@ -98,5 +120,16 @@ export class UserProfileComponent implements OnInit {
       (parseInt(rgb['b']) * 114)) / 1000);
 
     return (brightness > 125) ? '#000000' : '#FFFFFF';
+  }
+
+  toggleFollow() {
+    let old_followed = this.followed;
+    this.followed = !this.followed;
+
+    if (old_followed) {
+      this.infoSvc.deleteFollow(this.profileId);
+    } else {
+      this.infoSvc.postFollow(this.profileId);
+    }
   }
 }
