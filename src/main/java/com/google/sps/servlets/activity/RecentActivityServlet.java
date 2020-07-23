@@ -1,12 +1,11 @@
 package com.google.sps.servlets.activity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.sps.model.activity.Activity;
 import com.google.sps.model.follow.FollowItem;
-import com.google.sps.model.queue.QueueListItemObject;
-import com.google.sps.model.queue.ViewedListItemObject;
-import com.google.sps.model.review.ReviewObject;
-import com.google.sps.model.user.UserObject;
 import com.google.sps.util.HttpUtils;
+import com.google.sps.util.Utils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,11 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -32,21 +28,33 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class RecentActivityServlet extends HttpServlet {
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final Gson gson = new Gson();
+    private final int ACTIVITY_LIMIT = 10;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Object> results = new ArrayList<>();
+        int offset;
 
         String userId = request.getParameter("userId");
         if (userId == null) {
             HttpUtils.setInvalidGetResponse(response);
             return;
         }
+
+        try {
+            offset = Utils.parseInt(request.getParameter("offset"));
+        } catch (NullPointerException e){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        // grabs list of "following" related to a user, this is a list of user id (as string
         List<String> following = getFollowingList(userId);
 
-        List<ReviewObject> reviews = getFollowingReviews(following);
-        List<ViewedListItemObject> viewed = getFollowingViewed(following);
-        List<QueueListItemObject> queue = getFollowingQueue(following);
+        List<Activity> reviews = getActivity(following, offset);
+
+        response.getWriter().println(gson.toJsonTree(reviews));
     }
 
     private List<String> getFollowingList(String userId) {
@@ -55,15 +63,12 @@ public class RecentActivityServlet extends HttpServlet {
                 map(FollowItem::getUserId).collect(Collectors.toList());
     }
 
-    private List<ReviewObject> getFollowingReviews(List<String> following) {
-        return ofy().load().type(ReviewObject.class).filter("userId", following).list();
-    }
-
-    private List<QueueListItemObject> getFollowingQueue(List<String> following) {
-        return ofy().load().type(QueueListItemObject.class).filter("userId", following).list();
-    }
-
-    private List<ViewedListItemObject> getFollowingViewed(List <String> following) {
-        return ofy().load().type(ViewedListItemObject.class).filter("userId", following).list();
+    private List<Activity> getActivity(List<String> following, int offset) {
+        return ofy().load().type(Activity.class)
+                .filter("userId", following)
+                .order("timestamp")
+                .limit(ACTIVITY_LIMIT)
+                .offset(offset)
+                .list();
     }
 }
