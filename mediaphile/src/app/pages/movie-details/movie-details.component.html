@@ -43,9 +43,9 @@
   </main>
 </div>
 
-<div #reviews class = "container reviews">
+<div #reviews class="container reviews">
   <h2>Reviews: </h2>
-  <app-review [type]="'movie'" [id]="movieId"></app-review>
+  <app-review [type]="'movie'" [id]="movieId" [title]="entity['title']" [artUrl]="getEntityPosterUrl()"></app-review>
 </div>
 
 <ng-template #loading>
