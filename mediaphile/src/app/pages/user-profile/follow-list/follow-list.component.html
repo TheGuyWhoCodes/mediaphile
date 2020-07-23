@@ -1,8 +1,10 @@
-<div *ngIf = "hasReceivedResults()">
-  <div *ngFor="let entry of entities">
-    <app-follow-entity [userId]="entry"></app-follow-entity>
-  </div>
-  <div *ngIf="isEntitiesEmpty()">
+<div>
+  <span *ngIf="hasResults()">
+    <div *ngFor="let entry of entities">
+      <app-follow-entity [userId]="entry"></app-follow-entity>
+    </div>
+  </span>
+  <div *ngIf="!hasResults()">
     <div class = "text-center">
       <h2><fa-icon [icon]="faEye"></fa-icon> {{getEmptyText()}}</h2>
     </div>

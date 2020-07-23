@@ -140,14 +140,13 @@ export class InfoService {
     });
   }
 
-  public getFollowList(userId: string, type: string) {
-    // TODO: Remove placeholder
-    return of(["123", "234", "345"]); /* this.http.get(this.followListEndpoint, {
+  public getFollowLists(userId: string, pageNumber: number) {
+    return this.http.get(this.followListEndpoint, {
       params: {
         "userId": userId,
-        "type": type // TODO: Ensure these names are correct
+        "pageNumber": pageNumber.toString()
       }
-    }); */
+    });
   }
 
   public userFollows(userId: string, otherId: string) {

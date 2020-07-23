@@ -27,6 +27,9 @@ export class UserProfileComponent implements OnInit {
 
   public followed: boolean;
 
+  public following: [];
+  public followers: [];
+
   public nFollowing: number;
   public nFollowers: number;
 
@@ -55,6 +58,14 @@ export class UserProfileComponent implements OnInit {
 
     this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
       this.followed = data;
+    });
+
+    // TODO: Pass page number... should it be passed up from follow-list?
+    this.infoSvc.getFollowLists(this.profileId, 0).subscribe(data => {
+      this.followers = data['followersList'];
+      this.nFollowers = data['followerLength'];
+      this.following = data['followingList'];
+      this.nFollowing = data['followingLength'];
     });
   }
 
