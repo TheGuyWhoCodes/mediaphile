@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 public class FollowListObject {
-    public FollowListObject() { }
 
     public FollowListObject(List<UserObject> followersList,
                                 List<UserObject> followingList,
@@ -20,6 +19,7 @@ public class FollowListObject {
         this.followerLength = followerLength;
         this.followingLength = followingLength;
     }
+    
     @JsonProperty
     @Index
     @Id

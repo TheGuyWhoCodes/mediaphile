@@ -128,6 +128,26 @@ public class FollowServletTest extends Mockito {
     }
 
     @Test
+    public void testNonStoredTarget() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        String json = "{\n" +
+                "\t\"userId\": \"9876\",\n" +
+                "\t\"targetId\": \"0000\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
+
+        new FollowServlet().doPost(request,response);
+        writer.flush();
+        
+        verify(response, times(1)).sendError(404);
+    }
+
+    @Test
     public void testPostDuplicateFollowing() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
