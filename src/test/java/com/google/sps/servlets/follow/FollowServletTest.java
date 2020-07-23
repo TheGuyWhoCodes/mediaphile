@@ -87,7 +87,7 @@ public class FollowServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         when(request.getParameter("userId")).thenReturn("9876");
-        when(request.getParameter("followingId")).thenReturn("3210");
+        when(request.getParameter("targetId")).thenReturn("3210");
 
         new FollowServlet().doGet(request, response);
         writer.flush();
@@ -100,7 +100,7 @@ public class FollowServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         when(request.getParameter("userId")).thenReturn("9876");
-        when(request.getParameter("followingId")).thenReturn("0123");
+        when(request.getParameter("targetId")).thenReturn("0123");
 
         new FollowServlet().doGet(request, response);
         writer.flush();

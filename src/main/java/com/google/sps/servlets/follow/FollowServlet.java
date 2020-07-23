@@ -58,7 +58,7 @@ public class FollowServlet extends HttpServlet {
 
         String userId = request.getParameter("userId");
         String pageNumber = request.getParameter("pageNumber");
-        String followingId = request.getParameter("followingId");
+        String targetId = request.getParameter("targetId");
         int startIndex;
 
         if(userId == null || userId.isEmpty()) {
@@ -66,8 +66,8 @@ public class FollowServlet extends HttpServlet {
             return;
         }
 
-        if(followingId != null) {
-            QueryKeys<?> targetKey = getUserItems(userId, followingId);
+        if(targetId != null) {
+            QueryKeys<?> targetKey = getUserItems(userId, targetId);
             
             if(Iterables.size(targetKey) != 0) {
                 response.getWriter().append("true");
