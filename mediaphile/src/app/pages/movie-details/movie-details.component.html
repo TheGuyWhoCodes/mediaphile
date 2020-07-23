@@ -1,4 +1,4 @@
-<div *ngIf="hasResults">
+<div *ngIf="(this.entity | async); else loading">
   <main class="movie-info" [ngStyle]="{ 'background': 'linear-gradient(0deg, rgba(0, 0, 0, 0.80), rgba(0, 0, 0, 0.80)), url(' + getEntityImageUrl() + ') no-repeat center / cover'}">
     <div class="d-md-flex h-md-100 align-items-center">
       <div class="col-md-6 p-0 bg-indigo h-md-100">
@@ -9,25 +9,49 @@
       <div class="col-md-6 p-0 h-md-100 ">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
           <div class="centered-container">
-            <h1>{{entity["title"]}}</h1>
+            <h1>{{movieData["title"]}}</h1>
             <div class="movie-meta">
-              <span class="movie-duration">{{entity["runtime"]}} min</span>
-              <span class="movie-year">{{entity["releaseDate"]}}</span>
-              <span class="movie-lang">{{entity["originalLanguage"]}}</span>
+              <span class="movie-duration">{{movieData["runtime"]}} min</span>
+              <span class="movie-year">{{movieData["releaseDate"]}}</span>
+              <span class="movie-lang">{{movieData["originalLanguage"]}}</span>
             </div>
-            <p>{{entity["overview"]}}<p>
-            <div *ngIf = "loginStatus.sharedStatus | async" class="btn-block">
-              <button (click)="addToQueuedList()" class="btn-watch">Watch Later</button>
-              <button (click)="addToWatchedList()" class="btn-watch">Marked as Watched</button>
-              <button (click)="scroll(reviews)" class="btn-wait">Write a Review</button>
+            <p>{{movieData["overview"]}}<p>
+            <div *ngIf = isLoggedIn>
+              <div *ngIf = "((loginStatus.sharedStatus | async) == true &&
+               (hasQueue) &&
+               (hasWatched)); else listloading" class="btn-block">
+                <button (click)="addToQueuedList()" *ngIf="!isInQueue" class="btn-watch">Watch Later</button>
+                <button (click)="addToWatchedList()" *ngIf="!isInWatched" class="btn-watch">Mark as Watched</button>
+
+                <button (click)="removeFromList('queue')" *ngIf="isInQueue" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Queue</button>
+                <button (click)="removeFromList('viewed')" *ngIf="isInWatched" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Watched List</button>
+
+                <button (click)="scroll(reviews)" class="btn-wait">Write a Review</button>
+              </div>
             </div>
+            <ng-template #listloading>
+              <div class="d-flex justify-content-center align-middle">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </div>
+            </ng-template>
           </div>
         </div>
       </div>
     </div>
   </main>
-  <div #reviews class = "container reviews">
-    <h2>Reviews: </h2>
-    <app-review [type]="'movie'" [id]="entity['id']"></app-review>
-  </div>
 </div>
+
+<div #reviews class = "container reviews">
+  <h2>Reviews: </h2>
+  <app-review [type]="'movie'" [id]="movieId"></app-review>
+</div>
+
+<ng-template #loading>
+  <div class="d-flex justify-content-center loader">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>
