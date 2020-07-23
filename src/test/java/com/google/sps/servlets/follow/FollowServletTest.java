@@ -161,6 +161,37 @@ public class FollowServletTest extends Mockito {
         assertEquals(1, ofy().load().type(FollowItem.class).list().size());
     }
 
+    @Test
+    public void testNoDeleteTarget() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        new FollowServlet().doDelete(request, response);
+        writer.flush();
+
+        verify(response, times(1)).sendError(400);
+    }
+
+    @Test
+    public void testPostUnauthenticated() throws IOException{
+        helper.setEnvIsLoggedIn(false).setUp();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        String json = "{\n" +
+                "\t\"userId\": \"3210\",\n" +
+                "\t\"targetId\": \"0123\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
+
+        new FollowServlet().doPost(request,response);
+        writer.flush();
+        
+        verify(response, times(1)).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
     private void addFollowers() {
         //bravo follows alpha
         FollowItem followers = new FollowItem();

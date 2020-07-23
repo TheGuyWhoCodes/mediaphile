@@ -92,9 +92,7 @@ public class FollowServlet extends HttpServlet {
             return;
         }
 
-        if(Iterables.size(ofy().load().type(FollowItem.class)
-            .filter("userId", newFollowItem.getUserId())
-            .filter("targetId", newFollowItem.getTargetId()).keys()) != 0) {
+        if(Iterables.size(getUserItems(newFollowItem.getUserId(), newFollowItem.getTargetId())) != 0) {
             response.sendError(HttpServletResponse.SC_CONFLICT);
             return;
         }
@@ -122,17 +120,19 @@ public class FollowServlet extends HttpServlet {
         String userId = user.getUserId();
         String followingId = request.getParameter("followingId");
 
-        try {
-            ofy().delete().keys(
-                ofy().load().type(FollowItem.class)
-                .filter("userId", userId)
-                .filter("targetId", followingId).keys())
-            .now();
-        } catch(Exception e) {
+        if(followingId == null || followingId.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        
+
+        QueryKeys<?> targetKey = getUserItems(userId, followingId);
+
+        if(Iterables.size(targetKey) == 0) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        ofy().delete().keys(targetKey).now();
         response.sendError(HttpServletResponse.SC_OK);
     }
 
@@ -164,5 +164,11 @@ public class FollowServlet extends HttpServlet {
         int size = 
         ofy().load().type(FollowItem.class).filter(type, userId).count();
         return size;
+    }
+
+    private QueryKeys<?> getUserItems(String userId, String targetId) {
+        return ofy().load().type(FollowItem.class)
+            .filter("userId", userId)
+            .filter("targetId", targetId).keys();
     }
 }
