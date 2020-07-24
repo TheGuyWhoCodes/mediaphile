@@ -3,7 +3,7 @@ import {environment} from "../environments/environment";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {map, tap} from "rxjs/operators";
-import {Observable, Subscription} from "rxjs";
+import {Observable, Subscription, of} from "rxjs";
 import {MovieSearchResult} from "./struct/MovieSearchResult";
 import {LoginStatusStruct} from "./struct/loginStatusStruct";
 import {QueueEntity} from "./struct/queue.entity";
@@ -78,6 +78,15 @@ export class InfoService {
   }
 
   public getUser(userId: string) {
+    // TODO: Remove placeholder
+    if ((['123', '234', '345'].indexOf(userId) >= 0)) {
+      return of({
+        id: userId,
+        email: "other@example.com",
+        profilePicUrl: "https://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg",
+        username: "other",
+      });
+    }
     return this.http.get(this.userEndpoint, {
       params: {
         "id": userId,
@@ -126,18 +135,34 @@ export class InfoService {
     });
   }
 
-  public postFollow(userId: string, targetId: string) {
+  public postFollow(targetId: string) {
     return this.http.post(this.followListEndpoint, {
-      "userId": userId,
       "targetId": targetId // TODO: Ensure these names are correct
     });
   }
 
-  public getFollowList(userId: string, type: string) {
+  public deleteFollow(targetId: string) {
+    return this.http.delete(this.followListEndpoint, {
+      params: {
+        "targetId": targetId // TODO: Ensure these names are correct
+      }
+    });
+  }
+
+  public getFollowLists(userId: string, pageNumber: number) {
     return this.http.get(this.followListEndpoint, {
       params: {
         "userId": userId,
-        "type": type // TODO: Ensure these names are correct
+        "pageNumber": pageNumber.toString()
+      }
+    });
+  }
+
+  public userFollows(userId: string, otherId: string) {
+    return this.http.get(this.followListEndpoint, {
+      params: {
+        "userId": userId,
+        "targetId": otherId
       }
     });
   }

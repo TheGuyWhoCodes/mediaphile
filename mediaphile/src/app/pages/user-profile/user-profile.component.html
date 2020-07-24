@@ -8,6 +8,9 @@
         </div>
       </div>
       <h1 class="col-md-1 align-self-center">{{entity['username']}}</h1>
+      <button *ngIf="!isSelf" (click)="toggleFollow()" id="follow-button" class="align-self-center">
+        {{(followed) ? "Unfollow" : "Follow"}}
+      </button>
     </div>
   </div>
 
@@ -20,10 +23,10 @@
         <fa-icon [icon]="clipCheck"></fa-icon> <span class = "text-header"> Read/Watched List </span>
       </a>
       <a class="nav-item nav-link" id="nav-following-tab" data-toggle="tab" href="#nav-following" role="tab" aria-controls="nav-watched" aria-selected="false">
-        <fa-icon [icon]="heart"></fa-icon> <span class = "text-header"> Following </span>
+        <fa-icon [icon]="heart"></fa-icon> <span class = "text-header"> Following {{nFollowing}} </span>
       </a>
       <a class="nav-item nav-link" id="nav-followers-tab" data-toggle="tab" href="#nav-followers" role="tab" aria-controls="nav-watched" aria-selected="false">
-        <fa-icon [icon]="friends"></fa-icon> <span class = "text-header"> Followers </span>
+        <fa-icon [icon]="friends"></fa-icon> <span class = "text-header"> {{nFollowers}} Followers </span>
       </a>
     </div>
   </nav>
@@ -38,12 +41,16 @@
                  [viewerId]="loginStatus.sharedAccountId | async" [type]="'viewed'"></app-queue>
     </div>
     <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab">
-      <app-follow-list [userID]="profileId"
-                       [viewerId]="loginStatus.sharedAccountId | async" [type]="'following'"></app-follow-list>
+      <app-follow-list [userId]="profileId"
+                       [viewerId]="loginStatus.sharedAccountId | async"
+                       [type]="'following'"
+                       [entities]="following"></app-follow-list>
     </div>
     <div class="tab-pane fade" id="nav-followers" role="tabpanel" aria-labelledby="nav-followers-tab">
-      <app-follow-list [userID]="profileId"
-                       [viewerId]="loginStatus.sharedAccountId | async" [type]="'followers'"></app-follow-list>
+      <app-follow-list [userId]="profileId"
+                       [viewerId]="loginStatus.sharedAccountId | async"
+                       [type]="'followers'"
+                       [entities]="followers"></app-follow-list>
     </div>
   </div>
 </div>
