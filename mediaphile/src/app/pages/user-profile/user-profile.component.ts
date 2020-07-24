@@ -56,10 +56,6 @@ export class UserProfileComponent implements OnInit {
       this.subscribeSelf();
     }
 
-    this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
-      this.followed = (data == true);
-    });
-
     // TODO: Pass page number... should it be passed up from follow-list?
     this.infoSvc.getFollowLists(this.profileId, 0).subscribe(data => {
       this.followers = data['followersList'];
@@ -72,6 +68,9 @@ export class UserProfileComponent implements OnInit {
   subscribeSelf() {
     this.loginStatus.sharedAccountId.subscribe(userId => {
       this.userId = userId;
+      this.infoSvc.userFollows(this.userId, this.profileId).subscribe(data => {
+        this.followed = (data == true);
+      });
       this.isSelf = (this.userId === this.profileId);
       if (this.entity) {
         let whose = (this.isSelf) ? "" : (this.entity['username'] + "'s ");
@@ -126,10 +125,19 @@ export class UserProfileComponent implements OnInit {
     let old_followed = this.followed;
     this.followed = !this.followed;
 
+    console.log(old_followed, this.followed, this.profileId, this.userId);
     if (old_followed) {
-      this.infoSvc.deleteFollow(this.profileId);
+      this.infoSvc.deleteFollow(this.profileId).subscribe(x => {
+        console.log(x)
+      }, error => {
+        console.log(error);
+      });
     } else {
-      this.infoSvc.postFollow(this.profileId);
+      this.infoSvc.postFollow(this.userId, this.profileId).subscribe(x => {
+        console.log(x)
+      }, error => {
+        console.log(error);
+      });
     }
   }
 }
