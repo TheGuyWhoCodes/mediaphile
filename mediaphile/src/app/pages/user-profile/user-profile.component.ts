@@ -125,19 +125,10 @@ export class UserProfileComponent implements OnInit {
     let old_followed = this.followed;
     this.followed = !this.followed;
 
-    console.log(old_followed, this.followed, this.profileId, this.userId);
     if (old_followed) {
-      this.infoSvc.deleteFollow(this.profileId).subscribe(x => {
-        console.log(x)
-      }, error => {
-        console.log(error);
-      });
+      this.infoSvc.deleteFollow(this.profileId).subscribe();
     } else {
-      this.infoSvc.postFollow(this.userId, this.profileId).subscribe(x => {
-        console.log(x)
-      }, error => {
-        console.log(error);
-      });
+      this.infoSvc.postFollow(this.userId, this.profileId).subscribe();
     }
   }
 }
