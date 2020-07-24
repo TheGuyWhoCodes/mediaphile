@@ -44,10 +44,7 @@ export class ReviewSubmitComponent implements OnInit {
   }
 
   public submitReview() : void {
-    if (this.currentUser == undefined) {
-      this.error = "Not logged in";
-      return;
-    }
+    if (this.currentUser == undefined) return;
     this.loading = true;
     this.infoSvc.postReviewForMedia(this.currentUser['id'], this.currentUser['username'],
       this.type, this.id, this.title, this.artUrl, this.hero.title, this.hero.review,  this.hero.currentRate).subscribe(reviewStatus => {
