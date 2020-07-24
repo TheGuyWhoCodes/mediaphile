@@ -1,11 +1,10 @@
 img {
-  width: auto;
-  height: auto;
-  max-width: 75%;
-  max-height: 75%;
+  height: 82%;
   box-shadow: 2px 2px 2px #bdbdbd;
   margin-right:1em;
   transition: 0.3s;
+  display: block;
+  margin: auto;
 }
 img:hover {
   box-shadow: 4px 4px 4px #8c8c8c;
@@ -14,7 +13,7 @@ img:hover {
   width:100%;
   height:300px;
   padding: 15px 0;
-  border-bottom: 1px solid #2c3440;
+  //border-bottom: 1px solid #2c3440;
   display: block;
   position:relative;
   overflow:hidden;
@@ -22,7 +21,8 @@ img:hover {
 
 h3 {
   white-space: nowrap;
-  display:inline;
+  display:block;
+  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 1.69230769rem;
