@@ -135,16 +135,17 @@ export class InfoService {
     });
   }
 
-  public postFollow(targetId: string) {
+  public postFollow(userId: string, targetId: string) {
     return this.http.post(this.followListEndpoint, {
-      "targetId": targetId // TODO: Ensure these names are correct
+      "userId": userId,
+      "targetId": targetId
     });
   }
 
   public deleteFollow(targetId: string) {
     return this.http.delete(this.followListEndpoint, {
       params: {
-        "targetId": targetId // TODO: Ensure these names are correct
+        "followingId": targetId
       }
     });
   }

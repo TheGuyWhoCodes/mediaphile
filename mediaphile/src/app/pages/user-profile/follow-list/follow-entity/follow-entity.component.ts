@@ -9,17 +9,21 @@ import {InfoService} from "../../../../info.service";
 export class FollowEntityComponent implements OnInit {
 
   @Input()
-  userId: string;
+  public userId: string;
 
+  @Input()
   public entity: {};
   public hasResults: boolean;
 
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    this.infoSvc.getUser(this.userId).subscribe(data => {
-      this.entity = data;
-      this.hasResults = true;
-    });
+    this.hasResults = this.entity != {} && this.entity != undefined;
+    if (this.entity != undefined) {
+      if (this.entity['profilePicUrl'] === "") {
+        this.entity['profilePicUrl'] =
+          "https://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg";
+      }
+    }
   }
 }

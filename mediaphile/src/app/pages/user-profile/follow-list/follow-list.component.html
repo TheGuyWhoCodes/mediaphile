@@ -1,7 +1,7 @@
 <div>
   <span *ngIf="hasResults()">
-    <div *ngFor="let entry of entities">
-      <app-follow-entity [userId]="entry"></app-follow-entity>
+    <div *ngFor="let entity of entities">
+      <app-follow-entity [entity]="entity" [userId]="entity['id']"></app-follow-entity>
     </div>
   </span>
   <div *ngIf="!hasResults()">
