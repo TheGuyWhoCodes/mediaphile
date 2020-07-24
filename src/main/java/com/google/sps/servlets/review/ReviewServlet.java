@@ -245,7 +245,7 @@ public class ReviewServlet extends HttpServlet {
         String[] titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
         ReviewObject reviewObject = new ReviewObject(userObject,
                 contentType, contentId,
-                titleAndArtUrl[0], titleAndArtUrl[0],
+                titleAndArtUrl[0], titleAndArtUrl[1],
                 reviewTitle, reviewBody, rating);
         ofy().save().entity(reviewObject).now();
         return reviewObject;
