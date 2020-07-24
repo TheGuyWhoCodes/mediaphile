@@ -3,12 +3,8 @@
     <threadsafe>false</threadsafe>
     <sessions-enabled>true</sessions-enabled>
     <runtime>java8</runtime>
-    <service>api</service>
     <static-files>
         <!-- prevent unwanted caching when accessing via the web preview server -->
         <include path="/**" expiration="0s" />
     </static-files>
-    <static-error-handlers>
-        <handler file="index.html" />
-    </static-error-handlers>
 </appengine-web-app>

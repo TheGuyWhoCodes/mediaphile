@@ -1,8 +1,8 @@
-<div class = "entity-container">
-  <a href ="{{getEntityUrl()}}">
-    <img [src]="getEntityImageUrl()">
-    <span class = "film-title-wrapper">
-        <h3>{{getEntityTitle()}}</h3>
+<div class="entity-container" *ngIf="hasResults">
+  <a [href]="'/user/'+userId">
+    <img [src]="entity['profilePicUrl']" alt="Profile Picture" />
+    <span class="username-wrapper">
+        <h3>{{entity['username']}}</h3>
     </span>
   </a>
 </div>
