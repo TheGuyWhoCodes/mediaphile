@@ -18,7 +18,7 @@ export class FollowEntityComponent implements OnInit {
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    this.hasResults = this.entity != {};
+    this.hasResults = this.entity != {} && this.entity != undefined;
     if (this.entity != undefined) {
       if (this.entity['profilePicUrl'] === "") {
         this.entity['profilePicUrl'] =
