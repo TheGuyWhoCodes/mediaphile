@@ -33,7 +33,6 @@ public class RecentActivityServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Object> results = new ArrayList<>();
         int offset;
 
         String userId = request.getParameter("userId");
@@ -66,7 +65,7 @@ public class RecentActivityServlet extends HttpServlet {
     private List<Activity> getActivity(List<String> following, int offset) {
         return ofy().load().type(Activity.class)
                 .filter("userId", following)
-                .order("timestamp")
+                .order("-timestamp")
                 .limit(ACTIVITY_LIMIT)
                 .offset(offset)
                 .list();
