@@ -256,39 +256,4 @@ public class ReviewServlet extends HttpServlet {
 
         return true;
     }
-
-    private String[] getTitleAndArtUrl(String contentType, String contentId) throws Exception {
-        String title, artUrl;
-        switch (contentType) {
-            case ContentType.BOOK:
-                Volume volume = new BookDetailsServlet().getDetails(contentId);
-                title = volume.getVolumeInfo().getTitle();
-                artUrl = volume.getVolumeInfo().getImageLinks().getThumbnail();
-                break;
-            case ContentType.MOVIE:
-                Integer intId = parseInt(contentId);
-                if (intId == null) {
-                    throw new IllegalArgumentException();
-                }
-                MovieDb movie = new MovieDetailsServlet().getDetails(intId);
-                title = movie.getTitle();
-                artUrl = movie.getPosterPath();
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-        return new String[]{title, artUrl};
-    }
-
-    private ReviewObject createAndSaveReview(UserObject userObject,
-                                             String contentType, String contentId,
-                                             String reviewTitle, String reviewBody, int rating) throws Exception {
-        String[] titleAndArtUrl = getTitleAndArtUrl(contentType, contentId);
-        ReviewObject reviewObject = new ReviewObject(userObject,
-                contentType, contentId,
-                titleAndArtUrl[0], titleAndArtUrl[1],
-                reviewTitle, reviewBody, rating);
-        ofy().save().entity(reviewObject).now();
-        return reviewObject;
-    }
 }
