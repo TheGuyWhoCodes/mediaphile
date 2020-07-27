@@ -12,17 +12,12 @@ span {
   display: inline;
 }
 
-@media only screen and (max-width: 768px) {
-  span {
-    display:none;
-  }
-}
-
 #profile-pic-container {
   background-color: rgb(17, 164, 209);
   border-radius: 5px;
   width: 125px;
   height: 125px;
+  margin-right: 20px;
 }
 
 #profile-pic-char {
@@ -33,7 +28,7 @@ span {
 
 #follow-button {
   padding: 10px;
-  margin-left: 40px;
+  margin-left: 15px;
   background-color:$base-color;
   border-radius: 23px;
   color: white;
@@ -43,4 +38,27 @@ span {
 }
 #follow-button:hover {
   background-color: #1763a9;
+}
+
+.nav-tabs {
+  width:100%;
+}
+.nav-tabs .nav-link {
+  width: 25%;
+}
+
+@media only screen and (max-width: 768px) {
+  span {
+    display: none;
+  }
+
+  #username {
+    margin: 6px 0;
+    font-size: 2.0rem;
+    overflow: hidden;
+  }
+
+  #follow-button {
+    margin-left: 0;
+  }
 }
