@@ -76,13 +76,6 @@ public class ReviewObject extends Activity {
     @Index
     private int rating;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public long getTimestamp() {
         return timestamp;
@@ -93,11 +86,11 @@ public class ReviewObject extends Activity {
     }
 
     public String getAuthorId() {
-        return authorId;
+        return userId;
     }
 
     public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+        this.userId = authorId;
     }
 
     public String getAuthorName() {

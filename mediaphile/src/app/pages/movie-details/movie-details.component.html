@@ -41,12 +41,13 @@
       </div>
     </div>
   </main>
+
+  <div #reviews class="container reviews">
+    <h2>Reviews: </h2>
+    <app-review [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+  </div>
 </div>
 
-<div *ngIf="movieData != undefined" #reviews class="container reviews">
-  <h2>Reviews: </h2>
-  <app-review [type]="'movie'" [id]="movieId" [title]="entity['title']" [artUrl]="getEntityPosterUrl()"></app-review>
-</div>
 
 <ng-template #loading>
   <div class="d-flex justify-content-center loader">
