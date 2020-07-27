@@ -185,7 +185,6 @@ export class InfoService {
       }
     })
   }
-
   public isInList(userId: string, mediaId: string) {
     return this.http.get<IsInList>(this.getIsInListEndpoint, {
       params: {
