@@ -40,13 +40,6 @@ span {
   background-color: #1763a9;
 }
 
-.nav-tabs {
-  width:100%;
-}
-.nav-tabs .nav-link {
-  width: 25%;
-}
-
 @media only screen and (max-width: 768px) {
   span {
     display: none;
@@ -60,5 +53,12 @@ span {
 
   #follow-button {
     margin-left: 0;
+  }
+
+  .nav-tabs {
+    width:100%;
+  }
+  .nav-tabs .nav-link {
+    width: 25%;
   }
 }
