@@ -44,13 +44,12 @@
       </div>
     </div>
   </main>
-  <div #reviews class = "container reviews">
-    <h2>Reviews: </h2>
-    <app-review [type]="'book'" [id]="bookId"  [title]="bookData['volumeInfo']['title']" [artUrl]="getEntityPosterUrl()"></app-review>
-  </div>
 </div>
 
-
+<div #reviews class = "container reviews">
+  <h2>Reviews: </h2>
+  <app-review *ngIf="this.entity | async" [type]="'book'" [id]="bookId"  [title]="getEntityTitle()" [artUrl]="getEntityPosterUrl()"></app-review>
+</div>
 
 <ng-template #loading>
   <div class="d-flex justify-content-center loader">

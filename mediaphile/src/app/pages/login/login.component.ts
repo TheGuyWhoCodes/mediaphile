@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {InfoService} from "../../info.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -8,14 +9,20 @@ import {InfoService} from "../../info.service";
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private infoSvc: InfoService) { }
+  private redirect: string;
+
+  constructor(private infoSvc: InfoService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['redirect']) this.redirect = params['redirect'];
+    });
   }
 
   public login() {
+    let redirect_query = (this.redirect) ? ("?redirect=" + this.redirect) : "";
     this.infoSvc.login().subscribe(loginStatus => {
-      window.location.href = loginStatus["url"];
+      window.location.href = loginStatus["url"] + redirect_query;
     })
   }
 }

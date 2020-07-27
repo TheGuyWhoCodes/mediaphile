@@ -69,12 +69,16 @@ export class BookDetailsComponent implements OnInit {
     }
   }
 
+  public getEntityTitle() : string {
+    return (this.bookData) ? this.bookData['volumeInfo']['title'] : "";
+  }
+
   public getEntityImageUrl() : string {
     return "assets/placeholder.jpeg"
   }
 
   public getEntityPosterUrl(): string {
-    if("imageLinks" in this.bookData["volumeInfo"]) {
+    if(this.bookData && "imageLinks" in this.bookData["volumeInfo"]) {
       return this.bookData["volumeInfo"]["imageLinks"]["thumbnail"]
     }
     return "assets/poster-placeholder.png"
