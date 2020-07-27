@@ -3,7 +3,7 @@ export interface Review {
 
   timestamp: string;
 
-   authorId: string;
+   userId: string;
 
    authorName: string;
 

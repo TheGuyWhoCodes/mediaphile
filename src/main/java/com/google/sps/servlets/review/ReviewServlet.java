@@ -165,9 +165,9 @@ public class ReviewServlet extends HttpServlet {
         tryDelete(user.getUserId(), contentType, contentId, response);
     }
 
-    private void tryDelete(String authorId, String contentType, String contentId, HttpServletResponse response)
+    private void tryDelete(String userId, String contentType, String contentId, HttpServletResponse response)
             throws IOException {
-        QueryKeys<ReviewObject> keys =  getMatchingReviews(authorId, contentType, contentId);
+        QueryKeys<ReviewObject> keys =  getMatchingReviews(userId, contentType, contentId);
 
         if(Iterables.size(keys) == 0) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -178,9 +178,9 @@ public class ReviewServlet extends HttpServlet {
         }
     }
 
-    private QueryKeys<ReviewObject> getMatchingReviews(String authorId, String contentType, String contentId) {
+    private QueryKeys<ReviewObject> getMatchingReviews(String userId, String contentType, String contentId) {
         return ofy().load().type(ReviewObject.class)
-                .filter("authorId", authorId)
+                .filter("userId", userId)
                 .filter("contentType", contentType)
                 .filter("contentId", contentId).keys();
     }
@@ -194,7 +194,7 @@ public class ReviewServlet extends HttpServlet {
         }
         else {
             List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                    .filter("authorId", userId)
+                    .filter("userId", userId)
                     .list();
             response.getWriter().println(gson.toJson(reviews));
         }

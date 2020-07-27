@@ -30,6 +30,8 @@ import { UserProfileComponent } from "./pages/user-profile/user-profile.componen
 import { FollowListComponent } from "./pages/user-profile/follow-list/follow-list.component";
 import { FollowEntityComponent } from "./pages/user-profile/follow-list/follow-entity/follow-entity.component";
 import { ModalComponent } from './pages/helper/modal/modal.component';
+import { ActivityComponent } from './pages/home/activity/activity.component';
+import { ActivityEntityComponent } from './pages/home/activity/activity-entity/activity-entity.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +54,9 @@ import { ModalComponent } from './pages/helper/modal/modal.component';
     UserProfileComponent,
     FollowListComponent,
     FollowEntityComponent,
-    ModalComponent
+    ModalComponent,
+    ActivityComponent,
+    ActivityEntityComponent
   ],
   imports: [
     BrowserModule,

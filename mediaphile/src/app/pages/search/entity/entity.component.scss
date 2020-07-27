@@ -1,11 +1,11 @@
 img {
-  width: auto;
-  height: auto;
-  max-width: 75%;
-  max-height: 75%;
+  height: 82%;
   box-shadow: 2px 2px 2px #bdbdbd;
   margin-right:1em;
   transition: 0.3s;
+  display: block;
+  border: solid black 1px;
+  margin: auto;
 }
 img:hover {
   box-shadow: 4px 4px 4px #8c8c8c;
@@ -14,27 +14,30 @@ img:hover {
   width:100%;
   height:300px;
   padding: 15px 0;
-  border-bottom: 1px solid #2c3440;
   display: block;
   position:relative;
   overflow:hidden;
+  margin:.5em;
 }
 
 h3 {
   white-space: nowrap;
-  display:inline;
+  display:block;
+  text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1.69230769rem;
+  font-size: 1.39230769rem;
 }
 
 h6 {
   white-space: nowrap;
-  display: inline;
-  font-size: 1.38461538rem;
-  font-weight: 400;
-  margin-left:1em;
+  display:block;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #596270;
+  font-size: 1.18461538rem;
+
 }
 span {
   overflow-wrap: break-word;

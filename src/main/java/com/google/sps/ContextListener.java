@@ -1,6 +1,7 @@
 package com.google.sps;
 
 
+import com.google.sps.model.activity.Activity;
 import com.google.sps.model.queue.MediaListItem;
 import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
@@ -38,5 +39,6 @@ public class ContextListener implements ServletContextListener {
         ObjectifyService.register(UserObject.class);
         ObjectifyService.register(ReviewObject.class);
         ObjectifyService.register(FollowItem.class);
+        ObjectifyService.register(Activity.class);
     }
 }

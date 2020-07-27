@@ -25,6 +25,7 @@ export class InfoService {
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
+  private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -173,6 +174,15 @@ export class InfoService {
         mediaId: mediaId,
         listType: listType,
         mediaType: mediaType
+      }
+    })
+  }
+
+  public getActivity(userId: string, offset: number) {
+    return this.http.get<{}[]>(this.getActivityEndpoint, {
+      params: {
+        userId: userId,
+        offset: String(offset)
       }
     })
   }

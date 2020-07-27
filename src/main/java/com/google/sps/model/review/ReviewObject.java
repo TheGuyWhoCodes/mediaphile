@@ -1,23 +1,15 @@
 package com.google.sps.model.review;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.api.services.books.model.Volume;
-import com.google.sps.servlets.book.BookDetailsServlet;
-import com.google.sps.servlets.movie.MovieDetailsServlet;
+import com.google.sps.model.activity.Activity;
 import com.google.sps.model.user.UserObject;
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import info.movito.themoviedbapi.model.MovieDb;
+import com.googlecode.objectify.annotation.Subclass;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.sql.Timestamp;
 
-import static com.google.sps.util.Utils.parseInt;
-
-@Entity
-public class ReviewObject {
+@Subclass(index=true, name="ReviewObject")
+public class ReviewObject extends Activity {
 
     public ReviewObject() {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
@@ -31,7 +23,7 @@ public class ReviewObject {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         this.timestamp = currentTime.getTime();
 
-        this.authorId = userObject.getId();
+        this.userId = userObject.getId();
         this.authorName = userObject.getUsername();
 
         this.contentType = contentType;
@@ -44,18 +36,13 @@ public class ReviewObject {
         this.rating = rating;
     }
 
-    @Id
-    @JsonProperty
-    @Index
-    private Long id;
-
     @JsonProperty
     @Index
     private long timestamp;
 
     @JsonProperty
     @Index
-    private String authorId;
+    private String userId;
 
     @JsonProperty
     @Index
@@ -89,13 +76,6 @@ public class ReviewObject {
     @Index
     private int rating;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public long getTimestamp() {
         return timestamp;
@@ -106,11 +86,11 @@ public class ReviewObject {
     }
 
     public String getAuthorId() {
-        return authorId;
+        return userId;
     }
 
     public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+        this.userId = authorId;
     }
 
     public String getAuthorName() {

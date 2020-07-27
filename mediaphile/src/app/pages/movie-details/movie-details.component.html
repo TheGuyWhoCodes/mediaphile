@@ -41,11 +41,10 @@
       </div>
     </div>
   </main>
-</div>
-
-<div #reviews class="container reviews">
-  <h2>Reviews: </h2>
-  <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="entity['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+  <div #reviews class="container reviews">
+    <h2>Reviews: </h2>
+    <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+  </div>
 </div>
 
 <ng-template #loading>
