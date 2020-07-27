@@ -70,11 +70,6 @@ public class RecentActivityServletTest {
     }
 
     @Test
-    public void getEmptyList() {
-
-    }
-
-    @Test
     public void errorRequest() throws ServletException, IOException {
         addFollowers();
         HttpServletRequest request = mock(HttpServletRequest.class);
