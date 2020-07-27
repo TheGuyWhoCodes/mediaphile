@@ -19,11 +19,6 @@ import java.util.stream.Collectors;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
-/**
- * @author chris
- * date: 7/21/2020
- */
-
 @WebServlet("/activity/followers")
 public class RecentActivityServlet extends HttpServlet {
 
