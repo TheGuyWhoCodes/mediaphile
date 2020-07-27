@@ -28,12 +28,20 @@ public class LoginStatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
 
+        String redirect = request.getParameter("redirect");
+        if (redirect == null) {
+            redirect = "";
+        } else {
+            redirect = redirect.trim();
+        }
+        String redirect_query = (redirect.isEmpty()) ? "" : "?redirect=" + redirect;
+
         UserService userService = UserServiceFactory.getUserService();
 
         boolean loggedIn = userService.isUserLoggedIn();
         String url = (loggedIn)
-                ? "/login/register?logout=1"
-                : userService.createLoginURL("/login/register");
+                ? "/login/register?logout=1" + redirect_query
+                : userService.createLoginURL("/login/register" + redirect_query);
         User user = userService.getCurrentUser();
         String id = (user != null) ? user.getUserId() : "";
 
