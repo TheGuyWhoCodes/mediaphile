@@ -34,11 +34,15 @@ public class LoginStatusServlet extends HttpServlet {
         } else {
             redirect = redirect.trim();
         }
-        String redirect_query = (redirect.isEmpty()) ? "" : "?redirect=" + redirect;
 
         UserService userService = UserServiceFactory.getUserService();
 
         boolean loggedIn = userService.isUserLoggedIn();
+        String redirect_query = "";
+        if (!redirect.isEmpty()) {
+            redirect_query = ((loggedIn) ? "&" : "?") + "redirect=" + redirect;
+        }
+
         String url = (loggedIn)
                 ? "/login/register?logout=1" + redirect_query
                 : userService.createLoginURL("/login/register" + redirect_query);

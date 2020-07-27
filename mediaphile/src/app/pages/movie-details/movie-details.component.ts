@@ -70,14 +70,14 @@ export class MovieDetailsComponent implements OnInit {
   }
 
   public getEntityImageUrl() : string {
-    if(this.movieData["backdropPath"]) {
+    if(this.movieData && this.movieData["backdropPath"]) {
       return "https://image.tmdb.org/t/p/original" + this.movieData['backdropPath']
     }
     return "assets/placeholder.jpeg"
   }
 
   public getEntityPosterUrl(): string {
-    if(this.movieData["posterPath"]) {
+    if(this.movieData && this.movieData["posterPath"]) {
       return "https://image.tmdb.org/t/p/w500" + this.movieData['posterPath']
     }
     return "assets/poster-placeholder.png"
