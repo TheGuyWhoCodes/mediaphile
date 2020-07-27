@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {InfoService} from "../../../info.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Observable, Subscribable} from "rxjs";
+import {LoginStatus} from "../../../auth/login.status";
 
 @Component({
   selector: 'app-review-submit',
@@ -16,6 +17,12 @@ export class ReviewSubmitComponent implements OnInit {
   @Input()
   type: string
 
+  @Input()
+  title: string
+
+  @Input()
+  artUrl: string
+
   successfullySubmitted: boolean = false;
 
   public error: any
@@ -24,15 +31,23 @@ export class ReviewSubmitComponent implements OnInit {
 
   hero = { title: '', review: '', currentRate: 0 };
 
-  constructor(private infoSvc: InfoService) { }
+  currentUser: {};
+
+  constructor(private infoSvc: InfoService, public loginStatus: LoginStatus) { }
 
   ngOnInit(): void {
-
+    this.loginStatus.sharedAccountId.subscribe(userId => {
+      this.infoSvc.getUser(userId).subscribe(userData => {
+        this.currentUser = userData;
+      });
+    });
   }
 
   public submitReview() : void {
+    if (this.currentUser == undefined) return;
     this.loading = true;
-    this.infoSvc.postReviewForMedia(this.id, this.type, this.hero.currentRate, this.hero.title, this.hero.review).subscribe(reviewStatus => {
+    this.infoSvc.postReviewForMedia(this.currentUser['id'], this.currentUser['username'],
+      this.type, this.id, this.title, this.artUrl, this.hero.title, this.hero.review,  this.hero.currentRate).subscribe(reviewStatus => {
       this.successfullySubmitted = true;
       this.error = undefined;
       this.loading = false;

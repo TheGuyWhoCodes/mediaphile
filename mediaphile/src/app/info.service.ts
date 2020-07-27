@@ -124,15 +124,20 @@ export class InfoService {
     });
   }
 
-  public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
-    return this.http.post(this.getReviews, {}, {
-      params: {
-        "contentType": contentType,
-        "contentId": id,
-        "reviewTitle": title,
-        "reviewBody": reviewBody,
-        "rating": String(rating)
-      }
+  public postReviewForMedia(authorId: string, authorName: string,
+                            contentType: string, contentId: string, contentTitle: string,
+                            artUrl: string,
+                            reviewTitle: string, reviewBody: string, rating: number) {
+    return this.http.post(this.getReviews, {
+      "authorId": authorId,
+      "authorName": authorName,
+      "contentType": contentType,
+      "contentId": contentId,
+      "contentTitle": contentTitle,
+      "artUrl": artUrl,
+      "reviewTitle": reviewTitle,
+      "reviewBody": reviewBody,
+      "rating": String(rating)
     });
   }
 

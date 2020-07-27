@@ -18,6 +18,12 @@ export class ReviewComponent implements OnInit {
   @Input()
   type: string
 
+  @Input()
+  title: string
+
+  @Input()
+  artUrl: string
+
   faEye = faEye;
 
   reviews: Observable<Review[]>
