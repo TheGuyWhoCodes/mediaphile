@@ -18,7 +18,9 @@ export class ActivityEntityComponent implements OnInit {
   }
 
   public isReview(): boolean {
-    return "reviewTitle" in this.activity
+    if(this.activity != null) {
+      return "reviewTitle" in this.activity
+    }
   }
 
   public getArtwork() {
