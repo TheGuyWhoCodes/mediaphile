@@ -48,7 +48,7 @@
 
 <div #reviews class = "container reviews">
   <h2>Reviews: </h2>
-  <app-review *ngIf="bookData != undefined" [type]="'book'" [id]="bookId"  [title]="bookData['volumeInfo']['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+  <app-review *ngIf="this.entity | async" [type]="'book'" [id]="bookId"  [title]="getEntityTitle()" [artUrl]="getEntityPosterUrl()"></app-review>
 </div>
 
 <ng-template #loading>

@@ -37,9 +37,11 @@ export class ReviewSubmitComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginStatus.sharedAccountId.subscribe(userId => {
-      this.infoSvc.getUser(userId).subscribe(userData => {
-        this.currentUser = userData;
-      });
+      if (userId != "") {
+        this.infoSvc.getUser(userId).subscribe(userData => {
+          this.currentUser = userData;
+        });
+      }
     });
   }
 
