@@ -22,10 +22,8 @@ export class ActivityEntityComponent implements OnInit {
   }
 
   public getArtwork() {
-    if(this.isReview()) {
-      if (this.activity["contentType"] != "book") {
+    if(this.isReview() && (this.activity["contentType"] === "movie")) {
         return "https://image.tmdb.org/t/p/w500" + this.activity["artUrl"]
-      }
     }
     return this.activity["artUrl"];
   }
