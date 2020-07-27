@@ -9,6 +9,7 @@ import {LoginStatusStruct} from "./struct/loginStatusStruct";
 import {QueueEntity} from "./struct/queue.entity";
 import {LoginStatus} from "./auth/login.status";
 import {Review} from "./struct/Review";
+import {IsInList} from "./struct/IsInList";
 
 @Injectable({
   providedIn: "root"
@@ -25,6 +26,7 @@ export class InfoService {
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
+  private getIsInListEndpoint: string = `${this.apiBackendUrl}list/isInList`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -105,11 +107,12 @@ export class InfoService {
     });
   }
 
-  public getQueue(userId: string, type: string) {
+  public getQueue(userId: string, type: string, offset: number) {
     return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
         "userId": userId,
-        "listType": type
+        "listType": type,
+        "offset": String(offset)
       }
     });
   }
@@ -181,5 +184,14 @@ export class InfoService {
         mediaType: mediaType
       }
     })
+  }
+
+  public isInList(userId: string, mediaId: string) {
+    return this.http.get<IsInList>(this.getIsInListEndpoint, {
+      params: {
+        "userId": userId,
+        "mediaId": mediaId,
+      }
+    });
   }
 }

@@ -24,15 +24,11 @@ export class BookDetailsComponent implements OnInit {
   public entity: Observable<any>;
   public bookData: {};
 
-  public queue: Object[];
   public hasQueue: boolean;
-
-  public watched: Object[];
   public hasWatched: boolean;
+  public hasListResponse: boolean = false;
 
   public isLoggedIn: boolean;
-  public isInQueue: boolean;
-  public isInWatched: boolean;
 
   constructor(private infoSvc: InfoService, public loginStatus: LoginStatus, private route: ActivatedRoute, private title: Title, private modalService: NgbModal) { }
 
@@ -40,16 +36,13 @@ export class BookDetailsComponent implements OnInit {
     this.loginStatus.sharedAccountId.subscribe(x => {
       this.userId = x;
       if(x != "") {
-        this.infoSvc.getQueue(this.userId, "queue").subscribe(data => {
-          this.queue = data;
-          this.hasQueue = true;
-          this.isInQueue = this.isItemInList(data, this.bookId);
-        })
-        this.infoSvc.getQueue(this.userId, "viewed").subscribe(data => {
-          this.watched = data;
-          this.hasWatched = true;
-          this.isInWatched = this.isItemInList(data, this.bookId);
-        })
+        if (this.userId != "") {
+          this.infoSvc.isInList(this.userId, this.bookId).subscribe(data => {
+            this.hasQueue = data.isInQueue;
+            this.hasWatched = data.isInViewed;
+            this.hasListResponse = true;
+          })
+        }
       }
     })
 
@@ -90,7 +83,7 @@ export class BookDetailsComponent implements OnInit {
       "queue",
       this.userId
     ).subscribe(x => {
-      this.isInQueue = true;
+      this.hasQueue = true;
       if(x["success"]) {
         this.showMessage("Success!", "Successfully added to queue!");
       }
@@ -108,7 +101,7 @@ export class BookDetailsComponent implements OnInit {
       "viewed",
       this.userId
     ).subscribe(x => {
-      this.isInWatched = true;
+      this.hasWatched = true;
       if(x["success"]) {
         this.showMessage("Success!", "Successfully added to read list!");
       }
@@ -120,9 +113,9 @@ export class BookDetailsComponent implements OnInit {
   public removeFromList(listType: string) {
     this.infoSvc.deleteFromQueue(listType, "book", this.bookId).subscribe(data => {
       if(listType == "queue") {
-        this.isInQueue = false;
+        this.hasQueue = false;
       } else {
-        this.isInWatched = false;
+        this.hasWatched = false;
       }
       this.showMessage("Success!", "Deleted book successfully!");
     }, error => {
