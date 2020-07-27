@@ -83,7 +83,7 @@ public class RecentActivityServlet extends HttpServlet {
      */
     private List<Activity> getActivity(List<String> following, int offset) {
         if(following.size() == 0) {
-            new ArrayList<Activity>();
+            return new ArrayList<Activity>();
         }
         return ofy().load().type(Activity.class)
                 .filter("userId IN", following)

@@ -3,7 +3,6 @@ package com.google.sps.model.review;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.sps.model.activity.Activity;
 import com.google.sps.model.user.UserObject;
-import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Subclass;
 
@@ -24,7 +23,7 @@ public class ReviewObject extends Activity {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         this.timestamp = currentTime.getTime();
 
-        this.authorId = userObject.getId();
+        this.userId = userObject.getId();
         this.authorName = userObject.getUsername();
 
         this.contentType = contentType;
@@ -43,7 +42,7 @@ public class ReviewObject extends Activity {
 
     @JsonProperty
     @Index
-    private String authorId;
+    private String userId;
 
     @JsonProperty
     @Index

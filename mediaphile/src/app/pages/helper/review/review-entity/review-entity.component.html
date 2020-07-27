@@ -1,5 +1,5 @@
 <div class = "container">
-  <a href = "user/{{review.authorId}}" class = "author-name">{{review.authorName}}</a>
+  <a href = "user/{{review.userId}}" class = "author-name">{{review.authorName}}</a>
   <span> rated it </span>
 
   <ngb-rating  [(rate)]="currentRate" [max]="5" [readonly]=true>

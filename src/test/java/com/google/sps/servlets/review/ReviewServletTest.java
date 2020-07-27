@@ -264,7 +264,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -292,7 +292,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -421,7 +421,7 @@ public class ReviewServletTest extends Mockito {
                 DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
         ofy().save().entity(reviewObject).now();
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertFalse(reviews.isEmpty());
 
@@ -429,7 +429,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertTrue(reviews.isEmpty());
     }
@@ -449,7 +449,7 @@ public class ReviewServletTest extends Mockito {
                 DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
         ofy().save().entity(reviewObject).now();
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertFalse(reviews.isEmpty());
 
@@ -458,7 +458,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertTrue(reviews.isEmpty());
     }
