@@ -180,6 +180,7 @@ public class UserServletTest extends Mockito {
         ofy().save().entity(user).now();
 
         UserObject expectedUser = new UserObject("123", "test", "", "");
+        expectedUser.setUsernameNorm("test");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);

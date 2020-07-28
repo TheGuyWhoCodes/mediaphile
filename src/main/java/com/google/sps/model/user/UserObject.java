@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
 
 @Entity(name="User")
 public class UserObject {
@@ -36,7 +37,6 @@ public class UserObject {
         this.username = username;
         this.email = email;
         this.profilePicUrl = profilePicUrl;
-        this.usernameNorm = username.toLowerCase();
     }
 
     public String getId() {
@@ -78,5 +78,7 @@ public class UserObject {
     public void setUsernameNorm (String usernameNorm) {
         this.usernameNorm = usernameNorm;
     }
+
+    @OnSave void mainCaseInsensitive() { this.usernameNorm = username.toLowerCase(); }
 }
 
