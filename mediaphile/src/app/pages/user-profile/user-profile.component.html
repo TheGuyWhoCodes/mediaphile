@@ -7,7 +7,7 @@
           {{getProfilePicChar()}}
         </div>
       </div>
-      <h1 class="col-md-1 align-self-center">{{entity['username']}}</h1>
+      <h1 id="username" class="align-self-center">{{entity['username']}}</h1>
       <button *ngIf="!isSelf" (click)="toggleFollow()" id="follow-button" class="align-self-center">
         {{(followed) ? "Unfollow" : "Follow"}}
       </button>

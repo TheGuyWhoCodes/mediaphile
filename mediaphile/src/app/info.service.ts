@@ -27,6 +27,7 @@ export class InfoService {
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
   private getIsInListEndpoint: string = `${this.apiBackendUrl}list/isInList`;
+  private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -192,5 +193,15 @@ export class InfoService {
         "mediaId": mediaId,
       }
     });
+  }
+
+
+  public getActivity(userId: string, offset: number) {
+    return this.http.get<{}[]>(this.getActivityEndpoint, {
+      params: {
+        userId: userId,
+        offset: String(offset)
+      }
+    })
   }
 }

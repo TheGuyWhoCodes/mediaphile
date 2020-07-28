@@ -21,7 +21,7 @@ describe('ReviewEntityComponent', () => {
     component.review = {
       id: 3,
       timestamp: "1234",
-      authorId: "5678",
+      userId: "5678",
       authorName: "Chris",
       contentType: "book",
       contentId: "12345",

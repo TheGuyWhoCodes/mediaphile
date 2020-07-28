@@ -1,0 +1,29 @@
+<div *ngIf = "isReview()" class = "activity-container">
+  <div class="row">
+    <div class="col-3">
+      <img [src]="getArtwork()">
+    </div>
+
+    <div class="col-9">
+      <span class = "activity-text-container">
+         <a href = "{{getAuthorUrl()}}">{{getAuthor()}}</a> rated <a href = "{{getActivityUrl()}}"><div class = "entity-title">{{getTitle()}}</div></a> {{this.getRating()}} stars!
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf = "!isReview()" class = "activity-container">
+  <div class="row">
+    <div class="col-3">
+      <img [src]="getArtwork()">
+    </div>
+
+    <div class="col-9">
+      <span class = "activity-text-container">
+        <a href = "{{getAuthorUrl()}}">{{getAuthor()}}</a> added <a href = "{{getActivityUrl()}}"><div class = "entity-title">{{getTitle()}}</div></a> to their "{{getListType()}}" list
+      </span>
+    </div>
+
+  </div>
+</div>

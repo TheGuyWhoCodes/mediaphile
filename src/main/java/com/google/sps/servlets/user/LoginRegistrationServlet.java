@@ -48,13 +48,15 @@ public class LoginRegistrationServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
 
+        String redirect = request.getParameter("redirect");
+        boolean has_redirect = (redirect != null) && !(redirect.isEmpty());
+
         String logout = request.getParameter("logout");
         if (logout != null && logout.equals("1")) {
             eraseLoginCookies(request, response);
-            response.sendRedirect("/");
+            response.sendRedirect((has_redirect) ? redirect : "/");
             return;
         }
-
 
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
@@ -65,6 +67,6 @@ public class LoginRegistrationServlet extends HttpServlet {
 
         storeUserIfNotFound(user.getUserId(), user.getEmail().split("@")[0], user.getEmail(), "");
 
-        response.sendRedirect("/home");
+        response.sendRedirect((has_redirect) ? redirect : "/home");
     }
 }
