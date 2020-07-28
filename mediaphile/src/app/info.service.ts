@@ -25,6 +25,7 @@ export class InfoService {
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
+  private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -67,8 +68,11 @@ export class InfoService {
     })
   }
 
-  public login() {
-    return this.http.get<LoginStatusStruct>(this.loginStatus)
+  public login(redirect?: string) {
+    let params = (redirect) ? {redirect: redirect} : {};
+    return this.http.get<LoginStatusStruct>(this.loginStatus, {
+      params: params
+    })
   }
 
   public logout() {
@@ -78,15 +82,6 @@ export class InfoService {
   }
 
   public getUser(userId: string) {
-    // TODO: Remove placeholder
-    if ((['123', '234', '345'].indexOf(userId) >= 0)) {
-      return of({
-        id: userId,
-        email: "other@example.com",
-        profilePicUrl: "https://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg",
-        username: "other",
-      });
-    }
     return this.http.get(this.userEndpoint, {
       params: {
         "id": userId,
@@ -123,15 +118,20 @@ export class InfoService {
     });
   }
 
-  public postReviewForMedia(id: string, contentType: string, rating: number, title: string, reviewBody: string) {
-    return this.http.post(this.getReviews, {}, {
-      params: {
-        "contentType": contentType,
-        "contentId": id,
-        "reviewTitle": title,
-        "reviewBody": reviewBody,
-        "rating": String(rating)
-      }
+  public postReviewForMedia(authorId: string, authorName: string,
+                            contentType: string, contentId: string, contentTitle: string,
+                            artUrl: string,
+                            reviewTitle: string, reviewBody: string, rating: number) {
+    return this.http.post(this.getReviews, {
+      "authorId": authorId,
+      "authorName": authorName,
+      "contentType": contentType,
+      "contentId": contentId,
+      "contentTitle": contentTitle,
+      "artUrl": artUrl,
+      "reviewTitle": reviewTitle,
+      "reviewBody": reviewBody,
+      "rating": String(rating)
     });
   }
 
@@ -174,6 +174,15 @@ export class InfoService {
         mediaId: mediaId,
         listType: listType,
         mediaType: mediaType
+      }
+    })
+  }
+
+  public getActivity(userId: string, offset: number) {
+    return this.http.get<{}[]>(this.getActivityEndpoint, {
+      params: {
+        userId: userId,
+        offset: String(offset)
       }
     })
   }

@@ -8,7 +8,7 @@
       </div>
       <div class="col-md-6 p-0 h-md-100 ">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
-          <div class="centered-container">
+          <div *ngIf="bookData != undefined" class="centered-container">
             <h1>{{bookData["volumeInfo"]["title"]}}</h1>
             <div *ngFor='let entry of bookData["volumeInfo"]["authors"]'>
               <h6>{{entry}}</h6>
@@ -44,11 +44,11 @@
       </div>
     </div>
   </main>
-</div>
 
-<div #reviews class = "container reviews">
-  <h2>Reviews: </h2>
-  <app-review [type]="'book'" [id]="bookId"></app-review>
+  <div #reviews class = "container reviews">
+    <h2>Reviews: </h2>
+    <app-review *ngIf="this.entity | async" [type]="'book'" [id]="bookId"  [title]="getEntityTitle()" [artUrl]="getEntityPosterUrl()"></app-review>
+  </div>
 </div>
 
 <ng-template #loading>

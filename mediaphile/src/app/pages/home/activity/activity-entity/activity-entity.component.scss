@@ -1,0 +1,46 @@
+.activity-container {
+  min-height:150px;
+  width:80%;
+  margin-bottom:2em;
+  border-bottom: 1px solid #e1e4e8!important;
+  padding:.1em;
+}
+
+.activity-text-container {
+  text-align: justify;
+  padding: 0 1em;
+}
+
+img {
+  outline: 1px solid #000;
+  display: block;
+  max-width:85%;
+  max-height:144px;
+  margin:auto;
+}
+
+.entity-title {
+  font-family: "Merriweather", "Georgia", serif;
+  font-weight: bold;
+  display:inline;
+  color: initial !important;
+}
+
+.col-3 {
+  height:100%;
+  box-sizing:border-box;
+  display: flex;
+}
+.col-9 {
+  display: flex;
+  align-items: center;
+}
+.row {
+  height:100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .activity-container{
+    width:100% !important;
+  }
+}

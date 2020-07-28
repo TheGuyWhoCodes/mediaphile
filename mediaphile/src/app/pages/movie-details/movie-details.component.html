@@ -8,7 +8,7 @@
       </div>
       <div class="col-md-6 p-0 h-md-100 ">
         <div class="d-md-flex align-items-center h-md-100 p-5 justify-content-center">
-          <div class="centered-container">
+          <div *ngIf="movieData != undefined" class="centered-container">
             <h1>{{movieData["title"]}}</h1>
             <div class="movie-meta">
               <span class="movie-duration">{{movieData["runtime"]}} min</span>
@@ -41,11 +41,10 @@
       </div>
     </div>
   </main>
-</div>
-
-<div #reviews class = "container reviews">
-  <h2>Reviews: </h2>
-  <app-review [type]="'movie'" [id]="movieId"></app-review>
+  <div #reviews class="container reviews">
+    <h2>Reviews: </h2>
+    <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+  </div>
 </div>
 
 <ng-template #loading>

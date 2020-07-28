@@ -5,6 +5,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.ContextListener;
 import com.google.sps.model.review.ReviewObject;
 import com.google.sps.model.user.UserObject;
+import com.google.sps.servlets.TestDelegatingServletInputStream;
 import com.google.sps.util.Utils.ContentType;
 import org.junit.After;
 import org.junit.Before;
@@ -15,9 +16,8 @@ import static org.junit.Assert.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +159,19 @@ public class ReviewServletTest extends Mockito {
     }
 
     @Test
+    public void testGetGoodUser() throws IOException {
+        initLoggedIn(); // To initialize user in Datastore
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("userId")).thenReturn(DUMMY_USER_ID);
+
+        new ReviewServlet().doGet(request, response);
+        writer.flush();
+
+        assertEquals(stringWriter.toString().trim(), "[]");
+    }
+
+    @Test
     public void testGetGoodBook() throws IOException {
         initLoggedOut();
 
@@ -178,7 +191,7 @@ public class ReviewServletTest extends Mockito {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
@@ -187,15 +200,48 @@ public class ReviewServletTest extends Mockito {
     }
 
     @Test
+    public void testGetSpecificReview() throws IOException {
+        initLoggedIn(); // To initialize user in Datastore
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter("userId")).thenReturn(DUMMY_USER_ID);
+        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
+        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+
+        UserObject userObject = ofy().load().type(UserObject.class).id(DUMMY_USER_ID).now();
+        ReviewObject reviewObject = new ReviewObject(userObject,
+                ContentType.BOOK, GOOD_BOOK_ID,
+                DUMMY_BOOK_TITLE, DUMMY_BOOK_ART_URL,
+                DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
+        ofy().save().entity(reviewObject).now();
+        new ReviewServlet().doGet(request, response);
+        writer.flush();
+
+        assertFalse(stringWriter.toString().trim().equals("[]"));
+        assertFalse(stringWriter.toString().trim().equals("[[]]"));
+    }
+
+    @Test
     public void testPostUnauthenticated() throws IOException {
         initLoggedOut();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
-        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
-        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
-        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
+        String json = "{\n" +
+                "\t\"authorId\": \"" + DUMMY_USER_ID + "\",\n" +
+                "\t\"authorName\": \"" + DUMMY_USERNAME + "\",\n" +
+                "\t\"contentType\": \"" + ContentType.MOVIE + "\",\n" +
+                "\t\"contentId\": \"" + GOOD_MOVIE_ID + "\",\n" +
+                "\t\"contentTitle\": \"" + DUMMY_MOVIE_TITLE + "\",\n" +
+                "\t\"artUrl\": \"" + DUMMY_MOVIE_ART_URL + "\",\n" +
+                "\t\"reviewTitle\": \"" + DUMMY_REVIEW_TITLE + "\",\n" +
+                "\t\"reviewBody\": \"" + DUMMY_REVIEW_TITLE+ "\",\n" +
+                "\t\"rating\": \"" + GOOD_DUMMY_RATING + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -220,11 +266,22 @@ public class ReviewServletTest extends Mockito {
         initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn("");
-        when(request.getParameter("contentId")).thenReturn("");
-        when(request.getParameter("reviewTitle")).thenReturn("");
-        when(request.getParameter("reviewBody")).thenReturn("");
-        when(request.getParameter("rating")).thenReturn("");
+        String json = "{\n" +
+                "\t\"authorId\": \"" + "\",\n" +
+                "\t\"authorName\": \"" + "\",\n" +
+                "\t\"contentType\": \"" + "\",\n" +
+                "\t\"contentId\": \"" + "\",\n" +
+                "\t\"contentTitle\": \"" + "\",\n" +
+                "\t\"artUrl\": \"" + "\",\n" +
+                "\t\"reviewTitle\": \"" + "\",\n" +
+                "\t\"reviewBody\": \"" + "\",\n" +
+                "\t\"rating\": \"" + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -237,11 +294,22 @@ public class ReviewServletTest extends Mockito {
         initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
-        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
-        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
-        when(request.getParameter("rating")).thenReturn(TOO_BIG_RATING);
+        String json = "{\n" +
+                "\t\"authorId\": \"" + DUMMY_USER_ID + "\",\n" +
+                "\t\"authorName\": \"" + DUMMY_USERNAME + "\",\n" +
+                "\t\"contentType\": \"" + ContentType.MOVIE + "\",\n" +
+                "\t\"contentId\": \"" + GOOD_MOVIE_ID + "\",\n" +
+                "\t\"contentTitle\": \"" + DUMMY_MOVIE_TITLE + "\",\n" +
+                "\t\"artUrl\": \"" + DUMMY_MOVIE_ART_URL + "\",\n" +
+                "\t\"reviewTitle\": \"" + DUMMY_REVIEW_TITLE + "\",\n" +
+                "\t\"reviewBody\": \"" + DUMMY_REVIEW_TITLE+ "\",\n" +
+                "\t\"rating\": \"" + TOO_BIG_RATING + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
@@ -254,17 +322,28 @@ public class ReviewServletTest extends Mockito {
         initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn(ContentType.MOVIE);
-        when(request.getParameter("contentId")).thenReturn(GOOD_MOVIE_ID);
-        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
-        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
-        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
+        String json = "{\n" +
+                "\t\"authorId\": \"" + DUMMY_USER_ID + "\",\n" +
+                "\t\"authorName\": \"" + DUMMY_USERNAME + "\",\n" +
+                "\t\"contentType\": \"" + ContentType.MOVIE + "\",\n" +
+                "\t\"contentId\": \"" + GOOD_MOVIE_ID + "\",\n" +
+                "\t\"contentTitle\": \"" + DUMMY_MOVIE_TITLE + "\",\n" +
+                "\t\"artUrl\": \"" + DUMMY_MOVIE_ART_URL + "\",\n" +
+                "\t\"reviewTitle\": \"" + DUMMY_REVIEW_TITLE + "\",\n" +
+                "\t\"reviewBody\": \"" + DUMMY_REVIEW_TITLE+ "\",\n" +
+                "\t\"rating\": \"" + GOOD_DUMMY_RATING + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -282,17 +361,28 @@ public class ReviewServletTest extends Mockito {
         initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
-        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
-        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
-        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
+        String json = "{\n" +
+                "\t\"authorId\": \"" + DUMMY_USER_ID + "\",\n" +
+                "\t\"authorName\": \"" + DUMMY_USERNAME + "\",\n" +
+                "\t\"contentType\": \"" + ContentType.BOOK + "\",\n" +
+                "\t\"contentId\": \"" + GOOD_BOOK_ID + "\",\n" +
+                "\t\"contentTitle\": \"" + DUMMY_BOOK_TITLE + "\",\n" +
+                "\t\"artUrl\": \"" + DUMMY_BOOK_ART_URL + "\",\n" +
+                "\t\"reviewTitle\": \"" + DUMMY_REVIEW_TITLE + "\",\n" +
+                "\t\"reviewBody\": \"" + DUMMY_REVIEW_TITLE+ "\",\n" +
+                "\t\"rating\": \"" + GOOD_DUMMY_RATING + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
 
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertNotNull(reviews);
         assertFalse(reviews.isEmpty());
@@ -310,14 +400,31 @@ public class ReviewServletTest extends Mockito {
         initLoggedIn();
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
-        when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
-        when(request.getParameter("reviewTitle")).thenReturn(DUMMY_REVIEW_TITLE);
-        when(request.getParameter("reviewBody")).thenReturn(DUMMY_REVIEW_BODY);
-        when(request.getParameter("rating")).thenReturn(GOOD_DUMMY_RATING);
+        String json = "{\n" +
+                "\t\"authorId\": \"" + DUMMY_USER_ID + "\",\n" +
+                "\t\"authorName\": \"" + DUMMY_USERNAME + "\",\n" +
+                "\t\"contentType\": \"" + ContentType.BOOK + "\",\n" +
+                "\t\"contentId\": \"" + GOOD_BOOK_ID + "\",\n" +
+                "\t\"contentTitle\": \"" + DUMMY_BOOK_TITLE + "\",\n" +
+                "\t\"artUrl\": \"" + DUMMY_BOOK_ART_URL + "\",\n" +
+                "\t\"reviewTitle\": \"" + DUMMY_REVIEW_TITLE + "\",\n" +
+                "\t\"reviewBody\": \"" + DUMMY_REVIEW_TITLE+ "\",\n" +
+                "\t\"rating\": \"" + GOOD_DUMMY_RATING + "\"\n" +
+                "}";
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
 
         new ReviewServlet().doPost(request, response);
         writer.flush();
+
+        when(request.getInputStream()).thenReturn(
+                new TestDelegatingServletInputStream(
+                        new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8))));
+        when(request.getReader()).thenReturn(
+                new BufferedReader(new StringReader(json)));
         new ReviewServlet().doPost(request, response);
         writer.flush();
 
@@ -421,7 +528,7 @@ public class ReviewServletTest extends Mockito {
                 DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
         ofy().save().entity(reviewObject).now();
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertFalse(reviews.isEmpty());
 
@@ -429,7 +536,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertTrue(reviews.isEmpty());
     }
@@ -449,7 +556,7 @@ public class ReviewServletTest extends Mockito {
                 DUMMY_REVIEW_TITLE, DUMMY_REVIEW_BODY, Integer.parseInt(GOOD_DUMMY_RATING));
         ofy().save().entity(reviewObject).now();
         List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertFalse(reviews.isEmpty());
 
@@ -458,7 +565,7 @@ public class ReviewServletTest extends Mockito {
         writer.flush();
 
         reviews = ofy().load().type(ReviewObject.class)
-                .filter("authorId", DUMMY_USER_ID)
+                .filter("userId", DUMMY_USER_ID)
                 .list();
         assertTrue(reviews.isEmpty());
     }
