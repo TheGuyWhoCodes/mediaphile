@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {InfoService} from "../../../info.service";
-import {faEye} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faAngleDoubleRight} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-queue',
@@ -19,15 +19,23 @@ export class QueueComponent implements OnInit {
 
   @Input()
   type: string;
+
   public hasResults: boolean = false;
-  public entities: [] = [];
+
+  public entities: [] = []
+
+  public showMore: boolean = true;
+
+  public loaded: boolean = false;
+
+  public pageNumber: number = 1;
+
+  public faAngleDoubleRight = faAngleDoubleRight;
+
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    this.infoSvc.getQueue(this.userID, this.type).subscribe(x => {
-      this.entities.push.apply(this.entities, x)
-      this.hasResults = true;
-    })
+    this.getMoreActivity(this.pageNumber)
   }
 
   public hasReceivedResults() {
@@ -42,4 +50,20 @@ export class QueueComponent implements OnInit {
     return (this.userID === this.viewerId) ? "Find something to add!" : "No items added";
   }
 
+  public loadMore() {
+    this.pageNumber += 1;
+    this.getMoreActivity(this.pageNumber);
+  }
+
+  public getMoreActivity(offset: number) {
+    this.loaded = false;
+      this.infoSvc.getQueue(this.userID, this.type, offset).subscribe(data => {
+        this.hasResults = true;
+        this.entities.push.apply(this.entities, data)
+        if(data.length != 24) {
+          this.showMore = false;
+        }
+        this.loaded = true;
+      })
+    }
 }

@@ -36,7 +36,7 @@ public class RecentActivityServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int offset;
+        int pageNumber;
 
         String userId = request.getParameter("userId");
         if (userId == null) {
@@ -45,7 +45,7 @@ public class RecentActivityServlet extends HttpServlet {
         }
 
         try {
-            offset = Utils.parseInt(request.getParameter("offset"));
+            pageNumber = Utils.parseInt(request.getParameter("pageNumber"));
         } catch (NullPointerException e){
             HttpUtils.setInvalidGetResponse(response);
             return;
@@ -54,7 +54,7 @@ public class RecentActivityServlet extends HttpServlet {
         // grabs list of "following" related to a user, this is a list of user id (as string
         List<String> following = getFollowingList(userId);
 
-        List<Activity> reviews = getActivity(following, offset);
+        List<Activity> reviews = getActivity(following, pageNumber);
 
         response.getWriter().println(gson.toJsonTree(reviews));
     }
