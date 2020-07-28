@@ -213,6 +213,5 @@ export class InfoService {
       return "https://" + href.substr(7);
     }
     return href;
-
   }
 }
