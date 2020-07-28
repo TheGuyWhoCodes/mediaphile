@@ -46,18 +46,16 @@ public class MediaItemInServlet extends HttpServlet {
     }
 
     private boolean isInQueue(String userId, String mediaId) {
-        return !ofy().load().type(QueueListItemObject.class)
+        return ofy().load().type(QueueListItemObject.class)
                 .filter("userId", userId)
                 .filter("mediaId", mediaId)
-                .order("-timestamp")
-                .list().isEmpty();
+                .first().now() != null;
     }
 
     private boolean isInViewed(String userId, String mediaId) {
-        return !ofy().load().type(ViewedListItemObject.class)
+        return ofy().load().type(ViewedListItemObject.class)
                 .filter("userId", userId)
                 .filter("mediaId", mediaId)
-                .order("-timestamp")
-                .list().isEmpty();
+                .first().now() != null;
     }
 }

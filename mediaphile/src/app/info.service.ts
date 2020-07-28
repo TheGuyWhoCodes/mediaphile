@@ -190,11 +190,11 @@ export class InfoService {
   }
 
 
-  public getActivity(userId: string, offset: number) {
+  public getActivity(userId: string, pageNumber: number) {
     return this.http.get<{}[]>(this.getActivityEndpoint, {
       params: {
         userId: userId,
-        offset: String(offset)
+        pageNumber: String(pageNumber)
       }
     })
   }
