@@ -186,4 +186,13 @@ export class InfoService {
       }
     })
   }
+
+  public searchUsers(query: string, pageNumber: number) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "query": query,
+        "pageNumber": pageNumber.toString()
+      }
+    });
+  }
 }

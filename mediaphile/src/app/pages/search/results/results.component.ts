@@ -49,6 +49,8 @@ export class ResultsComponent implements OnInit {
       this.searchBooks(query);
     } else if(this.type == "movie") {
       this.searchMovies(query);
+    } else if(this.type == "user") {
+        this.searchUsers(query);
     }
 
   }
@@ -67,6 +69,17 @@ export class ResultsComponent implements OnInit {
 
   private searchBooks(query: string) {
     this.infoSvc.searchBooks(query, this.pageNumber).subscribe(data => {
+      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.hasResults = true;
+
+      if(data["results"] === null) {
+        this.canLoadMore = false;
+      }
+    });
+  }
+
+  private searchUsers(query: string) {
+    this.infoSvc.searchUsers(query, this.pageNumber).subscribe(data => {
       this.arrayResults.push.apply(this.arrayResults, data["results"])
       this.hasResults = true;
 

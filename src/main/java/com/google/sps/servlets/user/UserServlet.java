@@ -12,6 +12,8 @@ import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.sps.model.user.UserObject;
 
+import com.google.sps.util.Utils.parseInt;
+
 import java.util.List;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -22,6 +24,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @WebServlet("/user")
 public class UserServlet extends HttpServlet {
 
+    private static final int RESULTS_PER_PAGE = 20;
+    
     Gson gson = new Gson();
 
     /**
@@ -42,9 +46,10 @@ public class UserServlet extends HttpServlet {
         String id = request.getParameter("id");
         String query = request.getParameter("query");
 
-        if(query != null) {
-            List<UserObject> userObject =  getUserObjectList(query.toLowerCase());
-            response.getWriter().println(gson.toJson(userObject));
+        if(query != null && !query.isEmpty()) {
+            Integer pageNumber = parseInt(request.getParameter("pageNumber"));
+            List<UserObject> userObjects =  getUserObjectList(query.toLowerCase(), pageNumber);
+            response.getWriter().println(gson.toJsonTree(userObjects));
             return;
         } else if (id == null || id.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -64,11 +69,13 @@ public class UserServlet extends HttpServlet {
         response.getWriter().println(gson.toJson(userObject));
     }
 
-    private List<UserObject> getUserObjectList(String query) {
+    private List<UserObject> getUserObjectList(String query, int pageNumber) {
         return
             ofy().load().type(UserObject.class)
             .filter("usernameNorm >=", query)
             .filter("usernameNorm <", query + "\uFFFD")
+            .limit(RESULTS_PER_PAGE)
+            .offset(RESULTS_PER_PAGE * pageNumber)
             .list();
     }
 }

@@ -32,6 +32,7 @@ import { FollowEntityComponent } from "./pages/user-profile/follow-list/follow-e
 import { ModalComponent } from './pages/helper/modal/modal.component';
 import { ActivityComponent } from './pages/home/activity/activity.component';
 import { ActivityEntityComponent } from './pages/home/activity/activity-entity/activity-entity.component';
+import { UserEntityComponent } from './pages/user-entity/user-entity.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { ActivityEntityComponent } from './pages/home/activity/activity-entity/a
     FollowEntityComponent,
     ModalComponent,
     ActivityComponent,
-    ActivityEntityComponent
+    ActivityEntityComponent,
+    UserEntityComponent
   ],
   imports: [
     BrowserModule,

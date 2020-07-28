@@ -17,6 +17,8 @@ export class SearchComponent implements OnInit {
   public book = "book"
   public movie = "movie"
 
+  public entities: [] = [];
+
   constructor(private title: Title, private route: ActivatedRoute) {
 
   }
