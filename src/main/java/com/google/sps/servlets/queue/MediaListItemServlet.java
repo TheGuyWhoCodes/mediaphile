@@ -12,6 +12,7 @@ import com.google.sps.model.queue.MediaListItem;
 import com.google.sps.model.queue.MediaListResponse;
 import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
+import com.google.sps.util.HttpUtils;
 import com.google.sps.util.Utils;
 import com.googlecode.objectify.cmd.QueryKeys;
 
@@ -33,6 +34,7 @@ public class MediaListItemServlet extends HttpServlet {
     private final UserService userService = UserServiceFactory.getUserService();
     private final Gson gson = new GsonBuilder().serializeNulls().create();
     private final ObjectMapper mapper = new ObjectMapper();
+    private final int QUEUE_GET_LIMIT = 24;
 
     /**
      * doGet() returns the entirety of a list of type listType belonging to userId
@@ -46,6 +48,15 @@ public class MediaListItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=utf-8");
+        int offset;
+
+        try {
+            offset = Utils.parseInt(request.getParameter("offset")) - 1;
+        } catch (NullPointerException e){
+            HttpUtils.setInvalidGetResponse(response);
+            return;
+        }
+
         String userId = request.getParameter("userId");
         String listType = request.getParameter("listType");
 
@@ -55,7 +66,7 @@ public class MediaListItemServlet extends HttpServlet {
             return;
         }
 
-        List<? extends MediaListItem> result = getListWithType(listType, userId);
+        List<? extends MediaListItem> result = getListWithType(listType, userId, offset);
         response.getWriter().println(gson.toJsonTree(result));
     }
 
@@ -174,11 +185,21 @@ public class MediaListItemServlet extends HttpServlet {
      * @param userId: userId to look for
      * @return: a list of abstracted type EntityDbQueue
      */
-    private List<? extends MediaListItem> getListWithType(String type, String userId) {
+    private List<? extends MediaListItem> getListWithType(String type, String userId, int offset) {
         if(type.equals(QueueListItemObject.TYPE_QUEUE)) {
-            return ofy().load().type(QueueListItemObject.class).filter("userId", userId).order("timestamp").list();
+            return ofy().load().type(QueueListItemObject.class)
+                    .filter("userId", userId)
+                    .order("-timestamp")
+                    .limit(QUEUE_GET_LIMIT)
+                    .offset(offset * QUEUE_GET_LIMIT)
+                    .list();
         } else {
-            return ofy().load().type(ViewedListItemObject.class).filter("userId", userId).order("timestamp").list();
+            return ofy().load().type(ViewedListItemObject.class)
+                    .filter("userId", userId)
+                    .order("-timestamp")
+                    .limit(QUEUE_GET_LIMIT)
+                    .offset(offset * QUEUE_GET_LIMIT)
+                    .list();
         }
     }
 

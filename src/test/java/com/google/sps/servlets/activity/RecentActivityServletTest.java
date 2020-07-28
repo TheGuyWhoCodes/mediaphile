@@ -86,7 +86,7 @@ public class RecentActivityServletTest {
         addFollowers();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("userId")).thenReturn("0123");
-        when(request.getParameter("offset")).thenReturn("0");
+        when(request.getParameter("pageNumber")).thenReturn("0");
 
         new RecentActivityServlet().doGet(request, response);
 
@@ -102,7 +102,7 @@ public class RecentActivityServletTest {
         addFollowers();
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("userId")).thenReturn("9876");
-        when(request.getParameter("offset")).thenReturn("0");
+        when(request.getParameter("pageNumber")).thenReturn("0");
 
         new RecentActivityServlet().doGet(request, response);
 

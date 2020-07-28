@@ -9,6 +9,7 @@ import {LoginStatusStruct} from "./struct/loginStatusStruct";
 import {QueueEntity} from "./struct/queue.entity";
 import {LoginStatus} from "./auth/login.status";
 import {Review} from "./struct/Review";
+import {IsInList} from "./struct/IsInList";
 
 @Injectable({
   providedIn: "root"
@@ -25,6 +26,7 @@ export class InfoService {
   private postQueueEndpoint: string = `${this.apiBackendUrl}list/entity`;
   private followListEndpoint: string = `${this.apiBackendUrl}follow`;
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
+  private getIsInListEndpoint: string = `${this.apiBackendUrl}list/isInList`;
   private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
@@ -100,11 +102,12 @@ export class InfoService {
     });
   }
 
-  public getQueue(userId: string, type: string) {
+  public getQueue(userId: string, type: string, offset: number) {
     return this.http.get<Object[]>(this.postQueueEndpoint, {
       params: {
         "userId": userId,
-        "listType": type
+        "listType": type,
+        "offset": String(offset)
       }
     });
   }
@@ -177,12 +180,21 @@ export class InfoService {
       }
     })
   }
+  public isInList(userId: string, mediaId: string) {
+    return this.http.get<IsInList>(this.getIsInListEndpoint, {
+      params: {
+        "userId": userId,
+        "mediaId": mediaId,
+      }
+    });
+  }
 
-  public getActivity(userId: string, offset: number) {
+
+  public getActivity(userId: string, pageNumber: number) {
     return this.http.get<{}[]>(this.getActivityEndpoint, {
       params: {
         userId: userId,
-        offset: String(offset)
+        pageNumber: String(pageNumber)
       }
     })
   }
@@ -194,5 +206,13 @@ export class InfoService {
         "pageNumber": pageNumber.toString()
       }
     });
+  }
+
+  public toHttps(href: string) {
+    if (href.startsWith("http://")) {
+      return "https://" + href.substr(7);
+    }
+    return href;
+
   }
 }
