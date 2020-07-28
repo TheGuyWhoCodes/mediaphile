@@ -9,4 +9,11 @@
       <h2><fa-icon [icon]="faEye"></fa-icon> {{getEmptyText()}}</h2>
     </div>
   </div>
+  <div (click)="loadMore()" *ngIf="showMore" class="load-more">Load More Activity <fa-icon [icon]="faAngleDoubleRight"></fa-icon></div>
+</div>
+
+<div class="text-center align-middle loader" *ngIf="!loaded">
+  <div class="spinner-border" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
 </div>

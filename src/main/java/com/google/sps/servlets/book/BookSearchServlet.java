@@ -8,6 +8,7 @@ import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
+import com.google.sps.model.results.ResultsObject;
 import org.json.simple.JSONObject;
 
 import javax.servlet.annotation.WebServlet;
@@ -70,28 +71,14 @@ public class BookSearchServlet extends HttpServlet {
 
         try {
             Volumes volumes = getResults(query, pageNumber);
-            response.getWriter().println(convertResultsToJson(volumes, pageNumber));
+            response.getWriter().println(gson.toJsonTree(
+                    new ResultsObject<>(volumes.getItems(),
+                            volumes.getTotalItems(),
+                            volumes.getTotalItems() / ((int) RESULTS_PER_PAGE),
+                            pageNumber)));
         }
         catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * convertResultsToJson converts a Volumes object to json to return to an API request
-     * @param searchResults volumes results from a given query
-     * @return json payload ready to send to user
-     */
-    private JSONObject convertResultsToJson(Volumes searchResults, int pageNumber) {
-        JSONObject json = new JSONObject();
-
-        json.put("results", gson.toJsonTree(searchResults.getItems()));
-        // TODO: We should check if there is a parallel for this in Books, but I think it's superfluous to show in general
-        // json.put("totalResults", searchResults.getTotalResults());
-        // TODO: This doesn't work with the Books API b/c there are practically infinite pages. Maybe limit max pages.
-        // json.put("totalPages", searchResults.getTotalPages());
-        json.put("page", pageNumber);
-
-        return json;
     }
 }
