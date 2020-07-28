@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Title} from "@angular/platform-browser";
-import { faFilm, faBook } from '@fortawesome/free-solid-svg-icons';
+import {faFilm, faBook, faUsers} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
@@ -13,6 +13,7 @@ export class SearchComponent implements OnInit {
   public query: string
   public faFilm = faFilm;
   public faBook = faBook
+  public faUsers = faUsers
   public book = "book"
   public movie = "movie"
 
