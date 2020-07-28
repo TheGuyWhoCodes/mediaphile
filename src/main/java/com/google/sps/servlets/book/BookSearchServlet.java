@@ -86,10 +86,8 @@ public class BookSearchServlet extends HttpServlet {
         JSONObject json = new JSONObject();
 
         json.put("results", gson.toJsonTree(searchResults.getItems()));
-        // TODO: We should check if there is a parallel for this in Books, but I think it's superfluous to show in general
-        // json.put("totalResults", searchResults.getTotalResults());
-        // TODO: This doesn't work with the Books API b/c there are practically infinite pages. Maybe limit max pages.
-        // json.put("totalPages", searchResults.getTotalPages());
+        json.put("totalResults", searchResults.getTotalItems());
+        json.put("totalPages", searchResults.getTotalItems() / RESULTS_PER_PAGE);
         json.put("page", pageNumber);
 
         return json;
