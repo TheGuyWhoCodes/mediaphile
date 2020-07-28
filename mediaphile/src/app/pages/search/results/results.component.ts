@@ -70,8 +70,10 @@ export class ResultsComponent implements OnInit {
     this.infoSvc.searchBooks(query, this.pageNumber).subscribe(data => {
       if(this.hasReceivedResults()) {
         this.arrayResults.push.apply(this.arrayResults, data["results"])
+        this.total_results = data["total_results"];
       } else {
         this.arrayResults = data["results"];
+        this.total_results = data["total_results"];
         if(this.arrayResults == null) {
           this.hasResults = false;
           this.arrayResults = [];

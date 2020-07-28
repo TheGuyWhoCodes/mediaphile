@@ -9,6 +9,7 @@ import com.google.api.services.books.model.Volume;
 import com.google.api.services.books.model.Volumes;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
+import com.google.sps.model.results.ResultsObject;
 import com.google.sps.util.Utils;
 
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.sps.util.Utils.ContentType;
@@ -40,6 +42,7 @@ public class RecommendationsServlet extends HttpServlet {
      * pageNumber is zero-indexed for both books and movies, automatically accounting for the 1-indexing of movies
      * Returns error 400 if a parameter is empty or invalid (e.g. "bok")
      * Returns error 400 if there is an error getting recommendations (such as when a book doesn't exist)
+     * Simply returns an empty list if the page index is past the last result
      * @param request:  expects mediaType&mediaId, and optionally pageNumber
      * @param response: returns a JSON object of either Volumes or Move
      * @throws IOException
@@ -96,17 +99,14 @@ public class RecommendationsServlet extends HttpServlet {
         Integer movieIdInt = Utils.parseInt(movieId);
         if (movieIdInt == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
         }
         try {
             MovieResultsPage results = moviesApi.getRecommendedMovies(movieIdInt, null, pageNumber + 1);
 
-            JSONObject json = new JSONObject();
-            json.put("results", gson.toJsonTree(results.getResults()));
-            json.put("totalResults", results.getTotalResults());
-            json.put("totalPages", results.getTotalPages());
-            json.put("page", pageNumber);
-            response.getWriter().println(convertResultsToJson(results.getResults(),
-                    results.getTotalResults(), results.getTotalPages(), pageNumber));
+            response.getWriter().println(gson.toJsonTree(
+                    new ResultsObject<>(results.getResults(), results.getTotalResults(),
+                            results.getTotalPages(), pageNumber)));
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -132,27 +132,21 @@ public class RecommendationsServlet extends HttpServlet {
             int startIndex = (int) RESULTS_PER_PAGE * pageNumber;
             int endIndex = startIndex + (int) RESULTS_PER_PAGE;
             if (endIndex >= volList.size()) endIndex = volList.size() - 1;
-            volList = volList.subList(startIndex, endIndex);
+            if (endIndex >= startIndex) {
+                volList = volList.subList(startIndex, endIndex);
+            } else {
+                volList = new ArrayList<>();
+            }
 
             int totalPages = total / ((int) RESULTS_PER_PAGE);
             if (totalPages == 0) totalPages = 1;
 
-            response.getWriter().println(convertResultsToJson(volList,
-                    total, totalPages, pageNumber));
+            response.getWriter().println(gson.toJsonTree(
+                    new ResultsObject<>(volList, total, totalPages, pageNumber)));
         }
         catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
-    }
-
-    private <T> JSONObject convertResultsToJson(List<T> results, int totalResults, int totalPages, int page) {
-        JSONObject json = new JSONObject();
-        json.put("results", gson.toJsonTree(results));
-        json.put("totalResults", totalResults);
-        json.put("totalPages", totalPages);
-        json.put("page", page);
-
-        return json;
     }
 }
