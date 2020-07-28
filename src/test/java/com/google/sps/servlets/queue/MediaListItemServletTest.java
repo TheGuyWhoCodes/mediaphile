@@ -66,6 +66,7 @@ public class MediaListItemServletTest extends Mockito {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getParameter("userId")).thenReturn("5678");
+        when(request.getParameter("offset")).thenReturn("1");
         when(request.getParameter("listType")).thenReturn(MediaListItem.TYPE_VIEWED);
 
         StringWriter stringWriter = new StringWriter();
@@ -88,6 +89,7 @@ public class MediaListItemServletTest extends Mockito {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getParameter("userId")).thenReturn("5678");
+        when(request.getParameter("offset")).thenReturn("1");
         when(request.getParameter("listType")).thenReturn(MediaListItem.TYPE_QUEUE);
 
         StringWriter stringWriter = new StringWriter();

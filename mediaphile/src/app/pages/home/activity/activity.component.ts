@@ -22,10 +22,10 @@ export class ActivityComponent implements OnInit {
     this.getMoreActivity(0);
   }
 
-  public getMoreActivity(offset: number) {
+  public getMoreActivity(pageNumber: number) {
     this.loaded = false;
     this.loginStatus.sharedAccountId.subscribe(id => {
-      this.infoSvc.getActivity(id, offset).subscribe(data => {
+      this.infoSvc.getActivity(id, pageNumber).subscribe(data => {
         this.activity.push.apply(this.activity, data)
         if(data.length != 10) {
           this.showMore = false;
