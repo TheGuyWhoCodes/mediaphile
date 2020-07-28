@@ -70,8 +70,11 @@ export class InfoService {
     })
   }
 
-  public login() {
-    return this.http.get<LoginStatusStruct>(this.loginStatus)
+  public login(redirect?: string) {
+    let params = (redirect) ? {redirect: redirect} : {};
+    return this.http.get<LoginStatusStruct>(this.loginStatus, {
+      params: params
+    })
   }
 
   public logout() {
@@ -81,15 +84,6 @@ export class InfoService {
   }
 
   public getUser(userId: string) {
-    // TODO: Remove placeholder
-    if ((['123', '234', '345'].indexOf(userId) >= 0)) {
-      return of({
-        id: userId,
-        email: "other@example.com",
-        profilePicUrl: "https://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg",
-        username: "other",
-      });
-    }
     return this.http.get(this.userEndpoint, {
       params: {
         "id": userId,

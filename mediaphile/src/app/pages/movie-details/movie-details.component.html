@@ -42,7 +42,7 @@
 
   <div #reviews class="container reviews">
     <h2>Reviews: </h2>
-    <app-review [type]="'movie'" [id]="movieId" [title]="entity['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+    <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
   </div>
 </div>
 
