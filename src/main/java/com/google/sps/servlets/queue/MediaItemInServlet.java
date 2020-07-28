@@ -20,8 +20,14 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @WebServlet("/list/isInList")
 public class MediaItemInServlet extends HttpServlet {
     private final Gson gson = new GsonBuilder().serializeNulls().create();
-    private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * doGet() returns a two field response that has a boolean if a media item is in a queue
+     * or a previously watched list. useful for front end buttons
+     * @param request: two query params: userId and mediaId. If any of these are null, if throws a 400
+     * @param response: a 200 showing isInQueue and isInWatched
+     * @throws IOException
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         IsInListResponseObject listResponse = new IsInListResponseObject();
@@ -37,7 +43,6 @@ public class MediaItemInServlet extends HttpServlet {
         listResponse.setInViewed(isInViewed(userId, mediaId));
 
         response.getWriter().println(gson.toJsonTree(listResponse));
-
     }
 
     private boolean isInQueue(String userId, String mediaId) {
