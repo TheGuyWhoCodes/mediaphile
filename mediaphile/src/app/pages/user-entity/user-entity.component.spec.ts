@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserEntityComponent } from './user-entity.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {RouterTestingModule} from "@angular/router/testing";
-import {InfoService} from "../../../../info.service";
+import {InfoService} from "../../info.service";
 import {HttpClient, HttpHandler} from "@angular/common/http";
-import {LoginStatus} from "../../../../auth/login.status";
+import {LoginStatus} from "../../auth/login.status";
 
 describe('UserEntityComponent', () => {
   let component: UserEntityComponent;
