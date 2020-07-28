@@ -21,13 +21,11 @@
             <p [innerHTML]='bookData["volumeInfo"]["description"]'><p>
             <div *ngIf = isLoggedIn>
               <div *ngIf = "((loginStatus.sharedStatus | async) == true &&
-               (hasQueue) &&
-               (hasWatched)); else listloading" class="btn-block">
-                <button (click)="addToQueuedList()" *ngIf="!isInQueue" class="btn-watch">Read Later</button>
-                <button (click)="addToWatchedList()" *ngIf="!isInWatched" class="btn-watch">Mark as Read</button>
-
-                <button (click)="removeFromList('queue')" *ngIf="isInQueue" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Queue</button>
-                <button (click)="removeFromList('viewed')" *ngIf="isInWatched" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Read</button>
+               (hasListResponse)); else listloading" class="btn-block">
+                <button (click)="addToQueuedList()" *ngIf="!hasQueue" class="btn-watch">Read Later</button>
+                <button (click)="removeFromList('queue')" *ngIf="hasQueue" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Queue</button>
+                <button (click)="addToWatchedList()" *ngIf="!hasWatched" class="btn-watch">Mark as Read</button>
+                <button (click)="removeFromList('viewed')" *ngIf="hasWatched" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Read</button>
 
                 <button (click)="scroll(reviews)" class="btn-wait">Write a Review</button>
               </div>
@@ -49,7 +47,9 @@
     <h2>Reviews: </h2>
     <app-review *ngIf="this.entity | async" [type]="'book'" [id]="bookId"  [title]="getEntityTitle()" [artUrl]="getEntityPosterUrl()"></app-review>
   </div>
+
 </div>
+
 
 <ng-template #loading>
   <div class="d-flex justify-content-center loader">

@@ -21,7 +21,6 @@ export class ResultsComponent implements OnInit {
   public hasResults: boolean = false;
   public canLoadMore: boolean = true;
   public faAngleDoubleRight = faAngleDoubleRight;
-
   constructor(private route: ActivatedRoute, private infoSvc: InfoService) {
 
   }
@@ -38,29 +37,29 @@ export class ResultsComponent implements OnInit {
   }
 
   private search(query: string) {
+    this.hasResults = false;
+    // reset search entries to empty
     if(this.query != query) {
       this.arrayResults = [];
+      this.query = query;
       this.pageNumber = 1;
     }
-    this.query = query;
+
     if(this.type == "book") {
       this.searchBooks(query);
     } else if(this.type == "movie") {
       this.searchMovies(query);
     }
+
   }
 
   private searchMovies(query: string) {
     this.infoSvc.searchMovies(query, this.pageNumber).subscribe(data => {
-      if(this.hasReceivedResults()) {
-        this.arrayResults.push.apply(this.arrayResults, data["results"])
-        this.total_results = data["total_results"];
-      } else {
-        this.arrayResults = data["results"];
-        this.total_results = data["total_results"];
-        this.hasResults = true;
-      }
-      if(data["results"].length == 0) {
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
+      this.total_results = data["total_results"];
+      this.hasResults = true;
+
+      if(data["results"].length !== 20) {
         this.canLoadMore = false;
       }
     });
@@ -68,21 +67,11 @@ export class ResultsComponent implements OnInit {
 
   private searchBooks(query: string) {
     this.infoSvc.searchBooks(query, this.pageNumber).subscribe(data => {
-      if(this.hasReceivedResults()) {
-        this.arrayResults.push.apply(this.arrayResults, data["results"])
-        this.total_results = data["total_results"];
-      } else {
-        this.arrayResults = data["results"];
-        this.total_results = data["total_results"];
-        if(this.arrayResults == null) {
-          this.hasResults = false;
-          this.arrayResults = [];
-        } else {
-          this.hasResults = true;
-        }
-      }
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
+      this.total_results = data["total_results"];
+      this.hasResults = true;
 
-      if(this.arrayResults.length == 0) {
+      if(data["results"] === null) {
         this.canLoadMore = false;
       }
     });
@@ -95,5 +84,9 @@ export class ResultsComponent implements OnInit {
   public loadMore() {
     this.pageNumber++;
     this.search(this.query);
+  }
+
+  public searchResultsContainsNone() {
+    return this.hasResults && this.arrayResults.length === 0;
   }
 }
