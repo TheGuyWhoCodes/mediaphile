@@ -1,7 +1,7 @@
 <div class = "container">
   <h2>Exploring {{query}}: </h2>
   <div>
-    <h6 *ngIf="!searchResultsContainsNone() && type != 'user'">Found {{total_results}} results!</h6>
+    <h6 *ngIf="shouldShowResultCount()">Found {{total_results}} results!</h6>
     <h6 *ngIf="type=='book'"><img src = "assets/gbs_preview_button1.png"></h6>
     <div *ngIf="type=='user'">
       <div *ngFor="let entry of arrayResults">

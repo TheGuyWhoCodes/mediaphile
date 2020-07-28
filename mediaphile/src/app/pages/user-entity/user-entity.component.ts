@@ -18,12 +18,10 @@ export class UserEntityComponent implements OnInit {
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
-    console.log(this.entity);
     this.hasResults = this.entity != {} && this.entity != undefined;
     if (this.entity != undefined) {
       if (this.entity['profilePicUrl'] === "") {
-        this.entity['profilePicUrl'] =
-          "https://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg";
+        this.entity['profilePicUrl'] = "assets/blue-head.png";
       }
     }
   }
