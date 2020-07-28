@@ -19,11 +19,6 @@ public class FollowListObject {
         this.followerLength = followerLength;
         this.followingLength = followingLength;
     }
-    
-    @JsonProperty
-    @Index
-    @Id
-    private Long id;
 
     @JsonProperty
     @Index
@@ -40,5 +35,4 @@ public class FollowListObject {
     @JsonProperty
     @Index
     private int followingLength;
-
 }

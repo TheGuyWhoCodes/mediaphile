@@ -12,6 +12,8 @@ import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.sps.model.user.UserObject;
 
+import java.util.List;
+
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /** Servlet that returns user information.
@@ -38,7 +40,13 @@ public class UserServlet extends HttpServlet {
         User user = userService.getCurrentUser();
 
         String id = request.getParameter("id");
-        if (id == null || id.equals("")) {
+        String query = request.getParameter("query");
+
+        if(query != null) {
+            List<UserObject> userObject =  getUserObjectList(query.toLowerCase());
+            response.getWriter().println(gson.toJson(userObject));
+            return;
+        } else if (id == null || id.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -54,5 +62,13 @@ public class UserServlet extends HttpServlet {
         }
 
         response.getWriter().println(gson.toJson(userObject));
+    }
+
+    private List<UserObject> getUserObjectList(String query) {
+        return
+            ofy().load().type(UserObject.class)
+            .filter("usernameNorm >=", query)
+            .filter("usernameNorm <", query + "\uFFFD")
+            .list();
     }
 }

@@ -22,8 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import static junit.framework.Assert.assertEquals;
@@ -34,6 +37,8 @@ public class FollowServletTest extends Mockito {
     private HttpServletResponse response;
     private StringWriter stringWriter;
     private PrintWriter writer;
+    private FollowListObject listObject;
+    Gson gson = new Gson();
 
     @Before
     public void before() throws IOException{
@@ -74,10 +79,7 @@ public class FollowServletTest extends Mockito {
 
         new FollowServlet().doGet(request, response);
         writer.flush();
-        String expected = "{\"id\":null," +
-        "\"followersList\":[{\"id\":\"0123\",\"username\":\"bravo\",\"email\":\"\",\"profilePicUrl\":\"\"}]," +
-        "\"followingList\":[{\"id\":\"3210\",\"username\":\"charlie\",\"email\":\"\",\"profilePicUrl\":\"\"}]," +
-        "\"followerLength\":1,\"followingLength\":1}";
+        String expected = gson.toJson(listObject);
         
         assertEquals(stringWriter.toString().trim(), expected);
     }
@@ -263,5 +265,13 @@ public class FollowServletTest extends Mockito {
 
         UserObject charlie = new UserObject("3210", "charlie", "charlie@example.com", "");
         ofy().save().entity(charlie).now();
+
+        List<UserObject> followerList = new ArrayList<UserObject>();
+        followerList.add(bravo);
+
+        List<UserObject> followingList = new ArrayList<UserObject>();
+        followingList.add(charlie);
+
+        listObject = new FollowListObject(followerList, followingList, 1, 1);
     }
 }

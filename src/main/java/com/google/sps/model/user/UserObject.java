@@ -25,6 +25,10 @@ public class UserObject {
     @Index
     private String profilePicUrl;
 
+    @JsonProperty
+    @Index
+    private String usernameNorm;
+
     public UserObject() {} // For Objectify
 
     public UserObject(String id, String username, String email, String profilePicUrl) {
@@ -32,6 +36,7 @@ public class UserObject {
         this.username = username;
         this.email = email;
         this.profilePicUrl = profilePicUrl;
+        this.usernameNorm = username.toLowerCase();
     }
 
     public String getId() {
@@ -64,6 +69,14 @@ public class UserObject {
 
     public void setProfilePicUrl(String profilePicUrl) {
         this.profilePicUrl = profilePicUrl;
+    }
+
+    public String getUsernameNorm() {
+        return usernameNorm;
+    }
+
+    public void setUsernameNorm (String usernameNorm) {
+        this.usernameNorm = usernameNorm;
     }
 }
 

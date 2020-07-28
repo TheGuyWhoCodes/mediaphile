@@ -21,6 +21,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
@@ -226,6 +228,86 @@ public class UserServletTest extends Mockito {
         writer.flush();
 
         String expected = gson.toJson(user);
+        assertEquals(stringWriter.toString().trim(), expected.trim());
+    }
+
+    /**
+     * Retrieve an two users from the Datastore
+     * Instance where the user searches with a substring
+     * Response should include two user from datastore
+     * @throws IOException
+     */
+    @Test
+    public void testQuerySearch() throws IOException {
+        Map<String, Object> attr = new HashMap<>();
+        attr.put("com.google.appengine.api.users.UserService.user_id_key", "555");
+        helper.setEnvEmail("bravo@example.com")
+                .setEnvAttributes(attr)
+                .setEnvAuthDomain("example.com")
+                .setEnvIsLoggedIn(true)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        UserObject user = new UserObject("456", "alpha", "alpha@example.com", "");
+        UserObject user2 = new UserObject("321", "albert", "albert@example.com", "");
+
+        ofy().save().entity(user).now();
+        ofy().save().entity(user2).now();
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getParameter("query")).thenReturn("al");
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("query");
+        writer.flush();
+
+        List<UserObject> answer = new ArrayList<UserObject>();
+        answer.add(user2);
+        answer.add(user);
+
+        String expected = gson.toJson(answer);
+        assertEquals(stringWriter.toString().trim(), expected.trim());
+    }
+
+    @Test
+    public void testQueryUpperCaseSearch() throws IOException {
+        Map<String, Object> attr = new HashMap<>();
+        attr.put("com.google.appengine.api.users.UserService.user_id_key", "555");
+        helper.setEnvEmail("bravo@example.com")
+                .setEnvAttributes(attr)
+                .setEnvAuthDomain("example.com")
+                .setEnvIsLoggedIn(true)
+                .setUp();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        UserObject user = new UserObject("456", "alpha", "alpha@example.com", "");
+        UserObject user2 = new UserObject("321", "albert", "albert@example.com", "");
+
+        ofy().save().entity(user).now();
+        ofy().save().entity(user2).now();
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        writer.flush();
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getParameter("query")).thenReturn("AL");
+
+        new UserServlet().doGet(request, response);
+        verify(request, atLeast(1)).getParameter("query");
+        writer.flush();
+
+        List<UserObject> answer = new ArrayList<UserObject>();
+        answer.add(user2);
+        answer.add(user);
+
+        String expected = gson.toJson(answer);
         assertEquals(stringWriter.toString().trim(), expected.trim());
     }
 }
