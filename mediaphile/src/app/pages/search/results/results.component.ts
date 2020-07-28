@@ -55,7 +55,7 @@ export class ResultsComponent implements OnInit {
 
   private searchMovies(query: string) {
     this.infoSvc.searchMovies(query, this.pageNumber).subscribe(data => {
-      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
       this.total_results = data["total_results"];
       this.hasResults = true;
 
@@ -67,7 +67,8 @@ export class ResultsComponent implements OnInit {
 
   private searchBooks(query: string) {
     this.infoSvc.searchBooks(query, this.pageNumber).subscribe(data => {
-      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
+      this.total_results = data["total_results"];
       this.hasResults = true;
 
       if(data["results"] === null) {
