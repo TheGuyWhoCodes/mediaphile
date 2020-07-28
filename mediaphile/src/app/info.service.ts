@@ -186,4 +186,11 @@ export class InfoService {
       }
     })
   }
+
+  public toHttps(href: string) {
+    if (href.startsWith("http://")) {
+      return "https://" + href.substr(7);
+    }
+    return href;
+  }
 }
