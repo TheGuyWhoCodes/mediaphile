@@ -47,13 +47,6 @@ public class MediaListItemServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         response.setContentType("application/json; charset=utf-8");
         int offset;
 
