@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {InfoService} from "../../../info.service";
 
 @Component({
   selector: 'app-entity',
@@ -13,7 +14,7 @@ export class EntityComponent implements OnInit {
   @Input()
   type: string
 
-  constructor() { }
+  constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
 
@@ -22,7 +23,7 @@ export class EntityComponent implements OnInit {
   public getEntityImageUrl() : string {
     if(this.type === "book") {
       if("imageLinks" in this.entity["volumeInfo"]) {
-        return this.entity["volumeInfo"]["imageLinks"]["thumbnail"]
+        return this.infoSvc.toHttps(this.entity["volumeInfo"]["imageLinks"]["thumbnail"]);
       }
     } else if(this.type === "movie") {
       if(this.entity["poster_path"]) {
