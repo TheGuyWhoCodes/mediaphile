@@ -1,5 +1,15 @@
-.search-container {
-  padding-top:2em;
+span {
+  display: inline;
+}
+
+@media only screen and (max-width: 768px) {
+  span {
+    display:none;
+  }
+}
+
+nav {
+  margin-top: 2em;
 }
 
 span {
@@ -9,5 +19,11 @@ span {
 @media only screen and (max-width: 768px) {
   span {
     display:none;
+  }
+  .nav-tabs {
+    width:100%;
+  }
+  .nav-tabs .nav-link {
+    width: 33%;
   }
 }
