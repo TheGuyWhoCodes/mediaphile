@@ -50,7 +50,7 @@ export class InfoService {
     return this.http.get(this.getBookSearch, {
       params: {
         "query": query,
-        "pageNumber": page.toString()
+        "pageNumber": (page - 1).toString()
       }
     });
   }
@@ -203,7 +203,7 @@ export class InfoService {
     return this.http.get(this.userEndpoint, {
       params: {
         "query": query,
-        "pageNumber": pageNumber.toString()
+        "pageNumber": (pageNumber - 1).toString()
       }
     });
   }

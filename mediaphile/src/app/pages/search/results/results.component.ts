@@ -19,7 +19,7 @@ export class ResultsComponent implements OnInit {
   public pageNumber: number;
   public total_results: number;
   public hasResults: boolean = false;
-  public canLoadMore: boolean = true;
+  public canLoadMore: boolean = false;
   public faAngleDoubleRight = faAngleDoubleRight;
   constructor(private route: ActivatedRoute, private infoSvc: InfoService) {
 
@@ -81,10 +81,10 @@ export class ResultsComponent implements OnInit {
 
   private searchUsers(query: string) {
     this.infoSvc.searchUsers(query, this.pageNumber).subscribe(data => {
-      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.arrayResults.push.apply(this.arrayResults, data);
       this.hasResults = true;
 
-      if(data["results"] === null) {
+      if(data === null) {
         this.canLoadMore = false;
       }
     });

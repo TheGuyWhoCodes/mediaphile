@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {InfoService} from "../../../../info.service";
+import {InfoService} from "../../info.service";
 
 @Component({
   selector: 'app-user-entity',
@@ -9,7 +9,7 @@ import {InfoService} from "../../../../info.service";
 export class UserEntityComponent implements OnInit {
 
   @Input()
-  public query: string;
+  public userId: string;
 
   @Input()
   public entity: {};
@@ -18,6 +18,7 @@ export class UserEntityComponent implements OnInit {
   constructor(private infoSvc: InfoService) { }
 
   ngOnInit(): void {
+    console.log(this.entity);
     this.hasResults = this.entity != {} && this.entity != undefined;
     if (this.entity != undefined) {
       if (this.entity['profilePicUrl'] === "") {

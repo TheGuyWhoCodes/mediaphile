@@ -1,10 +1,10 @@
 <div class = "container">
   <h2>Exploring {{query}}: </h2>
   <div>
-    <h6>Found {{total_results}} results!</h6>
+    <h6 *ngIf="!searchResultsContainsNone() && type != 'user'">Found {{total_results}} results!</h6>
     <h6 *ngIf="type=='book'"><img src = "assets/gbs_preview_button1.png"></h6>
-    <div *ngIf="type=='user'" class="row">
-      <div *ngFor="let entry of arrayResults" class="col-md-3">
+    <div *ngIf="type=='user'">
+      <div *ngFor="let entry of arrayResults">
         <app-user-entity [entity]="entry" [userId]="entry['id']"></app-user-entity>
       </div>
     </div>

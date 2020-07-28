@@ -262,6 +262,7 @@ public class UserServletTest extends Mockito {
         writer.flush();
         when(response.getWriter()).thenReturn(writer);
         when(request.getParameter("query")).thenReturn("al");
+        when(request.getParameter("pageNumber")).thenReturn("0");
 
         new UserServlet().doGet(request, response);
         verify(request, atLeast(1)).getParameter("query");
@@ -299,6 +300,7 @@ public class UserServletTest extends Mockito {
         writer.flush();
         when(response.getWriter()).thenReturn(writer);
         when(request.getParameter("query")).thenReturn("AL");
+        when(request.getParameter("pageNumber")).thenReturn("0");
 
         new UserServlet().doGet(request, response);
         verify(request, atLeast(1)).getParameter("query");

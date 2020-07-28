@@ -12,10 +12,9 @@ import com.google.appengine.api.users.User;
 import com.google.gson.Gson;
 import com.google.sps.model.user.UserObject;
 
-import com.google.sps.util.Utils.parseInt;
-
 import java.util.List;
 
+import static com.google.sps.util.Utils.parseInt;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /** Servlet that returns user information.
@@ -48,6 +47,11 @@ public class UserServlet extends HttpServlet {
 
         if(query != null && !query.isEmpty()) {
             Integer pageNumber = parseInt(request.getParameter("pageNumber"));
+            if (pageNumber == null) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
             List<UserObject> userObjects =  getUserObjectList(query.toLowerCase(), pageNumber);
             response.getWriter().println(gson.toJsonTree(userObjects));
             return;

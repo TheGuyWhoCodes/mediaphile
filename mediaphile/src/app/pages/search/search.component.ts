@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit {
   public faUsers = faUsers
   public book = "book"
   public movie = "movie"
+  public user = "user"
 
   public entities: [] = [];
 
