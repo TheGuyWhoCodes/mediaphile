@@ -126,9 +126,6 @@ public class MediaListItemServlet extends HttpServlet {
             sendInvalidPostResponse(HttpServletResponse.SC_CONFLICT, response, newResponse);
             return;
         }
-        /*if(userObject != null && !userObject.getUsername().isEmpty()) {
-            newListItem.setUsername(userObject.getUsername());
-        }*/
 
         try {
             // Entry being saved to the datastore instance
