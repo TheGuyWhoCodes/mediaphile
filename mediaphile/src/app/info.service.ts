@@ -201,7 +201,7 @@ export class InfoService {
   }
 
   public getRecommendations(mediaId: string, mediaType: string) {
-    return this.http.get<{}>(this.getRecommendationsEndpoint, {
+    return this.http.get(this.getRecommendationsEndpoint, {
       params: {
         mediaId: mediaId,
         mediaType: mediaType
