@@ -1,5 +1,9 @@
 <div class = "review-container" *ngIf="reviews | async as reviews ; else loading">
-  <button  *ngIf = "(loginStatus.sharedStatus | async) && !userHasReview; else login" class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">Write a Review</button>
+  <div *ngIf="!userHasReview">
+    <button *ngIf = "(loginStatus.sharedStatus | async); else login"
+            class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">
+      Write a Review</button>
+  </div>
   <ng-template #login>
     <button class="btn btn-primary review" (click)="loginWithRedirect()">Write a Review</button>
   </ng-template>
