@@ -15,7 +15,7 @@ export class RecommendationsComponent implements OnInit {
   @Input()
   mediaId: string
 
-  slides: any = {}
+  slides: [] = []
 
   error: boolean = false;
 
@@ -33,7 +33,6 @@ export class RecommendationsComponent implements OnInit {
   ngOnInit(): void {
     this.infoSvc.getRecommendations(this.mediaId, this.mediaType).subscribe(data => {
       this.slides = data["results"]
-      console.log(this.isRecEmpty());
     }, error => {
       this.error = true;
     })
