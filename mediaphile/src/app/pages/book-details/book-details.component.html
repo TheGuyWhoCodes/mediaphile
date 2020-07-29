@@ -27,7 +27,7 @@
                 <button (click)="addToWatchedList()" *ngIf="!hasWatched" class="btn-watch">Mark as Read</button>
                 <button (click)="removeFromList('viewed')" *ngIf="hasWatched" class="btn-watch red-button"><fa-icon [icon]="miniusCircle"></fa-icon> Remove from Read</button>
 
-                <button (click)="scroll(reviews)" class="btn-wait">Write a Review</button>
+                <button (click)="scroll(reviews)" class="btn-wait">Go to Reviews</button>
               </div>
             </div>
             <ng-template #listloading>
