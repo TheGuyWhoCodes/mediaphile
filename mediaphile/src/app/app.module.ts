@@ -59,7 +59,7 @@ import { UserEntityComponent } from './pages/user-entity/user-entity.component';
     ModalComponent,
     ActivityComponent,
     ActivityEntityComponent,
-    RecommendationsComponent
+    RecommendationsComponent,
     UserEntityComponent
   ],
   imports: [
