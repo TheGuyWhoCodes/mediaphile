@@ -33,6 +33,7 @@ import { ModalComponent } from './pages/helper/modal/modal.component';
 import { ActivityComponent } from './pages/home/activity/activity.component';
 import { ActivityEntityComponent } from './pages/home/activity/activity-entity/activity-entity.component';
 import { RecommendationsComponent } from './pages/helper/recommendations/recommendations.component';
+import { UserEntityComponent } from './pages/user-entity/user-entity.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { RecommendationsComponent } from './pages/helper/recommendations/recomme
     ActivityComponent,
     ActivityEntityComponent,
     RecommendationsComponent
+    UserEntityComponent
   ],
   imports: [
     BrowserModule,

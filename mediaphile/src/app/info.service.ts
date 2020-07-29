@@ -51,7 +51,7 @@ export class InfoService {
     return this.http.get(this.getBookSearch, {
       params: {
         "query": query,
-        "pageNumber": page.toString()
+        "pageNumber": (page - 1).toString()
       }
     });
   }
@@ -207,6 +207,15 @@ export class InfoService {
         mediaType: mediaType
       }
     })
+  }
+
+  public searchUsers(query: string, pageNumber: number) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "query": query,
+        "pageNumber": (pageNumber - 1).toString()
+      }
+    });
   }
 
   public toHttps(href: string) {
