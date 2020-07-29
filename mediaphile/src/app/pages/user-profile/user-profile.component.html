@@ -8,7 +8,7 @@
         </div>
       </div>
       <h1 id="username" class="align-self-center">{{entity['username']}}</h1>
-      <button *ngIf="!isSelf" (click)="toggleFollow()" id="follow-button" class="align-self-center">
+      <button *ngIf="showFollow()" (click)="toggleFollow()" id="follow-button" class="align-self-center">
         {{(followed) ? "Unfollow" : "Follow"}}
       </button>
     </div>

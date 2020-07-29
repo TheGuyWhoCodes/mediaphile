@@ -26,6 +26,7 @@ export class UserProfileComponent implements OnInit {
   public hasResults: boolean;
 
   public followed: boolean;
+  public loggedIn: boolean = false;
 
   public following: [];
   public followers: [];
@@ -77,10 +78,17 @@ export class UserProfileComponent implements OnInit {
         this.title.setTitle(`Mediaphile :: ${whose}Profile`);
       }
     });
+    this.loginStatus.sharedStatus.subscribe(logged_in => {
+      this.loggedIn = logged_in;
+    });
   }
 
   hasProfilePic() : boolean {
     return this.entity['profilePicUrl'] !== "";
+  }
+
+  showFollow() : boolean {
+    return this.loggedIn && !this.isSelf
   }
 
   getProfilePicChar() : string {
