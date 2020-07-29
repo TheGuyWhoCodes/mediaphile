@@ -12,6 +12,7 @@ import com.google.sps.model.queue.MediaListItem;
 import com.google.sps.model.queue.MediaListResponse;
 import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
+import com.google.sps.model.user.UserObject;
 import com.google.sps.util.HttpUtils;
 import com.google.sps.util.Utils;
 import com.googlecode.objectify.cmd.QueryKeys;
@@ -93,9 +94,12 @@ public class MediaListItemServlet extends HttpServlet {
         }
 
         String currentUserID = user.getUserId();
+        UserObject userObject = ofy().load().type(UserObject.class).id(currentUserID).now();
+
         MediaListItem newListItem = null;
         try {
             newListItem = decideDbType(body);
+            newListItem.setUsername(userObject.getUsername());
             if(!currentUserID.equals(newListItem.getUserId())) {
                 sendInvalidPostResponse(HttpServletResponse.SC_UNAUTHORIZED, response, newResponse);
                 return;
@@ -122,6 +126,9 @@ public class MediaListItemServlet extends HttpServlet {
             sendInvalidPostResponse(HttpServletResponse.SC_CONFLICT, response, newResponse);
             return;
         }
+        /*if(userObject != null && !userObject.getUsername().isEmpty()) {
+            newListItem.setUsername(userObject.getUsername());
+        }*/
 
         try {
             // Entry being saved to the datastore instance

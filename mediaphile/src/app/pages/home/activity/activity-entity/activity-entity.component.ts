@@ -38,7 +38,7 @@ export class ActivityEntityComponent implements OnInit {
     if(this.isReview()) {
       return this.activity["authorName"];
     }
-    return "Someone you follow "
+    return this.activity["username"] || "Someone you follow "
   }
 
   public getRating() : string {
