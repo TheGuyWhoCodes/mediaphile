@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {InfoService} from "../../../../info.service";
+import {InfoService} from "../../info.service";
 
 @Component({
-  selector: 'app-follow-entity',
-  templateUrl: './follow-entity.component.html',
-  styleUrls: ['./follow-entity.component.scss']
+  selector: 'app-user-entity',
+  templateUrl: './user-entity.component.html',
+  styleUrls: ['./user-entity.component.scss']
 })
-export class FollowEntityComponent implements OnInit {
+export class UserEntityComponent implements OnInit {
 
   @Input()
   public userId: string;
