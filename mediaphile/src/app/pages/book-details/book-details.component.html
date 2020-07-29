@@ -42,12 +42,14 @@
       </div>
     </div>
   </main>
+  <div class = "container">
+    <app-recommendations [mediaId]="bookId" [mediaType]="'book'"></app-recommendations>
 
   <div #reviews class = "container reviews">
     <h2>Reviews: </h2>
     <app-review *ngIf="this.entity | async" [type]="'book'" [id]="bookId"  [title]="getEntityTitle()" [artUrl]="getEntityPosterUrl()"></app-review>
   </div>
-
+  </div>
 </div>
 
 

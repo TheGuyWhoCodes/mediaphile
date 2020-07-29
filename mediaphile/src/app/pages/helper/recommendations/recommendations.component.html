@@ -1,0 +1,14 @@
+<h2>Recommendations: </h2>
+
+<div class = "scroll-wrapper" *ngIf="!isRecEmpty()">
+  <button (click)="scrollLeft()" class="btn btn-primary review scroll"><fa-icon [icon]="faLeftChev"></fa-icon></button>
+
+  <div #recSlides class="scrolling-wrapper">
+    <app-entity *ngFor = "let entity of slides" [entity]="entity" [type]="mediaType"></app-entity>
+  </div>
+  <button (click)="scrollRight()" class="btn btn-primary review scroll"><fa-icon [icon]="faRightChev"></fa-icon></button>
+</div>
+
+<div class = "error text-center" *ngIf="isRecEmpty()">
+  <h2 class="align-middle">No Recommendations Available!</h2>
+</div>

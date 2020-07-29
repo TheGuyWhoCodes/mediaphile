@@ -1,5 +1,6 @@
 package com.google.sps.servlets.recommendations;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -33,6 +34,7 @@ public class RecommendationsServlet extends HttpServlet {
 
     private final TmdbMovies moviesApi = new TmdbMovies(new TmdbApi(KeyConfig.MOVIE_KEY));
     private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    private static final ObjectMapper mapper = new ObjectMapper();
     private final Gson gson = new Gson();
 
     /**
@@ -104,9 +106,7 @@ public class RecommendationsServlet extends HttpServlet {
         try {
             MovieResultsPage results = moviesApi.getRecommendedMovies(movieIdInt, null, pageNumber + 1);
 
-            response.getWriter().println(gson.toJsonTree(
-                    new ResultsObject<>(results.getResults(), results.getTotalResults(),
-                            results.getTotalPages(), pageNumber)));
+            mapper.writeValue(response.getWriter(), results);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
