@@ -1,0 +1,50 @@
+h2 {
+  margin-top:.3em;
+}
+.scrolling-wrapper {
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding-bottom: 20em;
+  border-bottom: 1px solid #e1e4e8 !important;
+}
+.scroll-wrapper {
+  display:flex;
+}
+.scroll {
+  display:inline;
+  margin: auto;
+  height: 37px;
+}
+.scrolling-wrapper-flexbox {
+  display: inline;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.scrolling-wrapper, .scrolling-wrapper-flexbox {
+  height: 300px;
+  margin-bottom: 20px;
+  width: 90%;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100px;
+}
+
+@media only screen and (max-width: 768px) {
+
+  .scroll {
+    display: none;
+  }
+  .scrolling-wrapper, .scrolling-wrapper-flexbox {
+    width:100%;
+  }
+}

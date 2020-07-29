@@ -28,6 +28,7 @@ export class InfoService {
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
   private getIsInListEndpoint: string = `${this.apiBackendUrl}list/isInList`;
   private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
+  private getRecommendationsEndpoint: string = `${this.apiBackendUrl}recommendations`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -195,6 +196,15 @@ export class InfoService {
       params: {
         userId: userId,
         pageNumber: String(pageNumber)
+      }
+    })
+  }
+
+  public getRecommendations(mediaId: string, mediaType: string) {
+    return this.http.get<{}>(this.getRecommendationsEndpoint, {
+      params: {
+        mediaId: mediaId,
+        mediaType: mediaType
       }
     })
   }
