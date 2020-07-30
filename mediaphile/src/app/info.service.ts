@@ -113,11 +113,12 @@ export class InfoService {
     });
   }
 
-  public getReviewsForMedia(id: string, contentType: string) {
+  public getReviewsForMedia(id: string, contentType: string, pageNumber: number) {
     return this.http.get<Review[]>(this.getReviews, {
       params: {
         contentType: contentType,
-        contentId: id
+        contentId: id,
+        pageNumber: String(pageNumber)
       }
     });
   }
