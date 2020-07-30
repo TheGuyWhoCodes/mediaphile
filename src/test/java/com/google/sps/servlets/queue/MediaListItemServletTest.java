@@ -6,6 +6,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.sps.ContextListener;
+import com.google.sps.model.user.UserObject;
 import com.google.sps.model.queue.MediaListItem;
 import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
@@ -294,5 +295,8 @@ public class MediaListItemServletTest extends Mockito {
         queue.setListType(MediaListItem.TYPE_QUEUE);
 
         ofy().save().entity(queue).now();
+
+        UserObject userObject = new UserObject("5678", "test", "", "");
+        ofy().save().entity(userObject).now();
     }
 }

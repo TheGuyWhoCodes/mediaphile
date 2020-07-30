@@ -39,10 +39,24 @@ export class ReviewComponent implements OnInit {
 
   loaded: boolean = false;
 
+  selfReview: Review;
+
+  userHasReview: boolean = false;
+
   constructor(private infoSvc: InfoService, private router: Router, public loginStatus: LoginStatus) { }
 
   ngOnInit(): void {
     this.getMoreActivity(this.pageNumber)
+    this.loginStatus.sharedAccountId.subscribe(userId => {
+      this.infoSvc.getSpecificReview(this.id, this.type, userId).subscribe(review => {
+        console.log(this.selfReview)
+        if (review != undefined) {
+          this.selfReview = review;
+          console.log(this.selfReview)
+          this.userHasReview = true;
+        }
+      });
+    });
   }
 
   loginWithRedirect() {
@@ -74,10 +88,13 @@ export class ReviewComponent implements OnInit {
         this.hasReviews = true;
       }
 
-      if(data.length !== 2) {
+      if(data.length !== 10) {
         this.showMore = false;
       }
       this.loaded = true;
     });
+  }
+  matchesSelfReview(reviewId: number): boolean {
+    return (this.selfReview != undefined) && (reviewId == this.selfReview.id);
   }
 }

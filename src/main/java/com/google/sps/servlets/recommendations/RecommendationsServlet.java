@@ -124,6 +124,7 @@ public class RecommendationsServlet extends HttpServlet {
             Volumes volumes = books.volumes()
                     .associated()
                     .list(bookId)
+                    .set("country", "US")
                     .execute();
 
             // Associated list is not paginated, so this extracts the right slice

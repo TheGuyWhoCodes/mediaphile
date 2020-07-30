@@ -1,13 +1,18 @@
 <div class = "review-container">
-  <button  *ngIf = "(loginStatus.sharedStatus | async); else login" class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">Write a Review</button>
+  <div *ngIf="!userHasReview">
+    <button *ngIf = "(loginStatus.sharedStatus | async); else login"
+            class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">
+      Write a Review</button>
+  </div>
   <ng-template #login>
     <button class="btn btn-primary review" (click)="loginWithRedirect()">Write a Review</button>
   </ng-template>
 
 
   <div class = "container" *ngIf = "hasReceivedResults()">
+    <app-review-entity *ngIf="userHasReview" [review]="selfReview"></app-review-entity>
     <div *ngFor="let entry of reviews">
-      <app-review-entity [review]="entry"></app-review-entity>
+      <app-review-entity *ngIf="!matchesSelfReview(entry['id'])" [review]="entry"></app-review-entity>
     </div>
     <div (click)="loadMore()" *ngIf="shouldShowMore()" class="load-more">Load More Reviews <fa-icon [icon]="faAngleDoubleRight"></fa-icon></div>
   </div>

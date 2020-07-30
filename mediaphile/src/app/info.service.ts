@@ -123,6 +123,24 @@ export class InfoService {
     });
   }
 
+  public getReviewsByUser(id: string) {
+    return this.http.get<Review[]>(this.getReviews, {
+      params: {
+        userId: id
+      }
+    });
+  }
+
+  public getSpecificReview(contentId: string, contentType: string, userId: string) {
+    return this.http.get<Review>(this.getReviews, {
+      params: {
+        contentType: contentType,
+        contentId: contentId,
+        userId: userId
+      }
+    });
+  }
+
   public postReviewForMedia(authorId: string, authorName: string,
                             contentType: string, contentId: string, contentTitle: string,
                             artUrl: string,

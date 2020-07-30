@@ -28,7 +28,7 @@ public class ReviewServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
-    private final int REVIEW_LIMIT = 2;
+    private final int REVIEW_LIMIT = 10;
 
     /**
      * doGet() returns details of the reviews by a given user, on a given media item, or of a particular review
@@ -237,7 +237,7 @@ public class ReviewServlet extends HttpServlet {
         }
         else {
             List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                    .filter("authorId", userId)
+                    .filter("userId", userId)
                     .filter("contentType", contentType)
                     .filter("contentId", contentId)
                     .list();
