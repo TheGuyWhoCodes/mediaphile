@@ -181,12 +181,9 @@ public class RecommendationsServlet extends HttpServlet {
         List<String> categories = volume.getVolumeInfo().getCategories();
         String query;
         if (categories != null && categories.size() > 0) {
-            String category = categories.get(0).replaceAll("\\s", "_");
-            query = "subject:" + category;
+            query = "subject:" + spacesToUnderscores(categories.get(0));
         } else {
-            String[] words = volume.getVolumeInfo().getTitle().split("[\\s-.,!?]+");
-            words = Arrays.copyOfRange(words, 0, Math.min(words.length, 3));
-            query = String.join(" ", words);
+            query = getFirstWords(volume.getVolumeInfo().getTitle(), 3);
         }
 
         Volumes volumes = books.volumes().list(query)
@@ -210,5 +207,15 @@ public class RecommendationsServlet extends HttpServlet {
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
+    }
+
+    String spacesToUnderscores(String str) {
+        return str.replaceAll("\\s", "_");
+    }
+
+    String getFirstWords(String str, int n) {
+        String[] words = str.split("[\\s-.,!?]+");
+        words = Arrays.copyOfRange(words, 0, Math.min(words.length, n));
+        return String.join(" ", words);
     }
 }
