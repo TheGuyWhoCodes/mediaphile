@@ -1,5 +1,6 @@
 .review-container {
   width:60%;
+  min-height:200px;
 }
 .review {
   margin: .3em 0 ;
@@ -8,6 +9,14 @@
 h3 {
   padding: 1em;
 }
+
+.load-more {
+  margin: 1em 0;
+  font-size:1.2rem;
+  cursor: pointer;
+  text-align: center;
+}
+
 @media only screen and (max-width: 768px) {
   span {
     display:none;

@@ -1,14 +1,31 @@
-<div class = "review-container" *ngIf="reviews | async as reviews ; else loading">
+<div class = "review-container">
   <button  *ngIf = "(loginStatus.sharedStatus | async); else login" class="btn btn-primary review" data-toggle="modal" data-target="#exampleModal">Write a Review</button>
   <ng-template #login>
     <button class="btn btn-primary review" (click)="loginWithRedirect()">Write a Review</button>
   </ng-template>
-  <div *ngFor="let review of reviews">
-    <app-review-entity [review]="review"></app-review-entity>
+
+
+  <div class = "container" *ngIf = "hasReceivedResults()">
+    <div *ngFor="let entry of reviews">
+      <app-review-entity [review]="entry"></app-review-entity>
+    </div>
+    <div (click)="loadMore()" *ngIf="shouldShowMore()" class="load-more">Load More Reviews <fa-icon [icon]="faAngleDoubleRight"></fa-icon></div>
   </div>
-  <div *ngIf="reviews.length == 0">
-    <h3><fa-icon [icon]="faEye"></fa-icon> No reviews yet! Be the first to add one</h3>
+
+
+  <div *ngIf="isEntitiesEmpty()">
+    <div class = "text-center">
+      <h3><fa-icon [icon]="faEye"></fa-icon> No reviews yet! Be the first to add one</h3>
+    </div>
   </div>
+
+  <div class="text-center align-middle loader" *ngIf="!loaded">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -24,9 +41,3 @@
     </div>
   </div>
 </div>
-
-<ng-template #loading>
-  <div class="spinner-border" role="status">
-    <span class="sr-only">Loading...</span>
-  </div>
-</ng-template>

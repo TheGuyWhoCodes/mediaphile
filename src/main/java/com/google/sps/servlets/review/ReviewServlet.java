@@ -28,6 +28,7 @@ public class ReviewServlet extends HttpServlet {
 
     private final Gson gson = new Gson();
     private final ObjectMapper mapper = new ObjectMapper();
+    private final int REVIEW_LIMIT = 2;
 
     /**
      * doGet() returns details of the reviews by a given user, on a given media item, or of a particular review
@@ -48,15 +49,20 @@ public class ReviewServlet extends HttpServlet {
         String userId = request.getParameter("userId");
         String contentType = request.getParameter("contentType");
         String contentId = request.getParameter("contentId");
+        Integer pageNumber = Utils.parseInt(request.getParameter("pageNumber"));
 
+        // to correctly translate pages, we need to subtract by 1 to get starting position
+        if(pageNumber != null) {
+            pageNumber--;
+        }
         if (userId != null && contentType != null && contentId != null) {
             sendSpecificReview(userId, contentType, contentId, response);
         }
-        else if (userId != null && contentType == null && contentId == null) {
-            sendUserReviews(userId, response);
+        else if (userId != null && pageNumber != null && contentType == null && contentId == null) {
+            sendUserReviews(userId, pageNumber, response);
         }
-        else if (userId == null && contentType != null && contentId != null) {
-            sendContentReviews(contentType, contentId, response);
+        else if (userId == null && pageNumber != null && contentType != null && contentId != null) {
+            sendContentReviews(contentType, contentId, pageNumber, response);
         }
         else {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -185,7 +191,7 @@ public class ReviewServlet extends HttpServlet {
                 .filter("contentId", contentId).keys();
     }
 
-    private void sendUserReviews(String userId, HttpServletResponse response) throws IOException {
+    private void sendUserReviews(String userId, Integer pageNumber,HttpServletResponse response) throws IOException {
         if (userId.equals("")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -195,13 +201,16 @@ public class ReviewServlet extends HttpServlet {
         else {
             List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
                     .filter("userId", userId)
+                    .limit(REVIEW_LIMIT)
+                    .offset(pageNumber * REVIEW_LIMIT)
+                    .order("-timestamp")
                     .list();
             response.getWriter().println(gson.toJson(reviews));
         }
     }
 
     private void sendContentReviews(String contentType, String contentId,
-                                    HttpServletResponse response) throws IOException {
+                                    Integer pageNumber, HttpServletResponse response) throws IOException {
         if (contentId.equals("") || !isType(contentType)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -209,6 +218,9 @@ public class ReviewServlet extends HttpServlet {
             List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
                     .filter("contentType", contentType)
                     .filter("contentId", contentId)
+                    .limit(REVIEW_LIMIT)
+                    .offset(pageNumber * REVIEW_LIMIT)
+                    .order("-timestamp")
                     .list();
             response.getWriter().println(gson.toJson(reviews));
         }
