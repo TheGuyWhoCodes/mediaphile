@@ -50,7 +50,7 @@ export class ResultsComponent implements OnInit {
     } else if(this.type == "movie") {
       this.searchMovies(query);
     } else if(this.type == "user") {
-        this.searchUsers(query);
+      this.searchUsers(query);
     }
 
   }
@@ -60,10 +60,7 @@ export class ResultsComponent implements OnInit {
       this.arrayResults.push.apply(this.arrayResults, data["results"]);
       this.total_results = data["total_results"];
       this.hasResults = true;
-
-      if(data["results"].length !== 20) {
-        this.canLoadMore = false;
-      }
+      this.canLoadMore = data["results"].length === 20;
     }, _ => {
       this.canLoadMore = false;
     });
@@ -74,10 +71,7 @@ export class ResultsComponent implements OnInit {
       this.arrayResults.push.apply(this.arrayResults, data["results"]);
       this.total_results = data["total_results"];
       this.hasResults = true;
-
-      if(data["results"] === null) {
-        this.canLoadMore = false;
-      }
+      this.canLoadMore = data["results"] !== undefined;
     }, _ => {
       this.canLoadMore = false;
     });
@@ -85,14 +79,9 @@ export class ResultsComponent implements OnInit {
 
   private searchUsers(query: string) {
     this.infoSvc.searchUsers(query, this.pageNumber).subscribe(data => {
-      let old_len = this.arrayResults.length;
       this.arrayResults.push.apply(this.arrayResults, data);
-      let len = this.arrayResults.length - old_len;
       this.hasResults = true;
-
-      if(len !== 20) {
-        this.canLoadMore = false;
-      }
+      this.canLoadMore = Array(data).length === 20;
     }, _ => {
       this.canLoadMore = false;
     });

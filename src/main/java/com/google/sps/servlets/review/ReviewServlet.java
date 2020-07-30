@@ -225,7 +225,7 @@ public class ReviewServlet extends HttpServlet {
         }
         else {
             List<ReviewObject> reviews = ofy().load().type(ReviewObject.class)
-                    .filter("authorId", userId)
+                    .filter("userId", userId)
                     .filter("contentType", contentType)
                     .filter("contentId", contentId)
                     .list();
