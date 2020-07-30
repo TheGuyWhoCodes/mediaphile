@@ -14,10 +14,13 @@
               <h6>{{entry}}</h6>
             </div>
             <div class="movie-meta">
-              <span class="movie-duration">{{bookData["volumeInfo"]["printedPageCount"]}} pages</span>
-              <span class="movie-year">{{bookData["volumeInfo"]["publishedDate"]}}</span>
-              <span class="movie-lang">{{bookData["volumeInfo"]["language"]}}</span>
+              <span *ngIf ='bookData["volumeInfo"]["printedPageCount"]' class="movie-duration">{{bookData["volumeInfo"]["printedPageCount"]}} pages</span>
+              <span *ngIf ='bookData["volumeInfo"]["publishedDate"]' class="movie-year">{{bookData["volumeInfo"]["publishedDate"]}}</span>
+              <span *ngIf ='bookData["volumeInfo"]["language"]' class="movie-lang">{{bookData["volumeInfo"]["language"]}}</span>
             </div>
+            <b *ngIf='this.bookData["volumeInfo"]["industryIdentifiers"]'>
+              <a class = "amazon" target="_blank" rel="noopener noreferrer" href="{{searchAmazon()}}"> <fa-icon [icon]="faAmazon"></fa-icon> Find book on Amazon</a>
+            </b>
             <p [innerHTML]='bookData["volumeInfo"]["description"]'><p>
             <div *ngIf = isLoggedIn>
               <div *ngIf = "((loginStatus.sharedStatus | async) == true &&
