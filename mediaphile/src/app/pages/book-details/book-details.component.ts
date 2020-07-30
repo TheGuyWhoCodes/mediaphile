@@ -146,7 +146,6 @@ export class BookDetailsComponent implements OnInit {
   }
 
   public searchAmazon() : string {
-    console.log()
     return `https://www.amazon.com/s?k=${this.bookData["volumeInfo"]["industryIdentifiers"][0]["identifier"]}`
   }
 }
