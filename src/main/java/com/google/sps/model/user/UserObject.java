@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.OnSave;
 
 @Entity(name="User")
 public class UserObject {
@@ -24,6 +25,10 @@ public class UserObject {
     @JsonProperty
     @Index
     private String profilePicUrl;
+
+    @JsonProperty
+    @Index
+    private String usernameNorm;
 
     public UserObject() {} // For Objectify
 
@@ -65,5 +70,15 @@ public class UserObject {
     public void setProfilePicUrl(String profilePicUrl) {
         this.profilePicUrl = profilePicUrl;
     }
+
+    public String getUsernameNorm() {
+        return usernameNorm;
+    }
+
+    public void setUsernameNorm (String usernameNorm) {
+        this.usernameNorm = usernameNorm;
+    }
+
+    @OnSave void mainCaseInsensitive() { this.usernameNorm = username.toLowerCase(); }
 }
 

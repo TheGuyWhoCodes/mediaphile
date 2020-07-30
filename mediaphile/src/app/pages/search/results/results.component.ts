@@ -49,30 +49,52 @@ export class ResultsComponent implements OnInit {
       this.searchBooks(query);
     } else if(this.type == "movie") {
       this.searchMovies(query);
+    } else if(this.type == "user") {
+        this.searchUsers(query);
     }
 
   }
 
   private searchMovies(query: string) {
     this.infoSvc.searchMovies(query, this.pageNumber).subscribe(data => {
-      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
       this.total_results = data["total_results"];
       this.hasResults = true;
 
       if(data["results"].length !== 20) {
         this.canLoadMore = false;
       }
+    }, _ => {
+      this.canLoadMore = false;
     });
   }
 
   private searchBooks(query: string) {
     this.infoSvc.searchBooks(query, this.pageNumber).subscribe(data => {
-      this.arrayResults.push.apply(this.arrayResults, data["results"])
+      this.arrayResults.push.apply(this.arrayResults, data["results"]);
+      this.total_results = data["total_results"];
       this.hasResults = true;
 
       if(data["results"] === null) {
         this.canLoadMore = false;
       }
+    }, _ => {
+      this.canLoadMore = false;
+    });
+  }
+
+  private searchUsers(query: string) {
+    this.infoSvc.searchUsers(query, this.pageNumber).subscribe(data => {
+      let old_len = this.arrayResults.length;
+      this.arrayResults.push.apply(this.arrayResults, data);
+      let len = this.arrayResults.length - old_len;
+      this.hasResults = true;
+
+      if(len !== 20) {
+        this.canLoadMore = false;
+      }
+    }, _ => {
+      this.canLoadMore = false;
     });
   }
 
@@ -87,5 +109,9 @@ export class ResultsComponent implements OnInit {
 
   public searchResultsContainsNone() {
     return this.hasResults && this.arrayResults.length === 0;
+  }
+
+  public shouldShowResultCount() {
+    return !this.searchResultsContainsNone() && this.type != 'user';
   }
 }

@@ -72,7 +72,7 @@ export class BookDetailsComponent implements OnInit {
 
   public getEntityPosterUrl(): string {
     if(this.bookData && "imageLinks" in this.bookData["volumeInfo"]) {
-      return this.bookData["volumeInfo"]["imageLinks"]["thumbnail"]
+      return this.infoSvc.toHttps(this.bookData["volumeInfo"]["imageLinks"]["thumbnail"]);
     }
     return "assets/poster-placeholder.png"
   }

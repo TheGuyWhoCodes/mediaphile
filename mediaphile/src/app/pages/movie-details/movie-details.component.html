@@ -39,10 +39,13 @@
       </div>
     </div>
   </main>
+  <div class = "container">
+    <app-recommendations [mediaId]="movieId" [mediaType]="'movie'"></app-recommendations>
 
-  <div #reviews class="container reviews">
-    <h2>Reviews: </h2>
-    <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+    <div #reviews class="reviews">
+      <h2>Reviews: </h2>
+      <app-review *ngIf="this.entity | async" [type]="'movie'" [id]="movieId" [title]="movieData['title']" [artUrl]="getEntityPosterUrl()"></app-review>
+    </div>
   </div>
 </div>
 

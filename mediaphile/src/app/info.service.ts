@@ -28,6 +28,7 @@ export class InfoService {
   private getBookDetailsEndpoint: string = `${this.apiBackendUrl}books/details`;
   private getIsInListEndpoint: string = `${this.apiBackendUrl}list/isInList`;
   private getActivityEndpoint: string = `${this.apiBackendUrl}activity/followers`;
+  private getRecommendationsEndpoint: string = `${this.apiBackendUrl}recommendations`;
 
   constructor(private http: HttpClient, private router: Router, private loginStatusService: LoginStatus) {
   }
@@ -50,7 +51,7 @@ export class InfoService {
     return this.http.get(this.getBookSearch, {
       params: {
         "query": query,
-        "pageNumber": page.toString()
+        "pageNumber": (page - 1).toString()
       }
     });
   }
@@ -197,5 +198,30 @@ export class InfoService {
         pageNumber: String(pageNumber)
       }
     })
+  }
+
+  public getRecommendations(mediaId: string, mediaType: string) {
+    return this.http.get(this.getRecommendationsEndpoint, {
+      params: {
+        mediaId: mediaId,
+        mediaType: mediaType
+      }
+    })
+  }
+
+  public searchUsers(query: string, pageNumber: number) {
+    return this.http.get(this.userEndpoint, {
+      params: {
+        "query": query,
+        "pageNumber": (pageNumber - 1).toString()
+      }
+    });
+  }
+
+  public toHttps(href: string) {
+    if (href.startsWith("http://")) {
+      return "https://" + href.substr(7);
+    }
+    return href;
   }
 }
