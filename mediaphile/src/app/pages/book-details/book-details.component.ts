@@ -7,6 +7,7 @@ import {Observable} from "rxjs";
 import {faMinusCircle} from "@fortawesome/free-solid-svg-icons";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ModalComponent} from "../helper/modal/modal.component";
+import {faAmazon} from "@fortawesome/free-brands-svg-icons";
 
 @Component({
   selector: 'app-book-details',
@@ -17,6 +18,7 @@ export class BookDetailsComponent implements OnInit {
 
 
   public miniusCircle = faMinusCircle;
+  public faAmazon = faAmazon
 
   public userId: string;
   public bookId: string;
@@ -141,5 +143,9 @@ export class BookDetailsComponent implements OnInit {
     const modalRef = this.modalService.open(ModalComponent);
     modalRef.componentInstance.title = title
     modalRef.componentInstance.message = message
+  }
+
+  public searchAmazon() : string {
+    return `https://www.amazon.com/s?k=${this.bookData["volumeInfo"]["industryIdentifiers"][0]["identifier"]}`
   }
 }

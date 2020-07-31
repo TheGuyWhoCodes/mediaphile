@@ -9,7 +9,7 @@
           <label for="name">Review Title</label>
           <input id="name" name="name" class="form-control"
                  required minlength="4"
-                 maxlength="25"
+                 maxlength="50"
                  [(ngModel)]="hero.title" #name="ngModel" >
 
           <div *ngIf="name.invalid && (name.dirty || name.touched)"

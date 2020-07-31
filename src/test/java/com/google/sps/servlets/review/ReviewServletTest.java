@@ -164,6 +164,7 @@ public class ReviewServletTest extends Mockito {
 
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("userId")).thenReturn(DUMMY_USER_ID);
+        when(request.getParameter("pageNumber")).thenReturn("1");
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
@@ -178,6 +179,7 @@ public class ReviewServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
         when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+        when(request.getParameter("pageNumber")).thenReturn("1");
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
@@ -192,6 +194,7 @@ public class ReviewServletTest extends Mockito {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameter("contentType")).thenReturn(ContentType.BOOK);
         when(request.getParameter("contentId")).thenReturn(GOOD_BOOK_ID);
+        when(request.getParameter("pageNumber")).thenReturn("1");
 
         new ReviewServlet().doGet(request, response);
         writer.flush();
