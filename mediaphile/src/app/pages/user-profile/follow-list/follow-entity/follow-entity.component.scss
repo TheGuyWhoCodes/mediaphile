@@ -1,7 +1,7 @@
 img {
-  width: auto;
+  width: 70px;
   height: auto;
-  max-width: 100%;
+  max-width: 100px;
   max-height: 100%;
   box-shadow: 2px 2px 2px #bdbdbd;
   margin-right:1em;
@@ -14,7 +14,7 @@ img:hover {
   width:100%;
   height:100px;
   padding: 15px 0;
-  border-bottom: 1px solid #2c3440;
+  border-bottom: 1px solid #e1e4e8 !important;
   display: block;
   position:relative;
   overflow:hidden;
