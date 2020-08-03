@@ -1,11 +1,16 @@
 package com.google.sps.servlets.datacreation;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Charsets;
+import com.google.api.services.books.Books;
+import com.google.api.services.books.model.Volume;
 import com.google.appengine.repackaged.com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.sps.KeyConfig;
 import com.google.sps.model.follow.FollowItem;
-import com.google.sps.model.follow.FollowListObject;
 import com.google.sps.model.queue.MediaListItem;
 import com.google.sps.model.queue.QueueListItemObject;
 import com.google.sps.model.queue.ViewedListItemObject;
@@ -22,11 +27,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -35,7 +38,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class DataCreationServlet extends HttpServlet {
 
     Gson gson = new Gson();
+    List<String> moviesToReview = Arrays.asList("299537", "102899", "1726");
+    List<String> booksToReview = Arrays.asList("XV8XAAAAYAAJ", "yxv1LK5gyV4C", "6e4cDvhrKhgC");
     private final TmdbMovies moviesQuery = new TmdbMovies(new TmdbApi(KeyConfig.MOVIE_KEY));
+    private static final JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String fixture = this.readResource("username.txt", Charsets.UTF_8);
@@ -46,7 +52,13 @@ public class DataCreationServlet extends HttpServlet {
 
         generateFollows(userObjects);
 
-        generateReviews(userObjects);
+        for(String id : moviesToReview) {
+            generateReviewsMovie(userObjects, id);
+        }
+
+        for(String id : booksToReview) {
+            generateReviewsBook(userObjects, id);
+        }
 
         generateQueues(userObjects, MediaListItem.TYPE_QUEUE);
 
@@ -88,26 +100,49 @@ public class DataCreationServlet extends HttpServlet {
         }
     }
 
-    public void generateReviews(List<UserObject> userObjects) throws IOException {
-        MovieDb movie = getDetails(299537);
-        for(int i = 0; i < 100; i++) {
-            Lorem lorem = LoremIpsum.getInstance();
-
-            ReviewObject review = new ReviewObject();
+    public void generateReviewsMovie(List<UserObject> userObjects, String contentId) throws IOException {
+        MovieDb movie = getDetails(Integer.parseInt(contentId));
+        for(int i = 0; i < 250; i++) {
             int rnd = new Random().nextInt(userObjects.size());
             UserObject user = userObjects.get(rnd);
 
-            review.setAuthorName(user.getUsername());
-            review.setAuthorId(user.getId());
-            review.setContentTitle(movie.getTitle());
-            review.setArtUrl("https://image.tmdb.org/t/p/w500/"+movie.getPosterPath());
-            review.setContentId("299537");
+            generateReview(user.getUsername(),String.valueOf(movie.getId()), user.getId(), movie.getTitle(), movie.getPosterPath(), "movie");
+        }
+    }
+
+    public void generateReviewsBook(List<UserObject> userObjects,  String contentId) {
+        try {
+            Volume book = getBookDetails(contentId);
+            for(int i = 0; i < 250; i++) {
+                int rnd = new Random().nextInt(userObjects.size());
+                UserObject user = userObjects.get(rnd);
+
+                generateReview(user.getUsername(),book.getId(), user.getId(), book.getVolumeInfo().getTitle(), book.getVolumeInfo().getImageLinks().getMedium(), "book");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateReview(String authorName, String contentId, String userId, String contentTitle, String contentPoster, String contentType) {
+            Lorem lorem = LoremIpsum.getInstance();
+
+            ReviewObject review = new ReviewObject();
+
+            review.setAuthorName(authorName);
+            review.setAuthorId(userId);
+            review.setContentTitle(contentTitle);
+            if(contentType.equals("movie")) {
+                review.setArtUrl("https://image.tmdb.org/t/p/w500/"+contentPoster);
+            } else {
+                review.setArtUrl(contentPoster);
+            }
+            review.setContentId(contentId);
             review.setRating(new Random().nextInt(5)+1);
             review.setReviewTitle(lorem.getWords(5,10));
             review.setReviewBody(lorem.getParagraphs(2,4));
-            review.setContentType("movie");
+            review.setContentType(contentType);
             ofy().save().entity(review).now();
-        }
     }
 
     public void generateFollows(List<UserObject> userObjects) {
@@ -162,5 +197,22 @@ public class DataCreationServlet extends HttpServlet {
                 ofy().save().entity(list).now();
             }
         }
+    }
+
+    public Volume getBookDetails(String id) throws GeneralSecurityException, IOException {
+        final NetHttpTransport httpTransport;
+        try {
+            // Can throw an exception if trusted certificate cannot be established
+            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        }
+        catch (Exception e) {
+            throw new GeneralSecurityException();
+        }
+
+        Books books = new Books.Builder(httpTransport, jsonFactory, null)
+                .setApplicationName(KeyConfig.APPLICATION_NAME)
+                .build();
+
+        return books.volumes().get(id).set("country", "US").execute();
     }
 }
