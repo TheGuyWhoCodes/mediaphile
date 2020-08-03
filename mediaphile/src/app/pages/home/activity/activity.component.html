@@ -3,6 +3,11 @@
   <div *ngFor="let a of activity">
     <app-activity-entity [activity]="a"></app-activity-entity>
   </div>
+  <div *ngIf="isEntitiesEmpty()">
+    <div class = "text-center">
+      <h2><fa-icon [icon]="faEye"></fa-icon> No Recent Activity... Yet.</h2>
+    </div>
+  </div>
   <div (click)="loadMore()" *ngIf="showMore" class="load-more">Load More Activity</div>
 </div>
 

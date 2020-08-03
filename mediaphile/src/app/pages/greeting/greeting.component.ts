@@ -11,10 +11,18 @@ import {LoginStatus} from "../../auth/login.status";
 export class GreetingComponent implements OnInit {
   faTicketAlt = faTicketAlt;
   searchInput: string;
-
-  constructor(private router: Router, public loginStatus: LoginStatus) { }
+  navigated: boolean = false;
+  constructor(private router: Router, public loginStatus: LoginStatus) {
+    this.loginStatus.sharedStatus.subscribe(status => {
+      if(status && !this.navigated) {
+        this.navigated = true;
+        this.router.navigate(["home"])
+      }
+    })
+  }
 
   ngOnInit(): void {
+
   }
 
   /**
