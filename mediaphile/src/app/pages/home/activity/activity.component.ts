@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {LoginStatus} from "../../../auth/login.status";
 import {ModalComponent} from "../../helper/modal/modal.component";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-activity',
@@ -13,6 +14,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 export class ActivityComponent implements OnInit {
 
   public activity: {}[] = [];
+  faEye = faEye;
   public loaded: boolean = false;
   public showMore: boolean = true;
   public pageNumber: number = 0;
@@ -47,6 +49,10 @@ export class ActivityComponent implements OnInit {
   public loadMore() {
     this.pageNumber += 10;
     this.getMoreActivity(this.pageNumber);
+  }
+
+  public isEntitiesEmpty() {
+    return this.activity.length == 0;
   }
 }
 
